@@ -116,8 +116,8 @@ class Text(Component):
 
 class FpsDisplay(Component):
 
-    def __init__(self, game, x=0, y=0, *, parent=None):
-        super().__init__(x, y, parent)
+    def __init__(self, game, x=0, y=0, *, parent=None, view=None):
+        super().__init__(x, y, parent, view)
 
         self.text = Text()
         self.addComponent(self.text)
@@ -165,8 +165,8 @@ class FpsDisplay(Component):
 
 
 class Console(Component):
-    def __init__(self, game):
-        super().__init__(20, 20, None)
+    def __init__(self, game, view=None):
+        super().__init__(20, 20, None, view)
 
         self.document = pyglet.text.document.FormattedDocument()
 

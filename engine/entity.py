@@ -21,7 +21,7 @@ class Entity:
         view: View = None, scene: Scene
     ):
         if view is None:
-            view = HudView()
+            view = HudView(scene.game)
 
         self.x, self.y = x, y
         self.view = view

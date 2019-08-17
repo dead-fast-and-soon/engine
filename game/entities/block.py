@@ -32,7 +32,7 @@ class BlockGrid(Entity):
 
         self.n = 0  # number of blocks rendering
 
-        self.batch = QuadBatch()
+        self.batch = QuadBatch(view=view)
         self.addComponent(self.batch)
 
     def addBlock(self, x, y):

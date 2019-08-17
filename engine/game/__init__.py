@@ -3,7 +3,7 @@ import pyglet
 
 from engine.game.state import GameState
 from engine.game.scene import Scene
-from engine.view import View
+from engine.view import View, HudView
 from engine.components.debug import Console, FpsDisplay
 
 SPT = 1.0 / 60.0  # 60 ticks per second
@@ -20,13 +20,15 @@ class Game:
 
         # the current viewport
         self.view: View = View(self)
+        # the viewport to use for HUD elements
+        hud_view = HudView(self)
 
         # width and height of the window
         self.width, self.height = width, height
 
         # add an in-game debug console
-        self.console = Console(self)
-        self.fps_display = FpsDisplay(self, x=20, y=20)
+        self.console = Console(self, view=hud_view)
+        self.fps_display = FpsDisplay(self, x=20, y=20, view=hud_view)
 
         # load an empty scene
         self.loadScene(Scene(self))

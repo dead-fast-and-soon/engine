@@ -30,7 +30,8 @@ class Component:
         if parent is not None and view is not None:
             print('warning: child component given a view - will be ignored')
 
-        self._view: Optional[View] = HudView() if view is None else view
+        # currently used viewport
+        self._view: Optional[View] = view
 
     def addComponent(self, *components):
         """
@@ -54,10 +55,13 @@ class Component:
         """
         Internal render method.
         """
+        if self.view is not None:
+            self.view.useViewport()
+
         self.onRender(delta)
 
         for child in self.children:
-            child.onRender(delta)
+            child.render(delta)
 
     def update(self, delta: float):
         """
@@ -66,7 +70,7 @@ class Component:
         self.onUpdate(delta)
 
         for child in self.children:
-            child.onUpdate(delta)
+            child.render(delta)
 
     # --------------------------------------------------------------------------
     # Properties
@@ -85,6 +89,10 @@ class Component:
             if self._view is None:
                 raise ValueError("this component does not have a view")
             return self._view  # return view at the topmost component
+
+    @view.setter
+    def view(self, view):
+        self._view = view
 
     @property
     def x(self) -> float:

@@ -12,11 +12,17 @@ if TYPE_CHECKING:
 
 class SpriteComponent(Component):
 
-    def __init__(self, img, x: float = 0.0, y: float = 0.0, parent=None):
+    def __init__(
+        self, img, x: float = 0.0, y: float = 0.0,
+        *, batch=None, parent=None
+    ):
         """ Creates a sprite. """
         super().__init__(x, y, parent)
 
-        self.handle = pyglet.sprite.Sprite(img, x, y)
+        if batch is None:
+            self.handle = pyglet.sprite.Sprite(img, x, y)
+        else:
+            self.handle = pyglet.sprite.Sprite(img, x, y, batch=batch)
 
         # self.addComponent(CircleComponent())
 

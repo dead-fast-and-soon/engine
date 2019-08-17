@@ -4,6 +4,8 @@ import config
 from structs.point import Point, Transform
 import typing
 
+from pyglet import gl
+
 if typing.TYPE_CHECKING:
     from game import Game
 
@@ -50,6 +52,25 @@ class View:
 
         return Transform(p.x, p.y, w, h)
 
+    def useViewport(self):
+        """
+        Remaps the OpenGL coordinates for future draw calls.
+        By default, this remapping places (0,0) at the center of the window.
+        """
+        # if these coordinates are already being used, skip running the method
+        if current_view is not self:
+            # width and height of game window
+            w, h = self.game.width, self.game.height
+            zoom = self.zoom
+
+            gl.glMatrixMode(gl.GL_PROJECTION)
+            gl.glLoadIdentity()
+            gl.glOrtho(
+                -w / 2.0 / zoom, w / 2.0 / zoom,  # x range
+                -h / 2.0 / zoom, h / 2.0 / zoom,  # y range
+                0.0, 1.0                          # z range
+            )
+
 
 class HudView(View):
     """
@@ -58,11 +79,27 @@ class HudView(View):
     screen coordinates.
     """
 
-    def __init__(self, zoom: float = 1.0):
-        super().__init__(0, 0, zoom)
+    def __init__(self, game, zoom: float = 1.0):
+        super().__init__(game, 0, 0, zoom)
 
     def transformPoint(self, p: Point):
         x = int(p.x * self.zoom)
         y = int(p.y * self.zoom)
 
         return Point(x, y)
+
+    def useViewport(self):
+        """
+        This remapping places (0,0) at the bottom left of the window.
+        """
+        # if these coordinates are already being used, skip running the method
+        if current_view is not self:
+            # width and height of game window
+            w, h = self.game.width, self.game.height
+
+            gl.glMatrixMode(gl.GL_PROJECTION)
+            gl.glLoadIdentity()
+            gl.glOrtho(0.0, w, 0.0, h, 0.0, 1.0)
+
+# the last viewport remapping
+current_view: typing.Optional[View] = None
