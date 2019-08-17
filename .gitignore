@@ -1,6 +1,7 @@
 __pycache__/
 testing_tools/
 .mypy_cache
+.vscode/settings.json
 */__pycache__/
 *.pyc
 *.sh
