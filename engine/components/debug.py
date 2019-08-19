@@ -116,7 +116,7 @@ class Text(Component):
 
 class FpsDisplay(Component):
 
-    def __init__(self, game, x=0, y=0, *, parent=None, view=None):
+    def __init__(self, game=None, x=0, y=0, *, parent=None, view=None):
         super().__init__(pos=(x, y), parent=parent, view=view)
 
         self.text = Text()
@@ -157,11 +157,16 @@ class FpsDisplay(Component):
         else:
             fps_h = str(round(1.0 / min_delta, 2))
 
-        self.text.text =\
-            'FPS: ' + str(round(fps, 2)) +\
-            f'(min: { fps_l }, max: { fps_h } )\n' +\
-            'cmps: ' + str(self.game.scene.component_count) + '\n' +\
-            'ents: ' + str(self.game.scene.entity_count) + '\n'
+        if self.game is None:
+            self.text.text =\
+                'FPS: ' + str(round(fps, 2)) +\
+                f'(min: { fps_l }, max: { fps_h } )\n'
+        else:
+            self.text.text =\
+                'FPS: ' + str(round(fps, 2)) +\
+                f'(min: { fps_l }, max: { fps_h } )\n' +\
+                'cmps: ' + str(self.game.scene.component_count) + '\n' +\
+                'ents: ' + str(self.game.scene.entity_count) + '\n'
 
 
 class Console(Component):

@@ -14,7 +14,7 @@ class Component:
         self, x: float = 0.0, y: float = 0.0,
         *,
         pos: Optional[Union[Point, tuple]]=None,
-        parent: Component = None, view: View
+        parent: Component = None, view: View = None
     ):
         # local position (world if this is the parent component)
         if pos is None:
@@ -91,8 +91,8 @@ class Component:
         if self.parent is not None:
             return self.parent.view  # recursively get the parent view
         else:
-            if self._view is None:
-                raise ValueError("this component does not have a view")
+            # if self._view is None:
+            #     raise ValueError("this component does not have a view")
             return self._view  # return view at the topmost component
 
     @view.setter
