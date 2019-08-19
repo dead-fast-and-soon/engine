@@ -46,8 +46,8 @@ class Game:
         self.scene = scene
 
         # add debug components
-        self.scene.components.append(self.console)
-        self.scene.components.append(self.fps_display)
+        # self.scene.components.append(self.console)
+        # self.scene.components.append(self.fps_display)
 
     def start(self):
         """

@@ -1,7 +1,7 @@
 
 import pyglet
 from engine.component import Component
-from structs.color import Color
+from structs.color import Color, WHITE
 from structs.point import Transform
 
 
@@ -9,7 +9,7 @@ class Quad:
 
     def __init__(self, x, y, width, height, color=None, batch=None):
         if color is None:
-            color = Color.WHITE
+            color = WHITE
 
         r, g, b = color.r, color.g, color.b
 

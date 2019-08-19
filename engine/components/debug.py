@@ -108,8 +108,6 @@ class Text(Component):
         self.handle.text = text
 
     def onRender(self, delta):
-        self.handle.x = self.pos.x
-        self.handle.y = self.pos.y
 
         self.handle.draw()
 
@@ -124,49 +122,33 @@ class FpsDisplay(Component):
         self.game = game
 
         self.deltas = []
+        self.last_frametime = 0
 
-    def onRender(self, delta):
+    def onUpdate(self, delta):
 
-        if delta > 0:
-            self.deltas.append(delta)
-
-        if len(self.deltas) > 60:
-            del self.deltas[0]
-
-        if len(self.deltas) == 0:
-            avg_delta = 0
-            min_delta = 0
-            max_delta = 0
+        if self.last_frametime > 0:
+            fps = str(round(1.0 / self.last_frametime, 2))
         else:
-            avg_delta = float(sum(self.deltas) / len(self.deltas))
-            min_delta = min(self.deltas)
-            max_delta = max(self.deltas)
-
-        if avg_delta == 0:
-            fps = 0
-        else:
-            fps = 1.0 / avg_delta
-
-        if max_delta == 0:
-            fps_l = str(0)
-        else:
-            fps_l = str(round(1.0 / max_delta, 2))
-
-        if min_delta == 0:
-            fps_h = str(0)
-        else:
-            fps_h = str(round(1.0 / min_delta, 2))
+            fps = str(0.0)
 
         if self.game is None:
             self.text.text =\
-                'FPS: ' + str(round(fps, 2)) +\
-                f'(min: { fps_l }, max: { fps_h } )\n'
+                'FPS: ' + fps
         else:
             self.text.text =\
-                'FPS: ' + str(round(fps, 2)) +\
-                f'(min: { fps_l }, max: { fps_h } )\n' +\
+                'FPS: ' + fps +\
                 'cmps: ' + str(self.game.scene.component_count) + '\n' +\
                 'ents: ' + str(self.game.scene.entity_count) + '\n'
+
+    def onRender(self, delta):
+
+        # if delta > 0:
+        #     self.deltas.append(delta)
+
+        # if len(self.deltas) > 10:
+        #     del self.deltas[0]
+
+        self.last_frametime = delta
 
 
 class Console(Component):
