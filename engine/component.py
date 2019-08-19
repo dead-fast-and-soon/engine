@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 from structs.point import Point
-from typing import List, Optional
+from typing import List, Optional, Union
 from engine.view import View, HudView
 
 
@@ -12,11 +12,17 @@ class Component:
 
     def __init__(
         self, x: float = 0.0, y: float = 0.0,
-        parent: Component = None, view: View = None
+        *,
+        pos: Optional[Union[Point, tuple]]=None,
+        parent: Component = None, view: View
     ):
-        # world/local position (dependant on if parent or child)
-        self._x: float = x
-        self._y: float = y
+        # local position (world if this is the parent component)
+        if pos is None:
+            lpos = Point(x, y)
+        else:
+            lpos = Point.createFrom(pos)
+
+        self._lpos: Point = lpos
 
         # parent component; if None then this is the parent
         self.parent: Optional[Component] = parent
@@ -48,8 +54,7 @@ class Component:
         """
         if len(self.children) > 0:
             for component in self.children:
-                component.x += x
-                component.y += y
+                component.lpos += (x, y)
 
     def render(self, delta: float):
         """
@@ -94,61 +99,64 @@ class Component:
     def view(self, view):
         self._view = view
 
+    # @property
+    # def x(self) -> float:
+    #     """
+    #     Gets or sets the X local coordinate of this component.
+    #     """
+    #     return self._x
+
+    # @x.setter
+    # def x(self, x: float):
+    #     self._x = x
+
+    # @property
+    # def y(self) -> float:
+    #     """
+    #     Gets or sets the Y local coordinate of this component.
+    #     """
+    #     return self._y
+
+    # @y.setter
+    # def y(self, y: float):
+    #     self._y = y
+
     @property
-    def x(self) -> float:
+    def lpos(self) -> Point:
         """
-        Gets or sets the X local coordinate of this component.
-        """
-        return self._x
+        Gets or sets the position of this component.
 
-    @x.setter
-    def x(self, x: float):
-        self._x = x
-
-    @property
-    def y(self) -> float:
+        If this component is the top-most in hierarchy (the parent), the
+        position retrieved will be with respect to world-space.
+        Otherwise, it will be with respect to the parent of this component
+        (local).
         """
-        Gets or sets the Y local coordinate of this component.
-        """
-        return self._y
+        return self._lpos
 
-    @y.setter
-    def y(self, y: float):
-        self._y = y
+    @lpos.setter
+    def lpos(self, pos: Union[Point, tuple]):
+        self._lpos = Point.createFrom(pos)
 
     @property
     def pos(self) -> Point:
         """
-        Gets or sets the local coordinates of this component.
-        """
-        return Point(self.x, self.y)
-
-    @pos.setter
-    def pos(self, pos: Point):
-        self._x = pos.x
-        self._y = pos.y
-
-    @property
-    def wpos(self) -> Point:
-        """
-        Gets the world coordinates of this component.
+        Gets the position of this component with respect to world-space.
         """
         if self.parent is None:
-            return Point(self.x, self.y)
+            return self.lpos
         else:
-            pt = self.parent.wpos
-            return Point(self.x + pt.x, self.y + pt.y)
+            return self.parent.pos + self.lpos
 
-    @property
-    def spos(self) -> Point:
-        """
-        Gets the screen-space coordinates of this component.
-        The conversion depends on the current view.
+    # @property
+    # def spos(self) -> Point:
+    #     """
+    #     Gets the screen-space coordinates of this component.
+    #     The conversion depends on the current view.
 
-        This property is recommended when rendering the component.
-        """
-        pt = self.view.transformPoint(self.wpos)
-        return pt
+    #     This property is recommended when rendering the component.
+    #     """
+    #     pt = self.view.transformPoint(self.wpos)
+    #     return pt
 
     # def deleteChildren(self):
     #     """
@@ -180,9 +188,21 @@ class Component:
     # --------------------------------------------------------------------------
 
     def onRender(self, delta: float):
+        """
+        Called on every frame.
+        """
         pass
 
     def onUpdate(self, delta: float):
+        """
+        Called on every tick.
+        """
+        pass
+
+    def onPositionChange(self, pos):
+        """
+        Called when this component's position changes.
+        """
         pass
 
 # def component(klass: type):

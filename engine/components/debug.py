@@ -33,7 +33,7 @@ class BoxComponent(Component):
                  b=255,
                  parent=None,
                  view=None):
-        super().__init__(x, y, parent, view)
+        super().__init__(pos=(x, y), parent=parent, view=view)
 
         self.w = w
         self.h = h
@@ -58,38 +58,38 @@ class BoxComponent(Component):
         self.vertices.draw(pyglet.gl.GL_QUADS)
 
 
-class CircleComponent(Component):
-    def __init__(self, radius: float = 5, n: int = 6, x=0, y=0, parent=None):
-        super().__init__(x, y, parent)
+# class CircleComponent(Component):
+#     def __init__(self, radius: float = 5, n: int = 6, x=0, y=0, parent=None):
+#         super().__init__(pos=(x, y), parent=parent, view=view)
 
-        self.radius = radius
-        self.n = n
+#         self.radius = radius
+#         self.n = n
 
-    def onRender(self, delta):
+#     def onRender(self, delta):
 
-        pos = self.spos
+#         pos = self.spos
 
-        verts = []
-        colors = []
+#         verts = []
+#         colors = []
 
-        for i in range(0, self.n):
+#         for i in range(0, self.n):
 
-            verts.extend([
-                (math.sin((i / self.n) * 2 * math.pi) * self.radius) + pos.x,
-                (math.cos((i / self.n) * 2 * math.pi) * self.radius) + pos.y
-            ])
+#             verts.extend([
+#                 (math.sin((i / self.n) * 2 * math.pi) * self.radius) + pos.x,
+#                 (math.cos((i / self.n) * 2 * math.pi) * self.radius) + pos.y
+#             ])
 
-            colors.extend([255, 0, 0])  # red
+#             colors.extend([255, 0, 0])  # red
 
-        print(f'rendering circle at ({ pos.x }, { pos.y }))')
-        pyglet.graphics.draw(self.n, pyglet.gl.GL_LINE_LOOP,
-                             ('v2f', tuple(verts)), ('c3B', tuple(colors)))
+#         print(f'rendering circle at ({ pos.x }, { pos.y }))')
+#         pyglet.graphics.draw(self.n, pyglet.gl.GL_LINE_LOOP,
+#                              ('v2f', tuple(verts)), ('c3B', tuple(colors)))
 
 
 class Text(Component):
 
-    def __init__(self, text: str = '', x=0, y=0, parent=None):
-        super().__init__(x, y, parent)
+    def __init__(self, text: str = '', x=0, y=0, parent=None, view=None):
+        super().__init__(pos=(x, y), parent=parent, view=view)
 
         self.handle = pyglet.text.Label(
             text,
@@ -108,8 +108,8 @@ class Text(Component):
         self.handle.text = text
 
     def onRender(self, delta):
-        self.handle.x = self.spos.x
-        self.handle.y = self.spos.y
+        self.handle.x = self.pos.x
+        self.handle.y = self.pos.y
 
         self.handle.draw()
 
@@ -117,7 +117,7 @@ class Text(Component):
 class FpsDisplay(Component):
 
     def __init__(self, game, x=0, y=0, *, parent=None, view=None):
-        super().__init__(x, y, parent, view)
+        super().__init__(pos=(x, y), parent=parent, view=view)
 
         self.text = Text()
         self.addComponent(self.text)
@@ -166,7 +166,7 @@ class FpsDisplay(Component):
 
 class Console(Component):
     def __init__(self, game, view=None):
-        super().__init__(20, 20, None, view)
+        super().__init__(pos=(20, 20), parent=None, view=view)
 
         self.document = pyglet.text.document.FormattedDocument()
 

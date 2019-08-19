@@ -1,8 +1,9 @@
-
 from __future__ import annotations
+from structs.point import Point
 import typing
 
 if typing.TYPE_CHECKING:
+    from engine.game import Game
     from engine.entity import Entity
     from engine.component import Component
 
@@ -13,7 +14,7 @@ class Scene:
     """
 
     def __init__(self, game):
-        self.game = game
+        self.game: Game = game
 
         # the list of entities currently spawned
         self.entities: typing.List[Entity] = []
@@ -32,18 +33,30 @@ class Scene:
         for component in self.components:
             component.render(delta)
 
-    def spawnEntity(self, entity: Entity):
+    def spawnEntity(
+        self,
+        ent_class: typing.Type[Entity], pos=(0, 0), *args, **kwargs
+    ) -> Entity:
         """
         Adds an entity and all its components to this state.
         """
-        if entity is not None:
-            self.game.log(f'spawning entity {type(entity).__name__} @ '
-                          f'({entity.x}, {entity.y}) '
-                          f'with {len(entity.components)} components')
+        pos = Point.createFrom(pos)
 
-            entity.scene = self  # set the entity's state if needed
-            self.entities.append(entity)
-            entity.onSpawn()
+        kwargs['pos'] = pos
+        kwargs['view'] = self.game.view
+        kwargs['scene'] = self
+        entity = ent_class(*args, **kwargs)
+
+        self.game.log(
+            f'spawning entity {type(entity).__name__} @ '
+            f'({pos.x}, {pos.y}) '
+            f'with {len(entity.components)} components'
+        )
+
+        self.entities.append(entity)
+        entity.onSpawn()
+
+        return entity
 
     def destroyEntity(self, entity: Entity):
         """

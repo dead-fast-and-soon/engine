@@ -31,6 +31,18 @@ class Point:
 
         raise ValueError(f'unable to add 2D point to value { other }')
 
+    @staticmethod
+    def createFrom(val) -> 'Point':
+        """
+        Attempts to construct a point from an arbitrary value.
+        """
+        if type(val) is tuple:
+            return Point(val[0], val[1])
+        elif type(val) is Point:
+            return val
+        else:
+            raise ValueError(f'unable to construct point from value: { val }')
+
 
 class Transform(Point):
     """

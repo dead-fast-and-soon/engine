@@ -18,12 +18,18 @@ class Entity:
 
     def __init__(
         self, x: float = 0.0, y: float = 0.0, *,
-        view: View = None, scene: Scene
+        pos: typing.Optional[typing.Union[Point, tuple]]=None,
+        view: View, scene: Scene
     ):
-        if view is None:
-            view = HudView(scene.game)
+        if pos is None:
+            pos = Point(x, y)
+        else:
+            pos = Point.createFrom(pos)
 
-        self.x, self.y = x, y
+        # the position of this entity
+        self.pos = pos
+
+        # the View to use when rendering this entity
         self.view = view
 
         # the Scene that spawned this entity
@@ -60,13 +66,6 @@ class Entity:
     # --------------------------------------------------------------------------
     # Properties
     # --------------------------------------------------------------------------
-
-    @property
-    def pos(self):
-        """
-        Returns the world position of this entity.
-        """
-        return Point(self.x, self.y)
 
     # --------------------------------------------------------------------------
     # Events (to be overridden by subclasses)

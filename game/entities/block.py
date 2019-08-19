@@ -23,8 +23,8 @@ from structs.color import Color
 
 class BlockGrid(Entity):
 
-    def __init__(self, x=0, y=0, view=None, scene=None):
-        super().__init__(x, y, view=view, scene=scene)
+    def __init__(self, pos, view, scene):
+        super().__init__(pos=pos, view=view, scene=scene)
 
         self.i = 0
         self.j = 0

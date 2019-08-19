@@ -7,7 +7,7 @@ from game.entities.block import BlockGrid
 game = Game(width=1280, height=720)
 
 # spawn entities
-game.scene.spawnEntity(BlockGrid(view=game.view, scene=game.scene))
+game.scene.spawnEntity(BlockGrid, (0, 0))
 
 # start game
 print('starting game')
