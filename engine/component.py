@@ -6,12 +6,37 @@ from structs.point import Point
 from typing import List, Optional, Union, Type, TypeVar
 
 
-class Component:
+class Element:
+    """Represents any object that has a position."""
+
+    def __init__(self, pos: tuple = (0, 0)):
+        """Initializes the position of an object.
+
+        Args:
+            pos (tuple, optional): [description]. Defaults to (0, 0).
+        """
+        self._pos: Point = Point.createFrom(pos)
+
+    @property
+    def pos(self) -> Point:
+        return self._pos
+
+    @pos.setter
+    def pos(self, pos: Point):
+        self._pos = pos
+        self.onPositionChange()
+
+    def onPositionChange(self):
+        """Called when this object's position changes."""
+        pass
+
+
+class Component(Element):
     """A renderable object."""
 
     def __init__(self, pos: tuple = (0, 0), parent: Component = None,
                  *args, **kwargs):
-        """Construct a group of components.
+        """Initializes a renderable component.
 
         Args:
             pos (tuple, optional): the position of this component
@@ -19,8 +44,7 @@ class Component:
             view (Camera, optional): [description]. Defaults to None.
 
         """
-        # the position of this entity
-        self.pos: Point = Point.createFrom(pos)
+        super().__init__(pos)
 
         # the parent component; if none, this is the parent
         self.parent: Optional[Component] = parent
@@ -119,8 +143,4 @@ class Component:
 
     def onUpdate(self, delta: float):
         """Update this component on every tick."""
-        pass
-
-    def onPositionChange(self, pos):
-        """Update this component when its position changes."""
         pass

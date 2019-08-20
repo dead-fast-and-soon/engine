@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from engine.camera import ScreenCamera
 from structs.point import Point
-from engine.component import Component
+from engine.component import Component, Element
 
 import typing
 
@@ -10,8 +10,8 @@ if typing.TYPE_CHECKING:
     from engine.camera import Camera
 
 
-class Entity:
-    """An in-game object."""
+class Entity(Element):
+    """An in-game object that is composed of multiple components."""
 
     def __init__(self, pos: tuple = (0, 0), *args, **kwargs):
         """Spawns an entity.
@@ -20,8 +20,7 @@ class Entity:
             pos (tuple, optional): the position to spawn this entity
 
         """
-        # the position of this entity
-        self.pos = Point.createFrom(pos)
+        super().__init__(pos)
 
         # the components that this entity should render
         self.components: typing.List[Component] = []

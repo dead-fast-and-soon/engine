@@ -1,6 +1,6 @@
 
 from engine.components.debug import BoxComponent
-from engine.components.shapes import QuadBatch
+from engine.components.shapes import BoxBatch
 from engine.component import Component
 from engine.entity import Entity
 from structs.color import Color
@@ -32,15 +32,15 @@ class BlockGrid(Entity):
 
         self.n = 0  # number of blocks rendering
 
-        self.batch = QuadBatch()
+        self.batch = BoxBatch()
         self.addComponent(self.batch)
 
     def addBlock(self, x, y):
         color = Color(0, 255, 150)
         darker = color.brightness(0.7)
 
-        self.batch.addQuad(x, y, 32, 32, color)
-        self.batch.addQuad(x + 2, y + 2, 28, 28, darker)
+        self.batch.addSquare((x, y), (32, 32), color)
+        self.batch.addSquare((x + 2, y + 2), (28, 28), darker)
 
     def onUpdate(self, delta):
         i, j = self.i, self.j

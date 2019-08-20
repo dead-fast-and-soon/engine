@@ -1,82 +1,56 @@
 
 import pyglet
-from engine.component import Component
+from engine.component import Component, Element
 from structs.color import Color, WHITE
 from structs.point import Transform
 
 
-class Quad:
+class BoxElement(Element):
+    """A box that is a part of a batch."""
 
-    def __init__(self, x, y, width, height, color=None, batch=None):
+    def __init__(self, pos: tuple, dims: tuple, batch, color=None):
+        super().__init__(pos)
+
         if color is None:
             color = WHITE
 
+        self.width, self.height = dims
         r, g, b = color.r, color.g, color.b
+        x, y, w, h = self.pos.x, self.pos.y, self.width, self.height
 
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+        self.vertex_list = batch.add(
+            4, pyglet.gl.GL_QUADS, None, 'v2i',
+            ('c3B', (r, g, b) * 4)
+        )
 
-        if batch is None:
-            self.vertex_list = pyglet.graphics.vertex_list(
-                4,
-                (
-                    'v2i',
-                    (x, y) +
-                    (x + width, y) +
-                    (x + width, y + height) +
-                    (x, y + height)
-                ),
-                ('c3B', (r, g, b) * 4)
-            )
-        else:
-            self.vertex_list = batch.add(
-                4, pyglet.gl.GL_QUADS, None,
-                (
-                    'v2i',
-                    (x, y) +
-                    (x + width, y) +
-                    (x + width, y + height) +
-                    (x, y + height)
-                ),
-                ('c3B', (r, g, b) * 4)
-            )
+        self.onPositionChange()
 
-    def updateVertices(self, vertices):
-        self.vertex_list.vertices = vertices
+    def onPositionChange(self):
+        x, y, w, h = self.pos.x, self.pos.y, self.width, self.height
+        self.vertex_list.vertices = [
+            x + 0, y + 0,
+            x + w, y + 0,
+            x + w, y + h,
+            x + 0, y + h
+        ]
 
 
-class QuadBatch(Component):
-    """
-    A batch of quads.
-    """
+class BoxBatch(Component):
+    """A batch of quads."""
 
     def __init__(self):
         super().__init__()
 
         self.batch = pyglet.graphics.Batch()
-        self.quads = []
+        self.elements = []
 
-    def addQuad(self, x, y, width, height, color=None):
-        quad = Quad(x, y, width, height, color, self.batch)
-        self.quads.append(quad)
+    def addSquare(self, pos: tuple, dims: tuple, color=None):
+        quad = BoxElement(pos, dims, self.batch, color)
+        self.elements.append(quad)
         return quad
 
-    def onUpdate(self, delta):
-        for quad in self.quads:
-            x = quad.x + self.x
-            y = quad.y + self.y
-            w, h = quad.width, quad.height
+    def onUpdate(self, delta: float):
+        pass
 
-            # transform dimensions according to view
-            t = self.view.transform(Transform(x, y, w, h))
-            tx, ty, tw, th = int(t.x), int(t.y), int(t.w), int(t.h)
-
-            quad.updateVertices(
-                [tx, ty] + [tx + tw, ty] +
-                [tx + tw, ty + th] + [tx, ty + th]
-            )
-
-    def onRender(self, delta):
+    def onRender(self, delta: float):
         self.batch.draw()
