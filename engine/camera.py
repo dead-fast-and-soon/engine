@@ -1,5 +1,6 @@
 
 from __future__ import annotations
+from abc import ABC, abstractmethod
 import config
 import typing
 from pyglet import gl
@@ -8,13 +9,13 @@ from structs.point import Point, Transform
 from engine.game.scene import Scene
 
 if typing.TYPE_CHECKING:
-    from game import Game
+    from engine.game import Game
 
 
 class Camera:
     """A camera defining the perspective of which to render scenes."""
 
-    def __init__(self, game: Game = None,
+    def __init__(self, game: Game,
                  fx: float = 0.0, fy: float = 0.0, zoom: float = 1.0):
         """
         (fx, fy) represents the focal point of the view (default is (0, 0)).
@@ -28,24 +29,15 @@ class Camera:
         # the scene this camera should render
         self.scene: typing.Optional[Scene] = None
 
-    def transformPoint(self, p: Point):
-        if self.game is None:
-            width, height = 0, 0
-        else:
-            width, height = self.game.width, self.game.height
-        x = int(width // 2 + ((p.x - self.fx) * self.zoom))
-        y = int(height // 2 + ((p.y - self.fy) * self.zoom))
-
-        return Point(x, y)
-
-    def transform(self, t: Transform):
-        p = self.transformPoint(t.point)  # reuse point transformation
-        w = t.w * self.zoom
-        h = t.h * self.zoom
-
-        return Transform(p.x, p.y, w, h)
+        # precalculate ranges
+        self.ranges = (
+            -game.width / 2.0 / zoom, game.width / 2.0 / zoom,  # x range
+            -game.height / 2.0 / zoom, game.height / 2.0 / zoom,  # y range
+            0.0, 1.0  # z range
+        )
 
     def assignScene(self, scene: Scene):
+        """Assigns a scene to be rendered using this camera."""
         self.scene = scene
 
     def renderScenes(self, delta: float):
@@ -59,19 +51,12 @@ class Camera:
         Remaps the OpenGL coordinates for future draw calls.
         By default, this remapping places (0,0) at the center of the window.
         """
-        # if these coordinates are already being used, skip running the method
-        if current_view is not self:
-            # width and height of game window
-            w, h = self.game.width, self.game.height
-            zoom = self.zoom
+        # width and height of game window
+        r = self.ranges
 
-            gl.glMatrixMode(gl.GL_PROJECTION)
-            gl.glLoadIdentity()
-            gl.glOrtho(
-                -w / 2.0 / zoom, w / 2.0 / zoom,  # x range
-                -h / 2.0 / zoom, h / 2.0 / zoom,  # y range
-                0.0, 1.0                          # z range
-            )
+        gl.glMatrixMode(gl.GL_PROJECTION)
+        gl.glLoadIdentity()
+        gl.glOrtho(r[0], r[1], r[2], r[3], r[4], r[5])
 
 
 class ScreenCamera(Camera):
@@ -84,24 +69,13 @@ class ScreenCamera(Camera):
     def __init__(self, game, zoom: float = 1.0):
         super().__init__(game, 0, 0, zoom)
 
-    def transformPoint(self, p: Point):
-        x = int(p.x * self.zoom)
-        y = int(p.y * self.zoom)
-
-        return Point(x, y)
-
     def useViewport(self):
         """
         This remapping places (0,0) at the bottom left of the window.
         """
-        # if these coordinates are already being used, skip running the method
-        if current_view is not self:
-            # width and height of game window
-            w, h = self.game.width, self.game.height
+        # width and height of game window
+        w, h = self.game.width, self.game.height
 
-            gl.glMatrixMode(gl.GL_PROJECTION)
-            gl.glLoadIdentity()
-            gl.glOrtho(0.0, w, 0.0, h, 0.0, 1.0)
-
-# the last viewport remapping
-current_view: typing.Optional[Camera] = None
+        gl.glMatrixMode(gl.GL_PROJECTION)
+        gl.glLoadIdentity()
+        gl.glOrtho(0.0, w, 0.0, h, 0.0, 1.0)
