@@ -3,7 +3,7 @@ import time
 
 from engine.components.debug import FpsDisplay
 from engine.components.shapes import QuadBatch
-from engine.view import View
+from engine.camera import Camera
 
 window = pyglet.window.Window(vsync=False)
 

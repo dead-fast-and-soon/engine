@@ -5,7 +5,7 @@ import time
 
 from engine.game.state import GameState
 from engine.game.scene import Scene
-from engine.view import View, HudView
+from engine.camera import Camera, ScreenCamera
 from engine.components.debug import Console, FpsDisplay
 
 SPT = 1.0 / 60.0  # 60 ticks per second
@@ -21,7 +21,7 @@ class Game:
         self.state: GameState = GameState(self)
 
         # a list of cameras
-        self.cameras: typing.List[View] = []
+        self.cameras: typing.List[Camera] = []
 
         # a list of scenes
         self.scenes: typing.List[Scene] = []
@@ -37,7 +37,7 @@ class Game:
         hud_scene.components.append(self.console)
         hud_scene.components.append(self.fps_display)
 
-        hud_view = HudView(self)
+        hud_view = ScreenCamera(self)
         hud_view.assignScene(hud_scene)
         self.cameras.append(hud_view)
 
@@ -53,10 +53,10 @@ class Game:
         self.scenes.append(scene)
         return scene
 
-    def addCamera(self, camera_class: typing.Type[View] = None):
+    def addCamera(self, camera_class: typing.Type[Camera] = None):
         """Add a new camera."""
         if camera_class is None:
-            camera_class = View
+            camera_class = Camera
 
         camera = camera_class(self)
         self.cameras.append(camera)

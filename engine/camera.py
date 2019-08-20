@@ -11,19 +11,8 @@ if typing.TYPE_CHECKING:
     from game import Game
 
 
-class View:
-    """
-    A view converts world-space coordinates (of components)
-    to screen-space coordinates.
-
-    For world-space coordinates, x and y have a range of (-inf, inf)
-    and (0, 0) is the origin point.
-
-    for screen-space coordinates,
-    x has a range [0, WIDTH] and y has a range of [0, HEIGHT] where WIDTH and
-    HEIGHT are the size of the game window,
-    and (0, 0) is the bottom-left of the window.
-    """
+class Camera:
+    """A camera defining the perspective of which to render scenes."""
 
     def __init__(self, game: Game = None,
                  fx: float = 0.0, fy: float = 0.0, zoom: float = 1.0):
@@ -85,7 +74,7 @@ class View:
             )
 
 
-class HudView(View):
+class ScreenCamera(Camera):
     """
     A HUD view is a 1:1 conversion of world-space to screen-space coordinates.
     Coordinates of components using this view will be passed as is as
@@ -115,4 +104,4 @@ class HudView(View):
             gl.glOrtho(0.0, w, 0.0, h, 0.0, 1.0)
 
 # the last viewport remapping
-current_view: typing.Optional[View] = None
+current_view: typing.Optional[Camera] = None

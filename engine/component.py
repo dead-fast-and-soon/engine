@@ -16,7 +16,7 @@ class Component:
         Args:
             pos (tuple, optional): the position of this component
             parent (Component, optional): [description]. Defaults to None.
-            view (View, optional): [description]. Defaults to None.
+            view (Camera, optional): [description]. Defaults to None.
 
         """
         # the position of this entity

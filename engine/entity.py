@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from engine.view import HudView
+from engine.camera import ScreenCamera
 from structs.point import Point
 from engine.component import Component
 
 import typing
 
 if typing.TYPE_CHECKING:
-    from engine.view import View
+    from engine.camera import Camera
 
 
 class Entity:
