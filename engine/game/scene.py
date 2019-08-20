@@ -1,3 +1,5 @@
+"""Contains scene-related classes."""
+
 from __future__ import annotations
 from structs.point import Point
 import typing
@@ -9,11 +11,13 @@ if typing.TYPE_CHECKING:
 
 
 class Scene:
-    """
-    Stores assets for a game.
-    """
+    """Represents a scene containing components and/or entities."""
 
-    def __init__(self, game):
+    def __init__(self, game: Game):
+        """Construct a scene.
+
+        A scene consists of a list of components and/or entities to render.
+        """
         self.game: Game = game
 
         # the list of entities currently spawned
@@ -23,8 +27,12 @@ class Scene:
         self.components: typing.List[Component] = []
 
     def renderScene(self, delta: float):
-        """
-        Renders all entities in this scene.
+        """Render this scene.
+
+        Args:
+            delta (float): the time (in seconds) it took
+                           to render the last frame
+
         """
         for entity in self.entities:
             entity.renderEntity(delta)
@@ -33,23 +41,25 @@ class Scene:
         for component in self.components:
             component.render(delta)
 
-    def spawnEntity(
-        self,
-        ent_class: typing.Type[Entity], pos=(0, 0), *args, **kwargs
-    ) -> Entity:
-        """
-        Adds an entity and all its components to this state.
-        """
-        pos = Point.createFrom(pos)
+    def spawnEntity(self, ent_class: typing.Type[Entity], pos: tuple = (0, 0),
+                    *args, **kwargs) -> Entity:
+        """Spawn an entity into the scene.
 
+        Args:
+            ent_class (typing.Type[Entity]): the classtype of the entity
+            pos (tuple, optional): the position to spawn the entity
+
+        Returns:
+            Entity: the entity that was spawned
+
+        """
         kwargs['pos'] = pos
-        kwargs['view'] = self.game.view
-        kwargs['scene'] = self
+        # kwargs['scene'] = self
         entity = ent_class(*args, **kwargs)
 
         self.game.log(
             f'spawning entity {type(entity).__name__} @ '
-            f'({pos.x}, {pos.y}) '
+            f'({pos[0]}, {pos[1]}) '
             f'with {len(entity.components)} components'
         )
 
@@ -59,9 +69,7 @@ class Scene:
         return entity
 
     def destroyEntity(self, entity: Entity):
-        """
-        Removes an entity and all its components from this state.
-        """
+        """Remove an entity and all its components from this scene."""
         print(
             f'destroying entity {type(entity).__name__} '
             f'({len(entity.components)} components)'
@@ -70,9 +78,7 @@ class Scene:
 
     @property
     def component_count(self) -> int:
-        """
-        Returns the total amount of components being rendered.
-        """
+        """Return the total amount of components being rendered."""
         num = 0
         for entity in self.entities:
             num += len(entity.components)
@@ -80,7 +86,5 @@ class Scene:
 
     @property
     def entity_count(self) -> int:
-        """
-        Returns the total amount of entities.
-        """
+        """Return the total amount of entities."""
         return len(self.entities)

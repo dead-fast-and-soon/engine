@@ -1,10 +1,11 @@
 
 from __future__ import annotations
 import config
-from structs.point import Point, Transform
 import typing
-
 from pyglet import gl
+
+from structs.point import Point, Transform
+from engine.game.scene import Scene
 
 if typing.TYPE_CHECKING:
     from game import Game
@@ -35,6 +36,9 @@ class View:
 
         self.game: Game = game
 
+        # the scene this camera should render
+        self.scene: typing.Optional[Scene] = None
+
     def transformPoint(self, p: Point):
         if self.game is None:
             width, height = 0, 0
@@ -51,6 +55,15 @@ class View:
         h = t.h * self.zoom
 
         return Transform(p.x, p.y, w, h)
+
+    def assignScene(self, scene: Scene):
+        self.scene = scene
+
+    def renderScenes(self, delta: float):
+        """Render the scenes from this camera's perspective."""
+        if self.scene is not None:
+            self.useViewport()
+            self.scene.renderScene(delta)
 
     def useViewport(self):
         """

@@ -52,8 +52,8 @@ class QuadBatch(Component):
     A batch of quads.
     """
 
-    def __init__(self, parent=None, view=None):
-        super().__init__(parent=parent, view=view)
+    def __init__(self):
+        super().__init__()
 
         self.batch = pyglet.graphics.Batch()
         self.quads = []

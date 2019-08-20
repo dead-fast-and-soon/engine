@@ -88,8 +88,8 @@ class BoxComponent(Component):
 
 class Text(Component):
 
-    def __init__(self, text: str = '', x=0, y=0, parent=None, view=None):
-        super().__init__(pos=(x, y), parent=parent, view=view)
+    def __init__(self, text: str = '', pos=(0, 0), parent=None):
+        super().__init__(pos=pos, parent=parent)
 
         self.handle = pyglet.text.Label(
             text,
@@ -114,12 +114,10 @@ class Text(Component):
 
 class FpsDisplay(Component):
 
-    def __init__(self, game=None, x=0, y=0, *, parent=None, view=None):
-        super().__init__(pos=(x, y), parent=parent, view=view)
+    def __init__(self, pos: tuple = (0, 0)):
+        super().__init__(pos)
 
-        self.text = Text()
-        self.addComponent(self.text)
-        self.game = game
+        self.addComponent(Text)
 
         self.deltas = []
         self.last_frametime = 0
@@ -152,8 +150,8 @@ class FpsDisplay(Component):
 
 
 class Console(Component):
-    def __init__(self, game, view=None):
-        super().__init__(pos=(20, 20), parent=None, view=view)
+    def __init__(self, pos: tuple = (0, 0), *, game):
+        super().__init__(pos)
 
         self.document = pyglet.text.document.FormattedDocument()
 

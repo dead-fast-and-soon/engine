@@ -1,5 +1,7 @@
 
 import pyglet
+import typing
+import time
 
 from engine.game.state import GameState
 from engine.game.scene import Scene
@@ -18,20 +20,26 @@ class Game:
         # the currently loaded gamestate
         self.state: GameState = GameState(self)
 
-        # the current viewport
-        self.view: View = View(self)
-        # the viewport to use for HUD elements
-        hud_view = HudView(self)
+        # a list of cameras
+        self.cameras: typing.List[View] = []
+
+        # a list of scenes
+        self.scenes: typing.List[Scene] = []
 
         # width and height of the window
         self.width, self.height = width, height
 
         # add an in-game debug console
-        self.console = Console(self, view=hud_view)
-        self.fps_display = FpsDisplay(self, x=20, y=20, view=hud_view)
+        self.console = Console((20, 20), game=self)
+        self.fps_display = FpsDisplay((0, 0))
 
-        # load an empty scene
-        self.loadScene(Scene(self))
+        hud_scene = Scene(self)
+        hud_scene.components.append(self.console)
+        hud_scene.components.append(self.fps_display)
+
+        hud_view = HudView(self)
+        hud_view.assignScene(hud_scene)
+        self.cameras.append(hud_view)
 
     def log(self, message):
         """
@@ -39,15 +47,20 @@ class Game:
         """
         self.console.log(message)
 
-    def loadScene(self, scene: Scene):
-        """
-        Loads a scene.
-        """
-        self.scene = scene
+    def newScene(self):
+        """Return an empty scene."""
+        scene = Scene(self)
+        self.scenes.append(scene)
+        return scene
 
-        # add debug components
-        # self.scene.components.append(self.console)
-        # self.scene.components.append(self.fps_display)
+    def addCamera(self, camera_class: typing.Type[View] = None):
+        """Add a new camera."""
+        if camera_class is None:
+            camera_class = View
+
+        camera = camera_class(self)
+        self.cameras.append(camera)
+        return camera
 
     def start(self):
         """
@@ -65,42 +78,46 @@ class Game:
                     vsync=False
                 )
 
-                pyglet.clock.schedule(self.on_draw)
-                self.delta_counter = 0.0  # accumalates frametime
-
             def on_key_press(symbol, modifier):
-
                 active_ent = self.state.activeTextbox()
                 if active_ent is not None:
                     active_ent.onKeyPress(symbol, modifier)
 
-            def on_draw(self, delta=0):
-
-                # delta = pyglet.clock.tick()
-
-                # clear buffer
-                # ------------
-
-                self.clear()
-
-                # update logic
-                # ------------
-
-                self.delta_counter += delta
-
-                # if accumulative dt goes above SPT, run a tick and decrement
-                while self.delta_counter >= SPT:
-                    if game.scene is not None:
-                        for entity in game.scene.entities:
-                            entity.updateEntity(SPT)
-
-                    self.delta_counter -= SPT
-
-                # rendering
-                # ---------
-
-                if game.scene is not None:
-                    game.scene.renderScene(delta)
-
         window = Window()
-        pyglet.app.run()
+
+        last_time = time.perf_counter()
+        accum_time = 0
+
+        while True:
+
+            end_time = time.perf_counter()
+            delta = end_time - last_time
+            last_time = end_time
+
+            # clear buffer
+            # ------------
+
+            window.switch_to()
+            window.dispatch_events()
+            window.clear()
+
+            # update logic
+            # ------------
+
+            accum_time += delta
+
+            # if accumulative dt goes above SPT, run a tick and decrement
+            while accum_time >= SPT:
+                for scene in game.scenes:
+                    for entity in scene.entities:
+                        entity.updateEntity(SPT)
+
+                accum_time -= SPT
+
+            # rendering
+            # ---------
+
+            for camera in game.cameras:
+                camera.renderScenes(delta)
+
+            window.flip()
