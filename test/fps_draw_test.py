@@ -11,6 +11,7 @@ batch = pyglet.graphics.Batch()
 
 quads = QuadBatch()
 
+
 def squaresWithQuads():
         pyglet.graphics.draw_indexed(4, pyglet.gl.GL_QUADS,
                                      [0, 1, 2, 3],
