@@ -144,3 +144,53 @@ class Component(Element):
     def onUpdate(self, delta: float):
         """Update this component on every tick."""
         pass
+
+
+class SceneComponent(Component):
+    """A component that is rendered by a scene."""
+
+    def __init__(self, scene: Scene, pos: tuple = (0, 0),
+                 parent: Component = None):
+        """Create a SceneComponent.
+
+        Args:
+            scene (Scene): the scene that renders this component
+            pos (tuple, optional): the position of this component
+            parent (Component, optional): the parent of this component
+        """
+        super().__init__(pos=pos, parent=parent)
+
+        self.scene = scene
+
+    def onDestroy(self):
+        pass
+
+    @staticmethod
+    def implicit_super(old_init):
+        """Implicitly adds parameters needed to call `SceneComponent.__init__()`
+           and implicitly calls `super().__init__()`.
+        """
+
+        def _super(self, pos: tuple, scene: Scene, parent: Component,
+                   *args, **kwargs):
+            print('args: ' + str(args) + str(kwargs))
+            super().__init__(pos=pos, scene=scene, parent=parent)
+
+            old_init(self, *args, **kwargs)
+
+        sig_old = inspect.signature(old_init)
+
+        # old parameter list
+        params_a = list(sig_old.parameters.values())
+        # new parameter list
+        params_b = list(inspect.signature(new_init).parameters.values())
+
+        # insert old parameter list into new
+        new_params = (
+            params_a[0:1] + params_b[1:4] +
+            params_a[1:] + params_b[4:]
+        )
+
+        _super.__signature__ = sig_old.replace(parameters=tuple(new_params))
+
+        return _super
