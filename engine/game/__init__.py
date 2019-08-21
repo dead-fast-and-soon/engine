@@ -109,8 +109,8 @@ class Game:
             # if accumulative dt goes above SPT, run a tick and decrement
             while accum_time >= SPT:
                 for scene in game.scenes:
-                    for entity in scene.entities:
-                        entity.updateEntity(SPT)
+                    for component in scene.components:
+                        component.onUpdate(SPT)
 
                 accum_time -= SPT
 

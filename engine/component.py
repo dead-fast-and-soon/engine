@@ -2,14 +2,20 @@
 """Contains the base Component class."""
 
 from __future__ import annotations
+
+import inspect
+from typing import List, Optional, Union, Type, TypeVar, TYPE_CHECKING
+
 from structs.point import Point
-from typing import List, Optional, Union, Type, TypeVar
+
+if TYPE_CHECKING:
+    from engine.game.scene import Scene
 
 
 class Element:
     """Represents any object that has a position."""
 
-    def __init__(self, pos: tuple = (0, 0)):
+    def __init__(self, pos: tuple = (0, 0), parent: Element = None):
         """Initializes the position of an object.
 
         Args:
@@ -17,97 +23,29 @@ class Element:
         """
         self._pos: Point = Point.createFrom(pos)
 
+        self.parent: Optional[Element] = parent
+
+        self.children: List[Element] = []
+
+    # --------------------------------------------------------------------------
+    # Properties
+    # --------------------------------------------------------------------------
+
     @property
     def pos(self) -> Point:
         return self._pos
 
     @pos.setter
-    def pos(self, pos: Point):
-        self._pos = pos
+    def pos(self, pos: Union[tuple, Point]):
+        a = self._pos
+        b = Point.createFrom(pos)
+        self._pos = b
+
         self.onPositionChange()
 
-    def onPositionChange(self):
-        """Called when this object's position changes."""
-        pass
-
-
-class Component(Element):
-    """A renderable object."""
-
-    def __init__(self, pos: tuple = (0, 0), parent: Component = None,
-                 *args, **kwargs):
-        """Initializes a renderable component.
-
-        Args:
-            pos (tuple, optional): the position of this component
-            parent (Component, optional): [description]. Defaults to None.
-            view (Camera, optional): [description]. Defaults to None.
-
-        """
-        super().__init__(pos)
-
-        # the parent component; if none, this is the parent
-        self.parent: Optional[Component] = parent
-
-        # a list of child components
-        self.children: List[Component] = []
-
-    @staticmethod
-    def construct(cmp_class: Type[Component], pos: tuple = (0, 0),
-                  parent: Component = None,
-                  *args, **kwargs) -> Component:
-        """Create a component from its class."""
-        kwargs['pos'] = pos
-        kwargs['parent'] = parent
-
-        return cmp_class(*args, **kwargs)
-
-    def addComponent(self, cmp_class: Type[Component], pos: tuple = (0, 0),
-                     *args, **kwargs) -> Component:
-        """Add a component to this group.
-
-        Args:
-            cmp_class (Type[Component]): the classtype of the component
-            pos (tuple, optional): the position of the component
-
-        """
-        component = Component.construct(cmp_class, pos, self, *args, **kwargs)
-        self.children.append(component)
-        return component
-
-    def translateChildren(self, x: float, y: float):
-        """Translate the position of all child components."""
-        if len(self.children) > 0:
-            for component in self.children:
-                component.pos += (x, y)
-
-    def render(self, delta: float):
-        """Render this component.
-
-        This method will run on every frame.
-        """
-        self.onRender(delta)
-
+        # translate children positions by difference
         for child in self.children:
-            child.render(delta)
-
-    def update(self, delta: float):
-        """Update this component.
-
-        This method will run on every tick.
-        """
-        self.onUpdate(delta)
-
-        for child in self.children:
-            child.render(delta)
-
-    def deleteChildren(self):
-        """Clear this component's list of children."""
-        self.children = []
-
-    # --------------------------------------------------------------------------
-    # Properties
-    # --------------------------------------------------------------------------
+            child.pos += (b.x - a.x, b.y - a.y)
 
     @property
     def lpos(self) -> Point:
@@ -126,12 +64,54 @@ class Component(Element):
             return Point(a.x - b.x, a.y - b.y)
 
     @property
-    def master(self) -> Component:
+    def master(self) -> Element:
         """Retrieve the top-most parent in the component heirarchy."""
         if self.parent is None:
             return self
         else:
             return self.parent.master
+
+    def onPositionChange(self):
+        """Called when this object's position changes."""
+        pass
+
+
+class Component(Element):
+    """A renderable object."""
+
+    def __init__(self, pos: tuple = (0, 0), parent: Element = None):
+        """Initializes a renderable component.
+
+        Args:
+            pos (tuple, optional): the position of this component
+            parent (Component, optional): [description]. Defaults to None.
+            view (Camera, optional): [description]. Defaults to None.
+
+        """
+        super().__init__(pos=pos, parent=parent)
+
+    def addComponent(self, *components: Component):
+        """Add a child component to this component.
+
+        Args:
+            component (Component): the component to add
+
+        """
+        self.children.append(*components)
+
+    def removeComponent(self, *components: Component):
+        """Remove a component from this component."""
+        self.children.remove(*components)
+
+    def translateChildren(self, x: float, y: float):
+        """Translate the position of all child components."""
+        if len(self.children) > 0:
+            for component in self.children:
+                component.pos += (x, y)
+
+    def deleteChildren(self):
+        """Clear this component's list of children."""
+        self.children = []
 
     # --------------------------------------------------------------------------
     # Events (to be overridden by subclasses)
@@ -150,7 +130,7 @@ class SceneComponent(Component):
     """A component that is rendered by a scene."""
 
     def __init__(self, scene: Scene, pos: tuple = (0, 0),
-                 parent: Component = None):
+                 parent: Element = None):
         """Create a SceneComponent.
 
         Args:
@@ -160,21 +140,38 @@ class SceneComponent(Component):
         """
         super().__init__(pos=pos, parent=parent)
 
-        self.scene = scene
+        self.scene: Scene = scene
 
     def onDestroy(self):
         pass
 
+    def spawnComponent(self, comp_cls, pos: tuple, *args, **kwargs):
+        """Instantiate a new SceneComponent and add it to this one."""
+        return self.scene.spawnComponent(comp_cls, pos, parent=self,
+                                         *args, **kwargs)
+
     @staticmethod
     def implicit_super(old_init):
         """Implicitly adds parameters needed to call `SceneComponent.__init__()`
-           and implicitly calls `super().__init__()`.
+        and implicitly calls `super().__init__()`.
+
+        When using this decorator, it is recommended to create instances
+        of this component using `Scene.spawnComponent()`.
+
+            class ExampleComponent(SceneComponent):
+                @SceneComponent.implicit_super
+                def __init__(self):
+                    pass
+
+            game = Game()
+            scene = game.newScene()
+
+            scene.spawnComponent(ExampleComponent)
         """
 
-        def _super(self, pos: tuple, scene: Scene, parent: Component,
-                   *args, **kwargs):
-            print('args: ' + str(args) + str(kwargs))
-            super().__init__(pos=pos, scene=scene, parent=parent)
+        def component_super(self, *args, pos: tuple, scene: Scene,
+                            parent: Element, **kwargs):
+            SceneComponent.__init__(self, scene=scene, pos=pos, parent=parent)
 
             old_init(self, *args, **kwargs)
 
@@ -183,14 +180,15 @@ class SceneComponent(Component):
         # old parameter list
         params_a = list(sig_old.parameters.values())
         # new parameter list
-        params_b = list(inspect.signature(new_init).parameters.values())
+        params_b = list(inspect.signature(component_super).parameters.values())
 
         # insert old parameter list into new
         new_params = (
-            params_a[0:1] + params_b[1:4] +
-            params_a[1:] + params_b[4:]
+            params_a[0:1] + params_b[2:5] +
+            params_a[1:] + params_b[1:2] + params_b[5:6]
         )
 
-        _super.__signature__ = sig_old.replace(parameters=tuple(new_params))
+        # component_super.__signature__ = sig_old.replace(
+        #     parameters=tuple(new_params))
 
-        return _super
+        return component_super

@@ -2,62 +2,31 @@ from __future__ import annotations
 
 from engine.camera import ScreenCamera
 from structs.point import Point
-from engine.component import Component, Element
+from engine.component import SceneComponent, Element
 
 import typing
 
 if typing.TYPE_CHECKING:
+    from engine.game.scene import Scene
     from engine.camera import Camera
 
 
-class Entity(Element):
+class Entity(SceneComponent):
     """An in-game object that is composed of multiple components."""
 
-    def __init__(self, pos: tuple = (0, 0), *args, **kwargs):
+    def __init__(self, scene: Scene, pos: tuple = (0, 0), *args, **kwargs):
         """Spawns an entity.
 
         Args:
             pos (tuple, optional): the position to spawn this entity
 
         """
-        super().__init__(pos)
-
-        # the components that this entity should render
-        self.components: typing.List[Component] = []
-
-    def addComponent(self, *components):
-        """Add a component to this entity."""
-        self.components.append(*components)
-
-    def removeComponent(self, *components):
-        """Remove a component from this entity."""
-        self.components.remove(*components)
-
-    def renderEntity(self, delta: float):
-        """Render all components attached to this entity."""
-        for component in self.components:
-            component.render(delta)
-
-    def updateEntity(self, delta: float):
-        """Update this entity."""
-        self.onUpdate(delta)
-
-    # --------------------------------------------------------------------------
-    # Properties
-    # --------------------------------------------------------------------------
+        super().__init__(scene=scene, pos=pos)
 
     # --------------------------------------------------------------------------
     # Events (to be overridden by subclasses)
     # --------------------------------------------------------------------------
 
-    def onSpawn(self):
-        """Called when this entity is spawned."""
-        pass
-
     def onKeyPress(self, symbol, modifier):
         """Called every time a key is pressed."""
-        pass
-
-    def onUpdate(self, delta: float):
-        """Called on every tick."""
         pass

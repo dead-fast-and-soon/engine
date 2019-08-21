@@ -1,13 +1,16 @@
 """Contains scene-related classes."""
 
 from __future__ import annotations
-from structs.point import Point
-import typing
 
-if typing.TYPE_CHECKING:
+from typing import TYPE_CHECKING, List, Type
+import pyglet
+
+from structs.point import Point
+
+if TYPE_CHECKING:
     from engine.game import Game
     from engine.entity import Entity
-    from engine.component import Component
+    from engine.component import Element, Component, SceneComponent
 
 
 class Scene:
@@ -20,11 +23,11 @@ class Scene:
         """
         self.game: Game = game
 
-        # the list of entities currently spawned
-        self.entities: typing.List[Entity] = []
+        # the batch to use to render
+        self.batch = pyglet.graphics.Batch()
 
         # a list of extra raw components to render (debug)
-        self.components: typing.List[Component] = []
+        self.components: List[SceneComponent] = []
 
     def renderScene(self, delta: float):
         """Render this scene.
@@ -34,15 +37,31 @@ class Scene:
                            to render the last frame
 
         """
-        for entity in self.entities:
-            entity.renderEntity(delta)
+        self.batch.draw()  # render everything in the batch
 
-        # also render debug components
         for component in self.components:
-            component.render(delta)
+            component.onRender(delta)
 
-    def spawnEntity(self, ent_class: typing.Type[Entity], pos: tuple = (0, 0),
-                    *args, **kwargs) -> Entity:
+    def spawnComponent(self, cmp_class: Type[SceneComponent],
+                       pos: tuple = (0, 0), *args, parent: Element = None,
+                       **kwargs) -> SceneComponent:
+        """Create a component from its class."""
+        kwargs['pos'] = pos
+        kwargs['scene'] = self
+        kwargs['parent'] = parent
+
+        # print('args: ' + str(args) + str(kwargs))
+
+        component = cmp_class(*args, **kwargs)
+
+        if parent is not None:  # add it to the parent's children
+            parent.children.append(component)
+
+        self.components.append(component)
+        return component
+
+    def spawnEntity(self, ent_class: Type[Entity], pos: tuple = (0, 0),
+                    parent: Element = None, *args, **kwargs) -> Entity:
         """Spawn an entity into the scene.
 
         Args:
@@ -54,37 +73,36 @@ class Scene:
 
         """
         kwargs['pos'] = pos
-        # kwargs['scene'] = self
-        entity = ent_class(*args, **kwargs)
+        kwargs['scene'] = self
+        kwargs['parent'] = parent
 
+        entity = ent_class(*args, **kwargs)
         self.game.log(
             f'spawning entity {type(entity).__name__} @ '
             f'({pos[0]}, {pos[1]}) '
-            f'with {len(entity.components)} components'
+            f'with {len(entity.children)} components'
         )
-
-        self.entities.append(entity)
-        entity.onSpawn()
-
+        self.components.append(entity)
         return entity
 
-    def destroyEntity(self, entity: Entity):
+    def destroy(self, *components: SceneComponent):
         """Remove an entity and all its components from this scene."""
-        print(
-            f'destroying entity {type(entity).__name__} '
-            f'({len(entity.components)} components)'
-        )
-        self.entities.remove(entity)
+        self.components.remove(*components)
+        for component in components:
+            print(
+                f'destroying entity {type(component).__name__} '
+                f'({len(component.children)} components)'
+            )
+            component.onDestroy()
+
+            for child in component.children:
+                if type(child) is SceneComponent:
+                    self.destroy(child)  # type: ignore
 
     @property
     def component_count(self) -> int:
         """Return the total amount of components being rendered."""
         num = 0
-        for entity in self.entities:
-            num += len(entity.components)
+        for component in self.components:
+            num += len(component.children)
         return num + len(self.components)
-
-    @property
-    def entity_count(self) -> int:
-        """Return the total amount of entities."""
-        return len(self.entities)
