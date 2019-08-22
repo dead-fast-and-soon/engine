@@ -59,6 +59,8 @@ class Scene:
             delta (float): the time (in seconds) that passed since
                            the last tick
         """
+        self.onUpdate(delta)
+
         for component in self.components:
             component.onUpdate(delta)
 
@@ -120,4 +122,8 @@ class Scene:
 
         Overriding this method eliminates the need to override __init__().
         """
+        pass
+
+    def onUpdate(self, delta: float):
+        """This method is called on every tick."""
         pass
