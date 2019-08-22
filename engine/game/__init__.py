@@ -27,7 +27,8 @@ class Game:
         self.scenes: typing.List[Scene] = []
 
         # width and height of the window
-        self.width, self.height = width, height
+        self.width: float = width
+        self.height: float = height
 
         # add an in-game debug console
         self.console = Console((20, 20), game=self)
@@ -47,14 +48,14 @@ class Game:
         """
         self.console.log(message)
 
-    def newScene(self):
-        """Return an empty scene."""
+    def createScene(self):
+        """Create and return an empty Scene."""
         scene = Scene(self)
         self.scenes.append(scene)
         return scene
 
-    def addCamera(self, camera_class: typing.Type[Camera] = None):
-        """Add a new camera."""
+    def createCamera(self, camera_class: typing.Type[Camera] = None):
+        """Create and return a Camera object."""
         if camera_class is None:
             camera_class = Camera
 
@@ -109,9 +110,7 @@ class Game:
             # if accumulative dt goes above SPT, run a tick and decrement
             while accum_time >= SPT:
                 for scene in game.scenes:
-                    for component in scene.components:
-                        component.onUpdate(SPT)
-
+                    scene.update(SPT)
                 accum_time -= SPT
 
             # rendering

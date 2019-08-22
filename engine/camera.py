@@ -1,57 +1,103 @@
 
-from __future__ import annotations
-from abc import ABC, abstractmethod
 import config
 import typing
+from abc import ABC, abstractmethod
 from pyglet import gl
 
 from structs.point import Point, Transform
-from engine.game.scene import Scene
 
 if typing.TYPE_CHECKING:
     from engine.game import Game
+    from engine.game.scene import Scene
 
 
 class Camera:
     """A camera defining the perspective of which to render scenes."""
 
-    def __init__(self, game: Game,
-                 fx: float = 0.0, fy: float = 0.0, zoom: float = 1.0):
-        """
-        (fx, fy) represents the focal point of the view (default is (0, 0)).
-        """
-        self.fx: float = fx
-        self.fy: float = fy
-        self.zoom: float = zoom
+    def __init__(self, game: Game):
+        """Initializes a Camera
 
+        Args:
+            game (Game): the Game managing the window where rendering
+                         takes place
+
+        """
         self.game: Game = game
-
-        # the scene this camera should render
         self.scene: typing.Optional[Scene] = None
 
-        # precalculate ranges
-        self.ranges = (
-            -game.width / 2.0 / zoom, game.width / 2.0 / zoom,  # x range
-            -game.height / 2.0 / zoom, game.height / 2.0 / zoom,  # y range
-            0.0, 1.0  # z range
-        )
-
     def assignScene(self, scene: Scene):
-        """Assigns a scene to be rendered using this camera."""
+        """Assign a scene to be rendered using this camera.
+
+        When calling `renderScene()`, the scene will be rendered from the
+        perspective of this camera.
+
+        Args:
+            scene (Scene): the scene to assign
+
+        """
         self.scene = scene
 
-    def renderScenes(self, delta: float):
-        """Render the scenes from this camera's perspective."""
-        if self.scene is not None:
-            self.useViewport()
-            self.scene.renderScene(delta)
+    def renderScene(self, delta: float):
+        """Render the scenes from this camera's perspective.
 
-    def useViewport(self):
+        If no Scene is assigned to this Camera, this method is a no-op.
+
+        Args:
+            delta (float): the time (in seconds) that passed since
+                           the last frame
+
         """
-        Remaps the OpenGL coordinates for future draw calls.
-        By default, this remapping places (0,0) at the center of the window.
+        if self.scene is not None:
+            self.arm()
+            self.scene.render(delta)
+
+    def arm(self):
+        """Arm this camera.
+
+        This method will modify the coordinate system used by OpenGL.
+        Any future draw calls will be rendered from the perspective of this
+        new coordinate system.
+
         """
-        # width and height of game window
+        pass
+
+
+class PixelCamera(Camera):
+    """An orthographic camera using pixels as units.
+
+    This camera is recommended for world-space 2D rendering.
+
+    The focus point (defaulting to [0, 0]) are the coordinates corresponding
+    to the center of the screen.
+
+    The zoom factor (defaulting to 1) is the amount to zoom the camera in.
+    Providing integer values for the zoom factor ensures pixel-perfect
+    rendering.
+
+    """
+
+    def __init__(self, game: Game, focus: tuple = (0, 0), zoom: float = 1.0):
+        super().__init__(game)
+
+        self.fpos: Point = Point.createFrom(focus)
+        self.zoom: float = zoom
+
+        w, h = game.width, game.height
+
+        x_range = (
+            ((-w / 2.0) + self.fpos.x) / zoom,
+            ((+w / 2.0) + self.fpos.x) / zoom
+        )
+
+        y_range = (
+            ((-h / 2.0) + self.fpos.y) / zoom,
+            ((+h / 2.0) + self.fpos.y) / zoom
+        )
+
+        # precalculate ranges
+        self.ranges = x_range + y_range + (0.0, 1.0)  # z-range
+
+    def arm(self):
         r = self.ranges
 
         gl.glMatrixMode(gl.GL_PROJECTION)
@@ -59,23 +105,18 @@ class Camera:
         gl.glOrtho(r[0], r[1], r[2], r[3], r[4], r[5])
 
 
-class ScreenCamera(Camera):
+class ScreenPixelCamera(PixelCamera):
+    """An orthographic camera using pixels as units.
+
+    This camera sets coordinates to behave like Pyglet's default coordinates.
+    The point [0, 0] corresponds to the bottom-left of the screen.
+
+    The zoom factor (defaulting to 1) is the amount to zoom the camera in.
+    Providing integer values for the zoom factor ensures pixel-perfect
+    rendering.
+
     """
-    A HUD view is a 1:1 conversion of world-space to screen-space coordinates.
-    Coordinates of components using this view will be passed as is as
-    screen coordinates.
-    """
 
-    def __init__(self, game, zoom: float = 1.0):
-        super().__init__(game, 0, 0, zoom)
-
-    def useViewport(self):
-        """
-        This remapping places (0,0) at the bottom left of the window.
-        """
-        # width and height of game window
-        w, h = self.game.width, self.game.height
-
-        gl.glMatrixMode(gl.GL_PROJECTION)
-        gl.glLoadIdentity()
-        gl.glOrtho(0.0, w, 0.0, h, 0.0, 1.0)
+    def __init__(self, game: Game, zoom: float = 1.0):
+        focus = (game.width // 2, game.height // 2)  # center of screen
+        super().__init__(game, focus, zoom)
