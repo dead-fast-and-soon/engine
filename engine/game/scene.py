@@ -110,3 +110,14 @@ class Scene:
         for component in self.components:
             num += len(component.children)
         return num + len(self.components)
+
+    # --------------------------------------------------------------------------
+    #  Event Methods
+    # --------------------------------------------------------------------------
+
+    def onLoad(self):
+        """This method is called when this scene is loaded.
+
+        Overriding this method eliminates the need to override __init__().
+        """
+        pass

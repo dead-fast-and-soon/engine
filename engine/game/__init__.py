@@ -59,6 +59,7 @@ class Game:
 
         """
         scene = scene_class(self)
+        scene.onLoad()
         self.scenes.append(scene)
         return scene
 
