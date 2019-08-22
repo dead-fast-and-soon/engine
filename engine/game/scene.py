@@ -14,12 +14,17 @@ if TYPE_CHECKING:
 
 
 class Scene:
-    """Represents a scene containing components and/or entities."""
+    """Represents a scene containing components.
+
+    A Scene manages a list of components and is responsible for rendering them.
+    Internally, this uses a Batch provided by Pyglet. This reduces the amount
+    of draw calls for all components in this Scene to one.
+    """
 
     def __init__(self, game: Game):
         """Construct a scene.
 
-        A scene consists of a list of components and/or entities to render.
+        A scene consists of a list of components.
         """
         self.game: Game = game
 
@@ -29,12 +34,15 @@ class Scene:
         # a list of extra raw components to render (debug)
         self.components: List[SceneComponent] = []
 
-    def renderScene(self, delta: float):
+    def render(self, delta: float):
         """Render this scene.
 
+        This method will call this scene's batch draw, as well as
+        every component's onRender() methods.
+
         Args:
-            delta (float): the time (in seconds) it took
-                           to render the last frame
+            delta (float): the time (in seconds) that passed since
+                           the last frame
 
         """
         self.batch.draw()  # render everything in the batch
@@ -42,10 +50,31 @@ class Scene:
         for component in self.components:
             component.onRender(delta)
 
+    def update(self, delta: float):
+        """Update this scene.
+
+        This method will call every component's onUpdate() methods.
+
+        Args:
+            delta (float): the time (in seconds) that passed since
+                           the last tick
+        """
+        for component in self.components:
+            component.onUpdate(delta)
+
     def spawnComponent(self, cmp_class: Type[SceneComponent],
                        pos: tuple = (0, 0), *args, parent: Element = None,
                        **kwargs) -> SceneComponent:
-        """Create a component from its class."""
+        """Create a component from its class.
+
+        Args:
+            cmp_class (Type[SceneComponent]): the class of the component
+            pos (tuple, optional): the position to spawn the component
+            parent (Element, optional): the parent of this component
+
+        Returns:
+            SceneComponent: the component that was spawned
+        """
         kwargs['pos'] = pos
         kwargs['scene'] = self
         kwargs['parent'] = parent
@@ -60,32 +89,7 @@ class Scene:
         self.components.append(component)
         return component
 
-    def spawnEntity(self, ent_class: Type[Entity], pos: tuple = (0, 0),
-                    parent: Element = None, *args, **kwargs) -> Entity:
-        """Spawn an entity into the scene.
-
-        Args:
-            ent_class (typing.Type[Entity]): the classtype of the entity
-            pos (tuple, optional): the position to spawn the entity
-
-        Returns:
-            Entity: the entity that was spawned
-
-        """
-        kwargs['pos'] = pos
-        kwargs['scene'] = self
-        kwargs['parent'] = parent
-
-        entity = ent_class(*args, **kwargs)
-        self.game.log(
-            f'spawning entity {type(entity).__name__} @ '
-            f'({pos[0]}, {pos[1]}) '
-            f'with {len(entity.children)} components'
-        )
-        self.components.append(entity)
-        return entity
-
-    def destroy(self, *components: SceneComponent):
+    def destroyComponent(self, *components: SceneComponent):
         """Remove an entity and all its components from this scene."""
         self.components.remove(*components)
         for component in components:
