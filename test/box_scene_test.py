@@ -4,18 +4,20 @@ A graphics test using multiple boxes in order to test performance.
 
 import math
 
-from engine.component import SceneComponent
 from engine.components.shapes import Box
+from engine.camera import PixelCamera
 from engine.game import Game
+from engine.game.scene import Scene
 
 from structs.color import Color
 
 
-class BoxGeneratorComponent(SceneComponent):
+class BoxTestScene(Scene):
     """An example component."""
 
-    @SceneComponent.implicit_super  # skips need to manually call super()
-    def __init__(self):
+    # overridden from Scene
+    def onLoad(self):
+
         self.ticks = 0  # accumulate total ticks
         self.boxes = []
 
@@ -34,7 +36,7 @@ class BoxGeneratorComponent(SceneComponent):
 
             self.boxes.append(box)
 
-    # overridden from SceneComponent
+    # overridden from Scene
     def onUpdate(self, delta: float):
 
         for i in range(len(self.boxes)):
@@ -51,11 +53,10 @@ class BoxGeneratorComponent(SceneComponent):
 game = Game(width=1280, height=720)
 
 # spawn entities
-scene = game.newScene()
-scene.spawnComponent(BoxGeneratorComponent, (0, 0))
+scene = game.loadScene(BoxTestScene)
 
 # create new camera
-camera = game.addCamera()
+camera = game.createCamera(PixelCamera)
 camera.assignScene(scene)
 
 # start game
