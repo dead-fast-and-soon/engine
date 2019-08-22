@@ -5,7 +5,7 @@ import time
 
 from engine.game.state import GameState
 from engine.game.scene import Scene
-from engine.camera import Camera, ScreenCamera
+from engine.camera import Camera, ScreenPixelCamera
 from engine.components.debug import Console, FpsDisplay
 
 SPT = 1.0 / 60.0  # 60 ticks per second
@@ -38,7 +38,7 @@ class Game:
         hud_scene.components.append(self.console)
         hud_scene.components.append(self.fps_display)
 
-        hud_view = ScreenCamera(self)
+        hud_view = ScreenPixelCamera(self)
         hud_view.assignScene(hud_scene)
         self.cameras.append(hud_view)
 
@@ -48,11 +48,23 @@ class Game:
         """
         self.console.log(message)
 
-    def createScene(self):
-        """Create and return an empty Scene."""
-        scene = Scene(self)
+    def loadScene(self, scene_class: typing.Type[Scene]) -> Scene:
+        """[summary]
+
+        Args:
+            scene_class (typing.Type[Scene]): the scene to load
+
+        Returns:
+            Scene: the scene that was loaded
+
+        """
+        scene = scene_class(self)
         self.scenes.append(scene)
         return scene
+
+    def createScene(self):
+        """Create and return an empty Scene."""
+        self.loadScene(Scene)
 
     def createCamera(self, camera_class: typing.Type[Camera] = None):
         """Create and return a Camera object."""
@@ -63,13 +75,28 @@ class Game:
         self.cameras.append(camera)
         return camera
 
+    def renderScenes(self, delta: float):
+        """Render all scenes.
+
+        Args:
+            delta (float): change in time from the last frame
+        """
+        for camera in self.cameras:
+            camera.renderScene(delta)
+
+    def updateScenes(self, delta: float):
+        """Update all scenes.
+
+        Args:
+            delta (float): change in time from the last tick
+        """
+        for scene in self.scenes:
+            scene.update(delta)
+
     def start(self):
-        """
-        Opens the window and starts the main game loop.
-        """
+        """Open the main window and start the main game loop."""
 
         width, height = self.width, self.height
-        game = self
 
         class Window(pyglet.window.Window):
             def __init__(self):
@@ -88,6 +115,9 @@ class Game:
 
         last_time = time.perf_counter()
         accum_time = 0
+
+        # update scenes at 0th tick
+        self.updateScenes(SPT)
 
         while True:
 
@@ -109,14 +139,12 @@ class Game:
 
             # if accumulative dt goes above SPT, run a tick and decrement
             while accum_time >= SPT:
-                for scene in game.scenes:
-                    scene.update(SPT)
+                self.updateScenes(SPT)
                 accum_time -= SPT
 
             # rendering
             # ---------
 
-            for camera in game.cameras:
-                camera.renderScenes(delta)
+            self.renderScenes(delta)
 
             window.flip()
