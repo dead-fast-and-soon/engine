@@ -1,4 +1,6 @@
 
+from __future__ import annotations
+
 import config
 import typing
 from abc import ABC, abstractmethod
