@@ -27,9 +27,9 @@ class Element:
 
         self.children: List[Element] = []
 
-    # --------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Properties
-    # --------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     @property
     def pos(self) -> Point:
@@ -49,7 +49,8 @@ class Element:
 
     @property
     def lpos(self) -> Point:
-        """Get or set the position of this component with respect to the parent.
+        """
+        Get or set the position of this component with respect to the parent.
 
         If this component is the top-most in hierarchy (the parent), the
         position retrieved will be with respect to world-space.
@@ -113,9 +114,9 @@ class Component(Element):
         """Clear this component's list of children."""
         self.children = []
 
-    # --------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Events (to be overridden by subclasses)
-    # --------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     def onRender(self, delta: float):
         """Render this component on every frame."""
@@ -152,7 +153,8 @@ class SceneComponent(Component):
 
     @staticmethod
     def implicit_super(old_init):
-        """Implicitly adds parameters needed to call `SceneComponent.__init__()`
+        """
+        Implicitly adds parameters needed to call `SceneComponent.__init__()`
         and implicitly calls `super().__init__()`.
 
         When using this decorator, it is recommended to create instances
