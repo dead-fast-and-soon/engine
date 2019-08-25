@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from engine.camera import ScreenCamera
 from structs.point import Point
 from engine.component import SceneComponent, Element
 
@@ -8,7 +7,6 @@ import typing
 
 if typing.TYPE_CHECKING:
     from engine.game.scene import Scene
-    from engine.camera import Camera
 
 
 class Entity(SceneComponent):
@@ -29,4 +27,8 @@ class Entity(SceneComponent):
 
     def onKeyPress(self, symbol, modifier):
         """Called every time a key is pressed."""
+        pass
+
+    def onKeyRelease(self, symbol, modifier):
+        """Called every time a key was released."""
         pass
