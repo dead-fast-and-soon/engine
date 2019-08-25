@@ -41,11 +41,11 @@ class Element:
         b = Point.createFrom(pos)
         self._pos = b
 
-        self.onPositionChange()
-
         # translate children positions by difference
         for child in self.children:
             child.pos += (b.x - a.x, b.y - a.y)
+
+        self.onPositionChange()
 
     @property
     def lpos(self) -> Point:
