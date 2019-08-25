@@ -1,8 +1,11 @@
 
 import pyglet
+import pyglet.window.key as key
 import typing
 import time
 
+from engine.entity import Entity
+from engine.input import Input
 from engine.game.state import GameState
 from engine.game.scene import Scene
 from engine.camera import Camera, ScreenPixelCamera
@@ -29,6 +32,9 @@ class Game:
         # width and height of the window
         self.width: float = width
         self.height: float = height
+
+        # the keyboard input object
+        self.input: Input = Input()
 
         # add an in-game debug console
         self.console = Console((20, 20), game=self)
@@ -98,30 +104,46 @@ class Game:
     def start(self):
         """Open the main window and start the main game loop."""
 
-        width, height = self.width, self.height
+        window = pyglet.window.Window(width=self.width, height=self.height,
+                                      vsync=False)
 
-        class Window(pyglet.window.Window):
-            def __init__(self):
-                super(Window, self).__init__(
-                    width=width,
-                    height=height,
-                    vsync=False
-                )
+        # schedule updateScenes() at fixed rate
+        pyglet.clock.schedule_interval(self.updateScenes, SPT)
 
-            def on_key_press(symbol, modifier):
-                active_ent = self.state.activeTextbox()
-                if active_ent is not None:
-                    active_ent.onKeyPress(symbol, modifier)
+        @window.event
+        def on_key_press(symbol, modifiers):
+            if symbol is key.ESCAPE:
+                window.close()
 
-        window = Window()
+            self.input[symbol] = True
+
+            for scene in self.scenes:
+                for component in scene.components:
+                    if isinstance(component, Entity):
+                        component.onKeyPress(symbol, modifiers)
+
+        @window.event
+        def on_key_release(symbol, modifiers):
+            self.input[symbol] = False
+
+            for scene in self.scenes:
+                for component in scene.components:
+                    if isinstance(component, Entity):
+                        component.onKeyRelease(symbol, modifiers)
 
         last_time = time.perf_counter()
-        accum_time = 0
+        # accum_time = 0
 
         # update scenes at 0th tick
         self.updateScenes(SPT)
 
+        # ----------------------------------------------------------------------
+        #  Game Loop
+        # ----------------------------------------------------------------------
+
         while True:
+
+            pyglet.clock.tick()
 
             end_time = time.perf_counter()
             delta = end_time - last_time
@@ -137,12 +159,15 @@ class Game:
             # update logic
             # ------------
 
-            accum_time += delta
+            # accum_time += delta
 
-            # if accumulative dt goes above SPT, run a tick and decrement
-            while accum_time >= SPT:
-                self.updateScenes(SPT)
-                accum_time -= SPT
+            # # if accumulative dt goes above SPT, run a tick and decrement
+            # # while accum_time >= SPT:
+            # #     self.updateScenes(SPT)
+            # #     accum_time -= SPT
+            # if accum_time >= SPT:
+            #     self.updateScenes(SPT)
+            #     accum_time = 0
 
             # rendering
             # ---------
