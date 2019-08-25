@@ -31,6 +31,22 @@ class Point:
 
         raise ValueError(f'unable to add 2D point to value { other }')
 
+    def __sub__(self, other):
+        """ - operator """
+        x, y = self.x, self.y
+
+        if type(other) is tuple:
+            return Point(x - other[0], y - other[1])
+        elif type(other) is Point:
+            return Point(x - other.x, y - other.y)
+
+        raise ValueError(f'unable to subtract 2D point to value { other }')
+
+    def __iter__(self):
+        """Convert this Point into an Iterable."""
+        yield self.x
+        yield self.y
+
     @staticmethod
     def createFrom(val) -> 'Point':
         """
