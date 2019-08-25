@@ -67,12 +67,13 @@ class Game:
         """Create and return an empty Scene."""
         self.loadScene(Scene)
 
-    def createCamera(self, camera_class: typing.Type[Camera] = None):
+    def createCamera(self, camera_class: typing.Type[Camera] = None,
+                     *args, **kwargs):
         """Create and return a Camera object."""
         if camera_class is None:
             camera_class = Camera
 
-        camera = camera_class(self)
+        camera = camera_class(self, *args, **kwargs)  # type: ignore
         self.cameras.append(camera)
         return camera
 
