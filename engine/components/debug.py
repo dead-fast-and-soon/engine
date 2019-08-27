@@ -3,7 +3,7 @@ from pyglet import graphics
 
 import math
 
-from engine.component import Component
+from engine.component import Component, SceneComponent
 from structs.point import Transform
 
 
@@ -149,24 +149,27 @@ class FpsDisplay(Component):
         self.last_frametime = delta
 
 
-class Console(Component):
-    def __init__(self, pos: tuple = (0, 0), *, game):
-        super().__init__(pos)
+class Console(SceneComponent):
 
+    @SceneComponent.implicit_super
+    def __init__(self):
+
+        print(f'placing console @({self.pos.x},{self.pos.y})')
         self.document = pyglet.text.document.FormattedDocument()
 
         self.layout = pyglet.text.layout.TextLayout(
-            self.document, width=80, height=720,
+            self.document, width=400, height=200,
             multiline=True, wrap_lines=False
         )
-        self.layout.x = 20
-        self.layout.y = game.height - 20
-        self.layout.anchor_y = 'top'
+        self.layout.x = self.pos.x
+        self.layout.y = self.pos.y
+        self.layout.anchor_x = 'left'
+        self.layout.anchor_y = 'bottom'
 
         self.lines = []
 
     def log(self, message):
-        print(message)
+        # print(message)
         self.lines.append(message)
         self.document.text = '\n'.join(self.lines)
         self.document.set_style(
@@ -178,4 +181,5 @@ class Console(Component):
         )
 
     def onRender(self, delta):
+        # print("rendering console")
         self.layout.draw()
