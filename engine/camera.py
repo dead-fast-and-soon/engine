@@ -81,19 +81,27 @@ class PixelCamera(Camera):
     def __init__(self, game: Game, focus: tuple = (0, 0), zoom: float = 1.0):
         super().__init__(game)
 
-        self.fpos: Point = Point.createFrom(focus)
         self.zoom: float = zoom
+        self.focus: Point = Point(focus)
 
-        w, h = game.width, game.height
+    @property
+    def focus(self) -> Point:
+        return self._focus
+
+    @focus.setter
+    def focus(self, pos):
+        self._focus = Point(pos)
+
+        w, h = self.game.width, self.game.height
 
         x_range = (
-            ((-w / 2.0) + self.fpos.x) / zoom,
-            ((+w / 2.0) + self.fpos.x) / zoom
+            ((-w / 2.0) - self.focus.x) / self.zoom,
+            ((+w / 2.0) - self.focus.x) / self.zoom
         )
 
         y_range = (
-            ((-h / 2.0) + self.fpos.y) / zoom,
-            ((+h / 2.0) + self.fpos.y) / zoom
+            ((-h / 2.0) - self.focus.y) / self.zoom,
+            ((+h / 2.0) - self.focus.y) / self.zoom
         )
 
         # precalculate ranges
@@ -102,9 +110,10 @@ class PixelCamera(Camera):
     def arm(self):
         r = self.ranges
 
-        gl.glMatrixMode(gl.GL_PROJECTION)
-        gl.glLoadIdentity()
-        gl.glOrtho(r[0], r[1], r[2], r[3], r[4], r[5])
+        if self.ranges is not None:
+            gl.glMatrixMode(gl.GL_PROJECTION)
+            gl.glLoadIdentity()
+            gl.glOrtho(r[0], r[1], r[2], r[3], r[4], r[5])
 
 
 class ScreenPixelCamera(PixelCamera):
