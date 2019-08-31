@@ -36,13 +36,10 @@ class Game:
         # the keyboard input object
         self.input: Input = Input()
 
-        # add an in-game debug console
-        self.console = Console((20, 20), game=self)
-        self.fps_display = FpsDisplay((0, 0))
+        hud_scene = self.createScene()
 
-        hud_scene = Scene(self)
-        hud_scene.components.append(self.console)
-        hud_scene.components.append(self.fps_display)
+        self.console: Console = hud_scene.spawnComponent(Console, (20, 20))
+        hud_scene.spawnComponent(FpsDisplay, (0, 0))
 
         hud_view = ScreenPixelCamera(self)
         hud_view.assignScene(hud_scene)
@@ -66,12 +63,12 @@ class Game:
         """
         scene = scene_class(self)
         scene.onLoad()
-        self.scenes.append(scene)
+        self.scenes.insert(0, scene)
         return scene
 
     def createScene(self):
         """Create and return an empty Scene."""
-        self.loadScene(Scene)
+        return self.loadScene(Scene)
 
     def createCamera(self, camera_class: typing.Type[Camera] = None,
                      *args, **kwargs):
@@ -110,9 +107,13 @@ class Game:
         # schedule updateScenes() at fixed rate
         pyglet.clock.schedule_interval(self.updateScenes, SPT)
 
+        closed = False
+
         @window.event
         def on_key_press(symbol, modifiers):
+            nonlocal closed
             if symbol is key.ESCAPE:
+                closed = True
                 window.close()
 
             self.input[symbol] = True
@@ -141,7 +142,7 @@ class Game:
         #  Game Loop
         # ----------------------------------------------------------------------
 
-        while True:
+        while not closed:
 
             pyglet.clock.tick()
 
@@ -174,4 +175,5 @@ class Game:
 
             self.renderScenes(delta)
 
-            window.flip()
+            if not closed:
+                window.flip()

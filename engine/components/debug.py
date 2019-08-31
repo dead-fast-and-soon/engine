@@ -86,16 +86,17 @@ class BoxComponent(Component):
 #                              ('v2f', tuple(verts)), ('c3B', tuple(colors)))
 
 
-class Text(Component):
+class Text(SceneComponent):
 
-    def __init__(self, text: str = '', pos=(0, 0), parent=None):
-        super().__init__(pos=pos, parent=parent)
+    @SceneComponent.implicit_super
+    def __init__(self, text: str = ''):
 
         self.handle = pyglet.text.Label(
             text,
             font_name='Consolas',
             font_size=12,
-            x=0, y=0
+            x=0, y=0,
+            batch=self.scene.batch
         )
         self.text = text
 
@@ -112,12 +113,12 @@ class Text(Component):
         self.handle.draw()
 
 
-class FpsDisplay(Component):
+class FpsDisplay(SceneComponent):
 
-    def __init__(self, pos: tuple = (0, 0)):
-        super().__init__(pos)
+    @SceneComponent.implicit_super
+    def __init__(self):
 
-        self.addComponent(Text)
+        self.text: Text = self.spawnComponent(Text, self.pos)
 
         self.deltas = []
         self.last_frametime = 0
@@ -129,14 +130,7 @@ class FpsDisplay(Component):
         else:
             fps = str(0.0)
 
-        if self.game is None:
-            self.text.text =\
-                'FPS: ' + fps
-        else:
-            self.text.text =\
-                'FPS: ' + fps +\
-                'cmps: ' + str(self.game.scene.component_count) + '\n' +\
-                'ents: ' + str(self.game.scene.entity_count) + '\n'
+        self.text.text = 'FPS: ' + fps
 
     def onRender(self, delta):
 
@@ -159,7 +153,8 @@ class Console(SceneComponent):
 
         self.layout = pyglet.text.layout.TextLayout(
             self.document, width=400, height=200,
-            multiline=True, wrap_lines=False
+            multiline=True, wrap_lines=False,
+            batch=self.scene.batch
         )
         self.layout.x = self.pos.x
         self.layout.y = self.pos.y
@@ -182,4 +177,5 @@ class Console(SceneComponent):
 
     def onRender(self, delta):
         # print("rendering console")
-        self.layout.draw()
+        # self.layout.draw()
+        pass

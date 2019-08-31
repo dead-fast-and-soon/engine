@@ -154,8 +154,8 @@ class CombatScene(Scene):
 game = Game(width=1280, height=720)
 
 # spawn entities
-# scene = game.loadScene(CombatScene)
-scene = game.createScene()
+scene = game.loadScene(CombatScene)
+# scene = game.createScene()
 console: Console = scene.spawnComponent(Console, (0, 0))
 
 console.log('test')
@@ -181,6 +181,14 @@ camera.assignScene(scene)
 # scene.render = profile(scene.render)
 # game.start = profile(game.start)
 # camera.renderScene = profile(camera.renderScene)
+
+print('cameras:')
+for camera in game.cameras:
+    print('    ' + str(camera))
+
+print('scenes: ')
+for scene in game.scenes:
+    print('    ' + str(scene))
 
 # start game
 print('starting game')

@@ -1,0 +1,181 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BOT_CENTER	config.py	/^BOT_CENTER = Point(WIDTH \/\/ 2, 0)$/;"	v
+BOT_LEFT	config.py	/^BOT_LEFT = Point(0, 0)$/;"	v
+BOT_RIGHT	config.py	/^BOT_RIGHT = Point(WIDTH, 0)$/;"	v
+BUG	structs/type.py	/^    BUG = 11$/;"	v	class:Type
+BlockGrid	game/entities/block.py	/^class BlockGrid(Entity):$/;"	c
+BoxComponent	engine/components/debug.py	/^class BoxComponent(Component):$/;"	c
+CENTER	config.py	/^CENTER = Point(WIDTH \/\/ 2, HEIGHT \/\/ 2)$/;"	v
+CEN_LEFT	config.py	/^CEN_LEFT = Point(0, HEIGHT \/\/ 2)$/;"	v
+CEN_RIGHT	config.py	/^CEN_RIGHT = Point(WIDTH, HEIGHT \/\/ 2)$/;"	v
+Color	structs/color.py	/^class Color:$/;"	c
+Component	engine/component.py	/^class Component:$/;"	c
+Console	engine/components/debug.py	/^class Console(Component):$/;"	c
+DARK	structs/type.py	/^    DARK = 15$/;"	v	class:Type
+DRAGON	structs/type.py	/^    DRAGON = 14$/;"	v	class:Type
+DotComponent	engine/components/debug.py	/^class DotComponent(Component):$/;"	c
+ELECTRIC	structs/type.py	/^    ELECTRIC = 3$/;"	v	class:Type
+Entity	engine/entity.py	/^class Entity:$/;"	c
+FIGHTING	structs/type.py	/^    FIGHTING = 6$/;"	v	class:Type
+FIRE	structs/type.py	/^    FIRE = 1$/;"	v	class:Type
+FLYING	structs/type.py	/^    FLYING = 9$/;"	v	class:Type
+FpsDisplay	engine/components/debug.py	/^class FpsDisplay(Component):$/;"	c
+GBC_H	config.py	/^GBC_H = 144$/;"	v
+GBC_W	config.py	/^GBC_W = 160$/;"	v
+GHOST	structs/type.py	/^    GHOST = 13$/;"	v	class:Type
+GRASS	structs/type.py	/^    GRASS = 4$/;"	v	class:Type
+GROUND	structs/type.py	/^    GROUND = 8$/;"	v	class:Type
+Game	engine/game/__init__.py	/^class Game:$/;"	c
+GameState	engine/game/state.py	/^class GameState:$/;"	c
+HEIGHT	config.py	/^HEIGHT = GBC_H * 4$/;"	v
+HudView	engine/view.py	/^class HudView(View):$/;"	c
+ICE	structs/type.py	/^    ICE = 5$/;"	v	class:Type
+MAP	engine/components/sprite.py	/^    MAP = {$/;"	v	class:SpriteTextComponent
+Move	structs/move.py	/^class Move:$/;"	c
+MoveCategory	structs/move.py	/^class MoveCategory(Enum):$/;"	c
+NORMAL	structs/type.py	/^    NORMAL = 0$/;"	v	class:Type
+PHYSICAL	structs/move.py	/^    PHYSICAL = 0$/;"	v	class:MoveCategory
+POISON	structs/type.py	/^    POISON = 7$/;"	v	class:Type
+PSYCHIC	structs/type.py	/^    PSYCHIC = 10$/;"	v	class:Type
+Point	structs/point.py	/^class Point:$/;"	c
+PokedexEntry	structs/pokedex.py	/^class PokedexEntry:$/;"	c
+Quad	engine/components/shapes.py	/^class Quad:$/;"	c
+QuadBatch	engine/components/shapes.py	/^class QuadBatch(Component):$/;"	c
+ROCK	structs/type.py	/^    ROCK = 12$/;"	v	class:Type
+SPECIAL	structs/move.py	/^    SPECIAL = 1$/;"	v	class:MoveCategory
+SPRITE_SIZE	config.py	/^SPRITE_SIZE = 8$/;"	v
+SPT	engine/game/__init__.py	/^SPT = 1.0 \/ 60.0  # 60 ticks per second$/;"	v
+STATUS	structs/move.py	/^    STATUS = 2$/;"	v	class:MoveCategory
+STEEL	structs/type.py	/^    STEEL = 16$/;"	v	class:Type
+Scene	engine/game/scene.py	/^class Scene:$/;"	c
+SpriteComponent	engine/components/sprite.py	/^class SpriteComponent(Component):$/;"	c
+SpriteSheet	engine/spritesheet.py	/^class SpriteSheet:$/;"	c
+SpriteTextComponent	engine/components/sprite.py	/^class SpriteTextComponent(Component):$/;"	c
+Statistics	structs/stats.py	/^class Statistics:$/;"	c
+TOP_CENTER	config.py	/^TOP_CENTER = Point(WIDTH \/\/ 2, HEIGHT)$/;"	v
+TOP_LEFT	config.py	/^TOP_LEFT = Point(0, HEIGHT)$/;"	v
+TOP_RIGHT	config.py	/^TOP_RIGHT = Point(WIDTH, HEIGHT)$/;"	v
+Text	engine/components/debug.py	/^class Text(Component):$/;"	c
+Transform	structs/point.py	/^class Transform(Point):$/;"	c
+Type	structs/type.py	/^class Type(Enum):$/;"	c
+View	engine/view.py	/^class View:$/;"	c
+WATER	structs/type.py	/^    WATER = 2$/;"	v	class:Type
+WHITE	structs/color.py	/^WHITE = Color(255, 255, 255)$/;"	v
+WIDTH	config.py	/^WIDTH = GBC_W * 4$/;"	v
+Window	engine/game/__init__.py	/^        class Window(pyglet.window.Window):$/;"	c	function:Game.start
+__add__	structs/point.py	/^    def __add__(self, other):$/;"	m	class:Point	file:
+__getitem__	engine/spritesheet.py	/^    def __getitem__(self, key):$/;"	m	class:SpriteSheet	file:
+__iadd__	structs/point.py	/^    def __iadd__(self, other):$/;"	m	class:Point	file:
+__init__	engine/component.py	/^    def __init__($/;"	m	class:Component
+__init__	engine/components/debug.py	/^    def __init__(self, game, view=None):$/;"	m	class:Console
+__init__	engine/components/debug.py	/^    def __init__(self, game=None, x=0, y=0, *, parent=None, view=None):$/;"	m	class:FpsDisplay
+__init__	engine/components/debug.py	/^    def __init__(self, text: str = '', x=0, y=0, parent=None, view=None):$/;"	m	class:Text
+__init__	engine/components/debug.py	/^    def __init__(self,$/;"	m	class:BoxComponent
+__init__	engine/components/shapes.py	/^    def __init__(self, parent=None, view=None):$/;"	m	class:QuadBatch
+__init__	engine/components/shapes.py	/^    def __init__(self, x, y, width, height, color=None, batch=None):$/;"	m	class:Quad
+__init__	engine/components/sprite.py	/^    def __init__($/;"	m	class:SpriteComponent
+__init__	engine/components/sprite.py	/^    def __init__(self, sheet: SpriteSheet, x: float = 0.0, y: float = 0.0,$/;"	m	class:SpriteTextComponent
+__init__	engine/entity.py	/^    def __init__($/;"	m	class:Entity
+__init__	engine/game/__init__.py	/^            def __init__(self):$/;"	m	class:Game.start.Window
+__init__	engine/game/__init__.py	/^    def __init__(self, *, width, height):$/;"	m	class:Game
+__init__	engine/game/scene.py	/^    def __init__(self, game):$/;"	m	class:Scene
+__init__	engine/game/state.py	/^    def __init__(self, game):$/;"	m	class:GameState
+__init__	engine/spritesheet.py	/^    def __init__(self, path: str, w: int, h: int = None):$/;"	m	class:SpriteSheet
+__init__	engine/view.py	/^    def __init__(self, game, zoom: float = 1.0):$/;"	m	class:HudView
+__init__	engine/view.py	/^    def __init__(self, game: Game = None,$/;"	m	class:View
+__init__	game/entities/block.py	/^    def __init__(self, pos, view, scene):$/;"	m	class:BlockGrid
+__init__	structs/color.py	/^    def __init__(self, r, g, b):$/;"	m	class:Color
+__init__	structs/move.py	/^    def __init__(self, name: str, movetype: Type, category: MoveCategory,$/;"	m	class:Move
+__init__	structs/point.py	/^    def __init__(self, x: float, y: float):$/;"	m	class:Point
+__init__	structs/point.py	/^    def __init__(self, x: float, y: float, w: float, h: float):$/;"	m	class:Transform
+__init__	structs/pokedex.py	/^    def __init__(self, id: int, name: str, type: list, height: float,$/;"	m	class:PokedexEntry
+__init__	structs/stats.py	/^    def __init__(self, hp: int, attack: int, defense: int, sattack: int,$/;"	m	class:Statistics
+accum_time	test/fps_draw_test.py	/^accum_time = 0$/;"	v
+accuracy	structs/move.py	/^    def accuracy(self) -> int:$/;"	m	class:Move
+addBlock	game/entities/block.py	/^    def addBlock(self, x, y):$/;"	m	class:BlockGrid
+addComponent	engine/component.py	/^    def addComponent(self, *components):$/;"	m	class:Component
+addComponent	engine/entity.py	/^    def addComponent(self, *components):$/;"	m	class:Entity
+addQuad	engine/components/shapes.py	/^    def addQuad(self, x, y, width, height, color=None):$/;"	m	class:QuadBatch
+batch	test/fps_draw_test.py	/^batch = pyglet.graphics.Batch()$/;"	v
+brightness	structs/color.py	/^    def brightness(self, n):$/;"	m	class:Color
+category	structs/move.py	/^    def category(self) -> MoveCategory:$/;"	m	class:Move
+component_count	engine/game/scene.py	/^    def component_count(self) -> int:$/;"	m	class:Scene
+createFrom	structs/point.py	/^    def createFrom(val) -> 'Point':$/;"	m	class:Point
+destroyEntity	engine/entity.py	/^    def destroyEntity(self):$/;"	m	class:Entity
+destroyEntity	engine/game/scene.py	/^    def destroyEntity(self, entity: Entity):$/;"	m	class:Scene
+entity_count	engine/game/scene.py	/^    def entity_count(self) -> int:$/;"	m	class:Scene
+fps_display	test/fps_draw_test.py	/^fps_display = FpsDisplay()$/;"	v
+fromArray	structs/stats.py	/^    def fromArray(cls, arr):$/;"	m	class:Statistics
+game	main.py	/^game = Game(width=1280, height=720)$/;"	v
+getATK	structs/pokedex.py	/^    def getATK(self) -> int:$/;"	m	class:PokedexEntry
+getDEF	structs/pokedex.py	/^    def getDEF(self) -> int:$/;"	m	class:PokedexEntry
+getDescription	structs/pokedex.py	/^    def getDescription(self) -> str:$/;"	m	class:PokedexEntry
+getHP	structs/pokedex.py	/^    def getHP(self) -> int:$/;"	m	class:PokedexEntry
+getImage	engine/spritesheet.py	/^    def getImage(self, key):$/;"	m	class:SpriteSheet
+getSATK	structs/pokedex.py	/^    def getSATK(self) -> int:$/;"	m	class:PokedexEntry
+getSDEF	structs/pokedex.py	/^    def getSDEF(self) -> int:$/;"	m	class:PokedexEntry
+getSPD	structs/pokedex.py	/^    def getSPD(self) -> int:$/;"	m	class:PokedexEntry
+getSprite	engine/spritesheet.py	/^    def getSprite(self, key):$/;"	m	class:SpriteSheet
+height	engine/spritesheet.py	/^    def height(self):$/;"	m	class:SpriteSheet
+last_time	test/fps_draw_test.py	/^last_time = time.perf_counter()$/;"	v
+loadScene	engine/game/__init__.py	/^    def loadScene(self, scene: Scene):$/;"	m	class:Game
+loadText	engine/components/sprite.py	/^    def loadText(self, text: str):$/;"	m	class:SpriteTextComponent
+log	engine/components/debug.py	/^    def log(self, message):$/;"	m	class:Console
+log	engine/game/__init__.py	/^    def log(self, message):$/;"	m	class:Game
+lpos	engine/component.py	/^    def lpos(self) -> Point:$/;"	m	class:Component
+lpos	engine/component.py	/^    def lpos(self, pos: Union[Point, tuple]):$/;"	m	class:Component
+name	structs/move.py	/^    def name(self) -> str:$/;"	m	class:Move
+onKeyPress	engine/entity.py	/^    def onKeyPress(self, symbol, modifier):$/;"	m	class:Entity
+onPositionChange	engine/component.py	/^    def onPositionChange(self, pos):$/;"	m	class:Component
+onRender	engine/component.py	/^    def onRender(self, delta: float):$/;"	m	class:Component
+onRender	engine/components/debug.py	/^    def onRender(self):$/;"	m	class:DotComponent
+onRender	engine/components/debug.py	/^    def onRender(self, delta):$/;"	m	class:BoxComponent
+onRender	engine/components/debug.py	/^    def onRender(self, delta):$/;"	m	class:Console
+onRender	engine/components/debug.py	/^    def onRender(self, delta):$/;"	m	class:FpsDisplay
+onRender	engine/components/debug.py	/^    def onRender(self, delta):$/;"	m	class:Text
+onRender	engine/components/shapes.py	/^    def onRender(self, delta):$/;"	m	class:QuadBatch
+onRender	engine/components/sprite.py	/^    def onRender(self):$/;"	m	class:SpriteComponent
+onSpawn	engine/entity.py	/^    def onSpawn(self):$/;"	m	class:Entity
+onUpdate	engine/component.py	/^    def onUpdate(self, delta: float):$/;"	m	class:Component
+onUpdate	engine/components/debug.py	/^    def onUpdate(self, delta):$/;"	m	class:BoxComponent
+onUpdate	engine/components/debug.py	/^    def onUpdate(self, delta):$/;"	m	class:FpsDisplay
+onUpdate	engine/components/shapes.py	/^    def onUpdate(self, delta):$/;"	m	class:QuadBatch
+onUpdate	engine/entity.py	/^    def onUpdate(self, delta: float):$/;"	m	class:Entity
+onUpdate	game/entities/block.py	/^    def onUpdate(self, delta):$/;"	m	class:BlockGrid
+on_draw	engine/game/__init__.py	/^            def on_draw(self, delta=0):$/;"	m	class:Game.start.Window
+on_key_press	engine/game/__init__.py	/^            def on_key_press(symbol, modifier):$/;"	m	class:Game.start.Window
+point	structs/point.py	/^    def point(self):$/;"	m	class:Transform
+pos	engine/component.py	/^    def pos(self) -> Point:$/;"	m	class:Component
+power	structs/move.py	/^    def power(self) -> int:$/;"	m	class:Move
+print	structs/move.py	/^    def print(self):$/;"	m	class:Move
+quads	test/fps_draw_test.py	/^quads = QuadBatch()$/;"	v
+removeComponent	engine/entity.py	/^    def removeComponent(self, *components):$/;"	m	class:Entity
+render	engine/component.py	/^    def render(self, delta: float):$/;"	m	class:Component
+renderEntity	engine/entity.py	/^    def renderEntity(self, delta: float):$/;"	m	class:Entity
+renderScene	engine/game/scene.py	/^    def renderScene(self, delta: float):$/;"	m	class:Scene
+setScale	engine/components/sprite.py	/^    def setScale(self, n: float):$/;"	m	class:SpriteComponent
+spawnEntity	engine/game/scene.py	/^    def spawnEntity($/;"	m	class:Scene
+squaresWithQuads	test/fps_draw_test.py	/^def squaresWithQuads():$/;"	f
+squaresWithTriangles	test/fps_draw_test.py	/^def squaresWithTriangles():$/;"	f
+start	engine/game/__init__.py	/^    def start(self):$/;"	m	class:Game
+text	engine/components/debug.py	/^    def text(self):$/;"	m	class:Text
+text	engine/components/debug.py	/^    def text(self, text: str):$/;"	m	class:Text
+transform	engine/view.py	/^    def transform(self, t: Transform):$/;"	m	class:View
+transformPoint	engine/view.py	/^    def transformPoint(self, p: Point):$/;"	m	class:HudView
+transformPoint	engine/view.py	/^    def transformPoint(self, p: Point):$/;"	m	class:View
+translateChildren	engine/component.py	/^    def translateChildren(self, x: float, y: float):$/;"	m	class:Component
+type	structs/move.py	/^    def type(self) -> Type:$/;"	m	class:Move
+update	engine/component.py	/^    def update(self, delta: float):$/;"	m	class:Component
+updateEntity	engine/entity.py	/^    def updateEntity(self, delta: float):$/;"	m	class:Entity
+updateVertices	engine/components/shapes.py	/^    def updateVertices(self, vertices):$/;"	m	class:Quad
+useViewport	engine/view.py	/^    def useViewport(self):$/;"	m	class:HudView
+useViewport	engine/view.py	/^    def useViewport(self):$/;"	m	class:View
+view	engine/component.py	/^    def view(self) -> View:$/;"	m	class:Component
+view	engine/component.py	/^    def view(self, view):$/;"	m	class:Component
+width	engine/spritesheet.py	/^    def width(self):$/;"	m	class:SpriteSheet
+window	test/fps_draw_test.py	/^window = pyglet.window.Window(vsync=False)$/;"	v

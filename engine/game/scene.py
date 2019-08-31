@@ -82,6 +82,8 @@ class Scene:
         kwargs['parent'] = parent
 
         # print('args: ' + str(args) + str(kwargs))
+        # if hasattr(self.game, 'console'):
+        #     self.game.console.log('spawned component')
 
         component = cmp_class(*args, **kwargs)
 
