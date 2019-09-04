@@ -95,7 +95,7 @@ class Text(SceneComponent):
             text,
             font_name='Consolas',
             font_size=12,
-            x=0, y=0,
+            x=self.pos.x, y=self.pos.y,
             batch=self.scene.batch
         )
         self.text = text
@@ -108,9 +108,9 @@ class Text(SceneComponent):
     def text(self, text: str):
         self.handle.text = text
 
-    def onRender(self, delta):
-
-        self.handle.draw()
+    def onPositionChange(self):
+        self.handle.x = self.pos.x
+        self.handle.y = self.pos.y
 
 
 class FpsDisplay(SceneComponent):
@@ -151,11 +151,12 @@ class Console(SceneComponent):
         print(f'placing console @({self.pos.x},{self.pos.y})')
         self.document = pyglet.text.document.FormattedDocument()
 
-        self.layout = pyglet.text.layout.TextLayout(
-            self.document, width=400, height=200,
-            multiline=True, wrap_lines=False,
-            batch=self.scene.batch
-        )
+        self.layout: pyglet.text.layout.TextLayout =\
+            pyglet.text.layout.TextLayout(
+                self.document, width=400, height=720,
+                multiline=True, wrap_lines=False,
+                batch=self.scene.batch
+            )
         self.layout.x = self.pos.x
         self.layout.y = self.pos.y
         self.layout.anchor_x = 'left'
@@ -175,7 +176,12 @@ class Console(SceneComponent):
             )
         )
 
+    def onPositionChange(self):
+        self.layout.x = self.pos.x
+        self.layout.y = self.pos.y
+
     def onRender(self, delta):
         # print("rendering console")
         # self.layout.draw()
         pass
+
