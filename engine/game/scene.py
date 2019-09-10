@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Type
 import pyglet
 
-from structs.point import Point
+from structs.vector import Vector
 
 if TYPE_CHECKING:
     from engine.game import Game
@@ -83,7 +83,7 @@ class Scene:
 
         # print('args: ' + str(args) + str(kwargs))
         # if hasattr(self.game, 'console'):
-        #     self.game.console.log('spawned component')
+        # self.game.console.log('spawned component ' + str(cmp_class))
 
         component = cmp_class(*args, **kwargs)
 

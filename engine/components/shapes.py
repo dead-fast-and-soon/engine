@@ -5,7 +5,7 @@ import typing
 
 from engine.component import Component, SceneComponent
 from structs.color import Color, WHITE
-from structs.point import Transform
+from structs.vector import Transform
 
 if typing.TYPE_CHECKING:
     from engine.game.scene import Scene

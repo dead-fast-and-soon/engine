@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from structs.point import Point
+from structs.vector import Vector
 from engine.component import SceneComponent, Element
 
 import typing

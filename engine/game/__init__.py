@@ -38,7 +38,7 @@ class Game:
 
         hud_scene = self.createScene()
 
-        self.console: Console = hud_scene.spawnComponent(Console, (20, 20))
+        self.console: Console = hud_scene.spawnComponent(Console, (0, 0))
         hud_scene.spawnComponent(FpsDisplay, (0, 0))
 
         hud_view = ScreenPixelCamera(self)

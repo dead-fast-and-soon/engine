@@ -6,7 +6,7 @@ import typing
 from abc import ABC, abstractmethod
 from pyglet import gl
 
-from structs.point import Point, Transform
+from structs.vector import Vector, Transform
 
 if typing.TYPE_CHECKING:
     from engine.game import Game
@@ -82,26 +82,26 @@ class PixelCamera(Camera):
         super().__init__(game)
 
         self.zoom: float = zoom
-        self.focus: Point = Point(focus)
+        self.focus: Vector = Vector(focus)
 
     @property
-    def focus(self) -> Point:
+    def focus(self) -> Vector:
         return self._focus
 
     @focus.setter
     def focus(self, pos):
-        self._focus = Point(pos)
+        self._focus = Vector(pos)
 
         w, h = self.game.width, self.game.height
 
         x_range = (
-            ((-w / 2.0) - self.focus.x) / self.zoom,
-            ((+w / 2.0) - self.focus.x) / self.zoom
+            ((-w / 2.0) + self.focus.x) / self.zoom,
+            ((+w / 2.0) + self.focus.x) / self.zoom
         )
 
         y_range = (
-            ((-h / 2.0) - self.focus.y) / self.zoom,
-            ((+h / 2.0) - self.focus.y) / self.zoom
+            ((-h / 2.0) + self.focus.y) / self.zoom,
+            ((+h / 2.0) + self.focus.y) / self.zoom
         )
 
         # precalculate ranges

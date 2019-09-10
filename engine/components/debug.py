@@ -4,7 +4,7 @@ from pyglet import graphics
 import math
 
 from engine.component import Component, SceneComponent
-from structs.point import Transform
+from structs.vector import Transform
 
 
 class DotComponent(Component):
@@ -146,14 +146,14 @@ class FpsDisplay(SceneComponent):
 class Console(SceneComponent):
 
     @SceneComponent.implicit_super
-    def __init__(self):
+    def __init__(self, width=400, height=720):
 
         print(f'placing console @({self.pos.x},{self.pos.y})')
         self.document = pyglet.text.document.FormattedDocument()
 
         self.layout: pyglet.text.layout.TextLayout =\
             pyglet.text.layout.TextLayout(
-                self.document, width=400, height=720,
+                self.document, width=None, height=None,
                 multiline=True, wrap_lines=False,
                 batch=self.scene.batch
             )
@@ -164,9 +164,19 @@ class Console(SceneComponent):
 
         self.lines = []
 
+    def line(self, n, message):
+        while n >= len(self.lines):
+            self.lines.append('')
+
+        self.lines[n] = message
+        self.updateText()
+
     def log(self, message):
         # print(message)
         self.lines.append(message)
+        self.updateText()
+
+    def updateText(self):
         self.document.text = '\n'.join(self.lines)
         self.document.set_style(
             0, len(self.document.text),
@@ -184,4 +194,3 @@ class Console(SceneComponent):
         # print("rendering console")
         # self.layout.draw()
         pass
-

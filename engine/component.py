@@ -6,7 +6,7 @@ from __future__ import annotations
 import inspect
 from typing import List, Optional, Union, Type, TypeVar, TYPE_CHECKING
 
-from structs.point import Point
+from structs.vector import Vector
 
 if TYPE_CHECKING:
     from engine.game.scene import Scene
@@ -21,7 +21,7 @@ class Element:
         Args:
             pos (tuple, optional): [description]. Defaults to (0, 0).
         """
-        self._pos: Point = Point.createFrom(pos)
+        self._pos: Vector = Vector.createFrom(pos)
 
         self.parent: Optional[Element] = parent
 
@@ -32,13 +32,13 @@ class Element:
     # -------------------------------------------------------------------------
 
     @property
-    def pos(self) -> Point:
+    def pos(self) -> Vector:
         return self._pos
 
     @pos.setter
-    def pos(self, pos: Union[tuple, Point]):
+    def pos(self, pos: Union[tuple, Vector]):
         a = self._pos
-        b = Point.createFrom(pos)
+        b = Vector.createFrom(pos)
         self._pos = b
 
         # translate children positions by difference
@@ -48,7 +48,7 @@ class Element:
         self.onPositionChange()
 
     @property
-    def lpos(self) -> Point:
+    def lpos(self) -> Vector:
         """
         Get or set the position of this component with respect to the parent.
 
@@ -62,7 +62,7 @@ class Element:
         else:
             a = self.pos
             b = self.master.pos
-            return Point(a.x - b.x, a.y - b.y)
+            return Vector(a.x - b.x, a.y - b.y)
 
     @property
     def master(self) -> Element:

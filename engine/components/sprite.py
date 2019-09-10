@@ -2,7 +2,7 @@ import pyglet
 from pyglet import image, gl
 from engine.component import Component
 from engine.components.debug import CircleComponent
-from structs.point import Point
+from structs.vector import Vector
 
 from typing import List, TYPE_CHECKING
 
@@ -89,7 +89,7 @@ class SpriteTextComponent(Component):
         self.scale: int = scale
 
         # location marker representing current line and column
-        self.loc: Point = Point(0, 0)
+        self.loc: Vector = Vector(0, 0)
 
         # the sprite sheet currently in use
         self.sheet: SpriteSheet = sheet
