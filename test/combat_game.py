@@ -10,11 +10,13 @@ from typing import cast
 
 from engine.components.debug import Console, Text
 from engine.components.shapes import Box
-from engine.component import SceneComponent
+from engine.component import SceneComponent, spawnable
 from engine.entity import Entity
 from engine.camera import PixelCamera
 from engine.game import Game
 from engine.game.scene import Scene
+
+from game.entities.block import Block
 
 from structs.vector import Vector
 from structs.color import Color
@@ -28,13 +30,16 @@ SELECT_POS_R = Vector(85, 0)
 
 class BackgroundComponent(SceneComponent):
 
-    @SceneComponent.implicit_super
+    @spawnable
     def __init__(self, size: tuple):
 
         color_1 = Color(20, 20, 20)
         color_2 = Color(40, 40, 40)
 
-        ctr = Vector((BLOCK_SIZE * size[0]) // -2, (BLOCK_SIZE * size[1]) // -2)
+        ctr = Vector(
+            (BLOCK_SIZE * size[0]) // -2,
+            (BLOCK_SIZE * size[1]) // -2
+        )
 
         color = color_1
 
@@ -53,20 +58,28 @@ class BackgroundComponent(SceneComponent):
 
 class Cursor(Entity):
 
-    @Entity.implicit_super
+    @spawnable
     def __init__(self):
 
-        color = Color(64, 163, 239)  # sky-blueish
+        self.color_select = Color(64, 163, 239)  # sky-blueish
 
         self.origin = SELECT_POS_L
-        self.block = self.spawnComponent(
+        self.boxes = {}
 
-            Box, tuple(self.origin + self.pos),
-            size=(BLOCK_SIZE, BLOCK_SIZE), color=color
-        )
+        for y in reversed(range(-2, 3)):
+            for x in range(-2, 3):
+
+                pos = self.origin + \
+                    self.pos +      \
+                    Vector(x * BLOCK_SIZE, y * BLOCK_SIZE)
+
+                self.boxes[(x, y)] = self.spawnComponent(
+                    Block, pos,
+                    size=(BLOCK_SIZE, BLOCK_SIZE),
+                    color=Color(10, 10, 10)
+                )
 
         self.grid_pos = Vector(0, 0)
-
         self.selected_coords = [self.grid_pos]
 
         self.dir_x = 0
@@ -75,30 +88,58 @@ class Cursor(Entity):
         # grid coordinates of block
         self.stun_ticks = 0
 
-    def update_position(self):
+        self.update_blocks()
+
+    def update_blocks(self):
         """Update block position based on block_pos"""
 
-        self.block.pos = self.origin + Vector(
-            (self.grid_pos.x - (1 / 2)) * BLOCK_SIZE,
-            (self.grid_pos.y - (1 / 2)) * BLOCK_SIZE
-        )
+        for pos, box in self.boxes.items():
+            box.pos = self.origin + Vector(
+                (pos[0] - (1 / 2)) * BLOCK_SIZE,
+                (pos[1] - (1 / 2)) * BLOCK_SIZE
+            )
+
+            if self.grid_pos == pos:
+                box.color = self.color_select
+            elif any(x == pos for x in self.selected_coords):
+                box.color = Color(5, 255, 255)
+            else:
+                box.color = Color(10, 10, 10)
 
     def onUpdate(self, delta: float):
 
         # print(f'{self.dir_x}, {self.dir_y}')
         global console
 
-        if self.stun_ticks == 0:
+        if self.dir_x == 0 and self.dir_y == 0:
+            self.grid_pos = Vector(0, 0)
+            self.selected_coords = [Vector(0, 0)]
+            self.update_blocks()
+        elif self.stun_ticks == 0:
             self.grid_pos += (self.dir_x, self.dir_y)
-            self.selected_coords.append(self.grid_pos)
-            self.stun_ticks = 8
 
-            self.update_position()
-        else:
+            if self.grid_pos.x > 2:
+                self.grid_pos.x = 2
+            if self.grid_pos.y > 2:
+                self.grid_pos.y = 2
+            if self.grid_pos.x < -2:
+                self.grid_pos.x = -2
+            if self.grid_pos.y < -2:
+                self.grid_pos.y = -2
+                
+            self.stun_ticks = 4
+            if not any(x == self.grid_pos for x in self.selected_coords):
+                self.selected_coords.append(self.grid_pos)
+
+            self.update_blocks()
+        
+        if self.stun_ticks > 0:
             self.stun_ticks -= 1
 
         console.line(0, 'pos: ' + str(tuple(self.grid_pos)))
-        console.line(1, 'select: ' + str(self.selected_coords))
+        console.line(1, 'dir: ' + str((self.dir_x, self.dir_y)))
+        console.line(2, 'select: ' + str(self.selected_coords))
+        console.line(3, 'stun: ' + str(self.stun_ticks))
 
     def onKeyPress(self, k: int, mod):
         if k is key.UP:

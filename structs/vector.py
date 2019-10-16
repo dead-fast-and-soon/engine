@@ -54,6 +54,14 @@ class Vector:
             raise ValueError("unable to create Vector from value: " +
                              str(x_or_point_or_tuple))
 
+    def __eq__(self, other):
+        if type(other) is Vector:
+            return self.x == other.x and self.y == other.y
+        if type(other) is tuple:
+            return self.x == other[0] and self.y == other[1]
+        else:
+            return self is other
+
     def __iadd__(self, other):
         """ += operator """
         x, y = self.x, self.y

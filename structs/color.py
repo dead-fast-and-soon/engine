@@ -14,4 +14,11 @@ class Color:
 
         return Color(r, g, b)
 
+    def __iter__(self):
+        """Convert this Vector into an Iterable."""
+        yield self.r
+        yield self.g
+        yield self.b
+
+
 WHITE = Color(255, 255, 255)

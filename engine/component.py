@@ -37,6 +37,12 @@ class Element:
 
     @pos.setter
     def pos(self, pos: Union[tuple, Vector]):
+        """Set the position of this element. This will also set the position
+        of any child elements.
+        
+        Args:
+            pos (Union[tuple, Vector]): [description]
+        """
         a = self._pos
         b = Vector.createFrom(pos)
         self._pos = b
@@ -146,51 +152,53 @@ class SceneComponent(Component):
     def onDestroy(self):
         pass
 
-    def spawnComponent(self, comp_cls, pos: tuple, *args, **kwargs):
+    def spawnComponent(
+        self, comp_cls, pos: Union[tuple, Vector], *args, **kwargs
+    ):
         """Instantiate a new SceneComponent and add it to this one."""
         return self.scene.spawnComponent(comp_cls, pos, parent=self,
                                          *args, **kwargs)
 
-    @staticmethod
-    def implicit_super(old_init):
-        """
-        Implicitly adds parameters needed to call `SceneComponent.__init__()`
-        and implicitly calls `super().__init__()`.
 
-        When using this decorator, it is recommended to create instances
-        of this component using `Scene.spawnComponent()`.
+def spawnable(old_init):
+    """
+    Implicitly adds parameters needed to call `SceneComponent.__init__()`
+    and implicitly calls `super().__init__()`.
 
-            class ExampleComponent(SceneComponent):
-                @SceneComponent.implicit_super
-                def __init__(self):
-                    pass
+    When using this decorator, it is recommended to create instances
+    of this component using `Scene.spawnComponent()`.
 
-            game = Game()
-            scene = game.newScene()
+        class ExampleComponent(SceneComponent):
+            @spawnable
+            def __init__(self):
+                pass
 
-            scene.spawnComponent(ExampleComponent)
-        """
+        game = Game()
+        scene = game.newScene()
 
-        def component_super(self, *args, pos: tuple, scene: Scene,
-                            parent: Element, **kwargs):
-            SceneComponent.__init__(self, scene=scene, pos=pos, parent=parent)
+        scene.spawnComponent(ExampleComponent)
+    """
 
-            old_init(self, *args, **kwargs)
+    def component_super(self, *args, pos: tuple, scene: Scene,
+                        parent: Element, **kwargs):
+        SceneComponent.__init__(self, scene=scene, pos=pos, parent=parent)
 
-        sig_old = inspect.signature(old_init)
+        old_init(self, *args, **kwargs)
 
-        # old parameter list
-        params_a = list(sig_old.parameters.values())
-        # new parameter list
-        params_b = list(inspect.signature(component_super).parameters.values())
+    sig_old = inspect.signature(old_init)
 
-        # insert old parameter list into new
-        new_params = (
-            params_a[0:1] + params_b[2:5] +
-            params_a[1:] + params_b[1:2] + params_b[5:6]
-        )
+    # old parameter list
+    params_a = list(sig_old.parameters.values())
+    # new parameter list
+    params_b = list(inspect.signature(component_super).parameters.values())
 
-        # component_super.__signature__ = sig_old.replace(
-        #     parameters=tuple(new_params))
+    # insert old parameter list into new
+    new_params = (
+        params_a[0:1] + params_b[2:5] +
+        params_a[1:] + params_b[1:2] + params_b[5:6]
+    )
 
-        return component_super
+    # component_super.__signature__ = sig_old.replace(
+    #     parameters=tuple(new_params))
+
+    return component_super

@@ -1,7 +1,7 @@
 
 from engine.components.debug import BoxComponent
-from engine.components.shapes import BoxBatch
-from engine.component import Component
+from engine.components.shapes import BoxBatch, Box
+from engine.component import Component, spawnable
 from engine.entity import Entity
 from structs.color import Color
 
@@ -19,6 +19,29 @@ from structs.color import Color
 #             BoxComponent(2, 2, 28, 28, 
 #               int(darker.r), int(darker.g), int(darker.b))
 #         )
+
+
+class Block(Entity):
+
+    @spawnable
+    def __init__(self, color, size: tuple):
+        color_1 = Color(255, 255, 0)
+        color_2 = color.brightness(0.7)
+
+        self.box_1: Box = self.spawnComponent(Box, self.pos, size, color_1)
+        self.box_2: Box = self.spawnComponent(
+            Box, self.pos + (1, 1),
+            (size[0] - 2, size[1] - 2), color_2
+        )
+
+    @property
+    def color(self):
+        return self.box_1.color
+
+    @color.setter
+    def color(self, color: Color):
+        self.box_1.color = color
+        self.box_2.color = color.brightness(0.7)
 
 
 class BlockGrid(Entity):

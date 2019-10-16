@@ -3,7 +3,7 @@ from pyglet import graphics
 
 import math
 
-from engine.component import Component, SceneComponent
+from engine.component import Component, SceneComponent, spawnable
 from structs.vector import Transform
 
 
@@ -88,7 +88,7 @@ class BoxComponent(Component):
 
 class Text(SceneComponent):
 
-    @SceneComponent.implicit_super
+    @spawnable
     def __init__(self, text: str = ''):
 
         self.handle = pyglet.text.Label(
@@ -115,7 +115,7 @@ class Text(SceneComponent):
 
 class FpsDisplay(SceneComponent):
 
-    @SceneComponent.implicit_super
+    @spawnable
     def __init__(self):
 
         self.text: Text = self.spawnComponent(Text, self.pos)
@@ -145,7 +145,7 @@ class FpsDisplay(SceneComponent):
 
 class Console(SceneComponent):
 
-    @SceneComponent.implicit_super
+    @spawnable
     def __init__(self, width=400, height=720):
 
         print(f'placing console @({self.pos.x},{self.pos.y})')

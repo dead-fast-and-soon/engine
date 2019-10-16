@@ -3,7 +3,7 @@ import math
 import pyglet
 import typing
 
-from engine.component import Component, SceneComponent
+from engine.component import Component, SceneComponent, spawnable
 from structs.color import Color, WHITE
 from structs.vector import Transform
 
@@ -14,22 +14,31 @@ if typing.TYPE_CHECKING:
 class Box(SceneComponent):
     """A box that is a part of a scene."""
 
-    @SceneComponent.implicit_super
+    @spawnable
     def __init__(self, size: tuple, color=None):
 
         if color is None:
             color = WHITE
 
         self.width, self.height = size
-        r, g, b = color.r, color.g, color.b
+        self._color = color
         x, y, w, h = self.pos.x, self.pos.y, self.width, self.height
 
         self.vertex_list = self.scene.batch.add(
             4, pyglet.gl.GL_QUADS, None, 'v2f',
-            ('c3B', (r, g, b) * 4)
+            ('c3B', tuple(color) * 4)
         )
 
         self.onPositionChange()
+
+    @property
+    def color(self):
+        return self._color
+
+    @color.setter
+    def color(self, color: Color):
+        self._color = color
+        self.vertex_list.colors = tuple(color) * 4
 
     def onDestroy(self):
         self.vertex_list.delete()
@@ -47,7 +56,7 @@ class Box(SceneComponent):
 class BoxTestComponent(SceneComponent):
     """A graphics test using boxes."""
 
-    @SceneComponent.implicit_super
+    @spawnable
     def __init__(self):
 
         self.boxes = []
