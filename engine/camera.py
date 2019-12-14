@@ -16,42 +16,14 @@ if typing.TYPE_CHECKING:
 class Camera:
     """A camera defining the perspective of which to render scenes."""
 
-    def __init__(self, game: Game):
+    def __init__(self, scene: Scene):
         """Initializes a Camera
 
         Args:
-            game (Game): the Game managing the window where rendering
-                         takes place
-
-        """
-        self.game: Game = game
-        self.scene: typing.Optional[Scene] = None
-
-    def assignScene(self, scene: Scene):
-        """Assign a scene to be rendered using this camera.
-
-        When calling `renderScene()`, the scene will be rendered from the
-        perspective of this camera.
-
-        Args:
-            scene (Scene): the scene to assign
+            game (Game): the Scene that this camera will render
 
         """
         self.scene = scene
-
-    def renderScene(self, delta: float):
-        """Render the scenes from this camera's perspective.
-
-        If no Scene is assigned to this Camera, this method is a no-op.
-
-        Args:
-            delta (float): the time (in seconds) that passed since
-                           the last frame
-
-        """
-        if self.scene is not None:
-            self.arm()
-            self.scene.render(delta)
 
     def arm(self):
         """Arm this camera.
@@ -78,8 +50,8 @@ class PixelCamera(Camera):
 
     """
 
-    def __init__(self, game: Game, focus: tuple = (0, 0), zoom: float = 1.0):
-        super().__init__(game)
+    def __init__(self, scene: Scene, focus: tuple = (0, 0), zoom: float = 1.0):
+        super().__init__(scene)
 
         self.zoom: float = zoom
         self.focus: Vector = Vector(focus)
@@ -92,7 +64,7 @@ class PixelCamera(Camera):
     def focus(self, pos):
         self._focus = Vector(pos)
 
-        w, h = self.game.width, self.game.height
+        w, h = self.scene.game.width, self.scene.game.height
 
         x_range = (
             ((-w / 2.0) + self.focus.x) / self.zoom,
@@ -128,6 +100,6 @@ class ScreenPixelCamera(PixelCamera):
 
     """
 
-    def __init__(self, game: Game, zoom: float = 1.0):
-        focus = (game.width // 2, game.height // 2)  # center of screen
-        super().__init__(game, focus, zoom)
+    def __init__(self, scene: Scene, zoom: float = 1.0):
+        focus = (scene.game.width // 2, scene.game.height // 2)  # center of screen
+        super().__init__(scene, focus, zoom)

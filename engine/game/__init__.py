@@ -23,9 +23,6 @@ class Game:
         # the currently loaded gamestate
         self.state: GameState = GameState(self)
 
-        # a list of cameras
-        self.cameras: typing.List[Camera] = []
-
         # a list of scenes
         self.scenes: typing.List[Scene] = []
 
@@ -36,14 +33,11 @@ class Game:
         # the keyboard input object
         self.input: Input = Input()
 
-        hud_scene = self.createScene()
+        self.hud_scene: Scene = self.create_scene()
+        self.hud_scene.use_camera(ScreenPixelCamera)
+        self.hud_scene.spawnComponent(FpsDisplay, (0, 0))
 
-        self.console: Console = hud_scene.spawnComponent(Console, (0, 0))
-        hud_scene.spawnComponent(FpsDisplay, (0, 0))
-
-        hud_view = ScreenPixelCamera(self)
-        hud_view.assignScene(hud_scene)
-        self.cameras.append(hud_view)
+        self.console: Console = self.hud_scene.spawnComponent(Console, (0, 0))
 
     def log(self, message):
         """
@@ -51,7 +45,7 @@ class Game:
         """
         self.console.log(message)
 
-    def loadScene(self, scene_class: typing.Type[Scene]) -> Scene:
+    def load_scene(self, scene_class: typing.Type[Scene]) -> Scene:
         """[summary]
 
         Args:
@@ -66,30 +60,20 @@ class Game:
         self.scenes.insert(0, scene)
         return scene
 
-    def createScene(self):
+    def create_scene(self) -> Scene:
         """Create and return an empty Scene."""
-        return self.loadScene(Scene)
+        return self.load_scene(Scene)
 
-    def createCamera(self, camera_class: typing.Type[Camera] = None,
-                     *args, **kwargs):
-        """Create and return a Camera object."""
-        if camera_class is None:
-            camera_class = Camera
-
-        camera = camera_class(self, *args, **kwargs)  # type: ignore
-        self.cameras.append(camera)
-        return camera
-
-    def renderScenes(self, delta: float):
+    def render_all_scenes(self, delta: float):
         """Render all scenes.
 
         Args:
             delta (float): change in time from the last frame
         """
-        for camera in self.cameras:
-            camera.renderScene(delta)
+        for scene in self.scenes:
+            scene.render(delta)
 
-    def updateScenes(self, delta: float):
+    def update_all_scenes(self, delta: float):
         """Update all scenes.
 
         Args:
@@ -105,7 +89,7 @@ class Game:
                                       vsync=False)
 
         # schedule updateScenes() at fixed rate
-        pyglet.clock.schedule_interval(self.updateScenes, SPT)
+        pyglet.clock.schedule_interval(self.update_all_scenes, SPT)
 
         closed = False
 
@@ -136,7 +120,7 @@ class Game:
         # accum_time = 0
 
         # update scenes at 0th tick
-        self.updateScenes(SPT)
+        self.update_all_scenes(SPT)
 
         # ----------------------------------------------------------------------
         #  Game Loop
@@ -173,7 +157,7 @@ class Game:
             # rendering
             # ---------
 
-            self.renderScenes(delta)
+            self.render_all_scenes(delta)
 
             if not closed:
                 window.flip()

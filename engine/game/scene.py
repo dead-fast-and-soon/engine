@@ -5,9 +5,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Type
 import pyglet
 
+from engine.camera import PixelCamera
 from structs.vector import Vector
 
 if TYPE_CHECKING:
+    from engine.camera import Camera
     from engine.game import Game
     from engine.entity import Entity
     from engine.component import Element, Component, SceneComponent
@@ -28,11 +30,23 @@ class Scene:
         """
         self.game: Game = game
 
-        # the batch to use to render
-        self.batch = pyglet.graphics.Batch()
+        # the batch to use to minimize draw calls
+        self.pyglet_batch = pyglet.graphics.Batch()
+
+        # the camera to use to render this scene
+        self.camera: Camera = PixelCamera(self)
 
         # a list of extra raw components to render (debug)
         self.components: List[SceneComponent] = []
+
+    def use_camera(self, camera_class: Type[Camera], *args, **kwargs):
+        """
+        Set the camera that will be used to render this Scene.
+
+        Args:
+            camera (Camera): the camera to use
+        """
+        self.camera = camera_class(self, *args, **kwargs)  # type: ignore
 
     def render(self, delta: float):
         """Render this scene.
@@ -45,7 +59,8 @@ class Scene:
                            the last frame
 
         """
-        self.batch.draw()  # render everything in the batch
+        self.camera.arm()  # set openGL coordinates
+        self.pyglet_batch.draw()  # render everything in the batch
 
         for component in self.components:
             component.onRender(delta)
