@@ -1,50 +1,51 @@
+
+from __future__ import annotations
 import pyglet
 from pyglet import image, gl
-from engine.component import Component
-from engine.components.debug import CircleComponent
+from engine.component import SceneComponent, spawnable
+from engine.asset.image import ImageAsset
 from structs.vector import Vector
 
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from engine.spritesheet import SpriteSheet
+    from engine.asset.tileset import TilesetAsset
 
 
-class SpriteComponent(Component):
+class Sprite(SceneComponent):
 
-    def __init__(
-        self, img, x: float = 0.0, y: float = 0.0,
-        *, batch=None, parent=None
-    ):
-        """ Creates a sprite. """
-        super().__init__(x, y, parent)
+    @spawnable
+    def __init__(self, image: ImageAsset):
+        """
+        A sprite object. These are loaded from an image.
 
-        if batch is None:
-            self.handle = pyglet.sprite.Sprite(img, x, y)
-        else:
-            self.handle = pyglet.sprite.Sprite(img, x, y, batch=batch)
+        Args:
+            img ([type]): the image to use
+            batch ([type], optional): the pyglet batch to render this sprite.
+                                      Defaults to None.
+        """
+        self.pyglet_sprite = pyglet.sprite.Sprite(
+            image.pyglet_image,
+            x=self.pos.x, y=self.pos.y,
+            batch=self.scene.pyglet_batch
+        )
 
-        # self.addComponent(CircleComponent())
-
-    def setScale(self, n: float):
+    def set_scale(self, n: float):
         """
         Sets the scale of the sprite.
 
             :param float n: The scale factor
         """
-        self.scale = n
+        self.pyglet_sprite.scale = n
 
-    def onRender(self):
-
-        self.handle.x = self.spos.x
-        self.handle.y = self.spos.y
-
-        self.handle.scale = self.view.zoom
-
-        self.handle.draw()
+    def onRender(self, delta: float):
+        pass
+        # self.pyglet_sprite.x = self.pos.x
+        # self.pyglet_sprite.y = self.pos.y
+        # self.pyglet_sprite.draw()
 
 
-class SpriteTextComponent(Component):
+class SpriteText(SceneComponent):
     """
     A string of text that is rendered using sprites.
     """
@@ -72,13 +73,11 @@ class SpriteTextComponent(Component):
         '>': 109  # solid right arrow
     }
 
-    def __init__(self, sheet: SpriteSheet, x: float = 0.0, y: float = 0.0,
-                 text: str = '', scale: int = 1, parent=None, view=None):
+    @spawnable
+    def __init__(self, sheet: TilesetAsset, text: str = '', scale: int = 1):
         """
         Creates text (using a sprite sheet) to be rendered.
         """
-        super().__init__(x, y, parent, view)
-
         # the spacing between each sprite
         self.charSpacing: int = 0
 
@@ -92,7 +91,7 @@ class SpriteTextComponent(Component):
         self.loc: Vector = Vector(0, 0)
 
         # the sprite sheet currently in use
-        self.sheet: SpriteSheet = sheet
+        self.sheet: TilesetAsset = sheet
 
         if text != '':
             self.loadText(text)
@@ -121,19 +120,16 @@ class SpriteTextComponent(Component):
             else:
                 i = self.MAP.get(char, 0)
 
-                spr = self.sheet[i]
-                spr.setScale(self.scale)
+                tile: ImageAsset = self.sheet[i]
+                tile.set_scale(self.scale)
 
-                spr.x = ((self.sheet.width + self.charSpacing) * col *
-                         self.scale)
+                x = ((self.sheet.width + self.charSpacing) * col * self.scale)
+                y = ((self.sheet.width + self.lineHeight) * line * self.scale)
 
-                spr.y = ((self.sheet.width + self.lineHeight) * line *
-                         self.scale)
-
-                self.addComponent(spr)
+                self.spawnComponent(Sprite, (x, y), tile)
                 col += 1
 
         # shift all sprites up to align (0, 0) at bottom left
         self.translateChildren(0, (self.sheet.width + self.lineHeight) * -line)
 
-        print(f'rendering text at ({ self.x }, { self.y })')
+        print(f'rendering text at ({ self.pos.x }, { self.pos.y })')
