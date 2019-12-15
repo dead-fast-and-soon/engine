@@ -86,8 +86,7 @@ class Scene:
         self.on_update(delta)
 
         for entity in self.entities:
-            entity.on_update(delta)
-            entity.root_component.on_update(delta)
+            entity.update(delta)
 
         for component in self.components:
             component.on_update(delta)

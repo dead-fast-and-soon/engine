@@ -32,7 +32,7 @@ class Component(BaseObject):
         """
         super().__init__(pos=pos)
 
-        self.parent: Optional[Component] = parent
+        self._parent: Optional[Component] = parent
         self.children: List[Component] = []
 
     def add_component(self, *components: Component):
@@ -57,6 +57,31 @@ class Component(BaseObject):
     # -------------------------------------------------------------------------
     # Properties
     # -------------------------------------------------------------------------
+
+    @property
+    def parent(self) -> Optional[Component]:
+        """
+        Get the parent Component of this Component.
+
+        Returns:
+            Component: the parent Component or None
+        """
+        return self._parent
+
+    @parent.setter
+    def parent(self, parent: Component):
+        """
+        Set the parent Component of this Component.
+
+        Args:
+            parent (Component): the new parent Component
+        """
+        if parent is not self._parent:  # run only if the parents are different
+            if self._parent is not None and self in self._parent.children:
+                parent.children.remove(self)  # remove self from old parent
+            self._parent = parent
+            if self not in parent.children:
+                parent.children.append(self)  # add self to new parent
 
     @BaseObject.position.setter  # type: ignore
     def position(self, position: tuple):

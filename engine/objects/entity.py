@@ -32,15 +32,19 @@ class Entity(BaseObject):
         # the root Component of this entity
         self.root_component: Component = Component(pos=pos)
 
+    def update(self, delta: float):
+        self.on_update(delta)
+        self.root_component.on_update(delta)
+
     # --------------------------------------------------------------------------
     # Events (to be overridden by subclasses)
     # --------------------------------------------------------------------------
 
-    @BaseObject.property.getter  # type: ignore
+    @BaseObject.position.getter  # type: ignore
     def position(self) -> Vector:
         return self.root_component.position
 
-    @BaseObject.property.setter  # type: ignore
+    @BaseObject.position.setter  # type: ignore
     def position(self, pos: tuple):
         self.root_component.position = pos
 
@@ -60,3 +64,21 @@ class Entity(BaseObject):
             delta (float): the difference in time from the last tick
         """
         pass
+
+    @staticmethod
+    def spawnable(old_init: typing.Callable) -> typing.Callable:
+        """
+        Implicitly adds parameters needed to call `Entity.__init__()`.
+
+        Args:
+            old_init (typing.Callable): the original __init__ function
+
+        Returns:
+            typing.Callable: the new __init__ function
+        """
+        def wrapped_entity_init(self, *args,
+                                pos: tuple, scene: Scene, **kwargs):
+            Entity.__init__(self, scene=scene, pos=pos)
+            old_init(self, *args, **kwargs)
+
+        return wrapped_entity_init
