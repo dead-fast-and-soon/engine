@@ -4,10 +4,10 @@ import pyglet.window.key as key
 import typing
 import time
 
-from engine.entity import Entity
+from engine.objects.entity import Entity
 from engine.input import Input
-from engine.game.state import GameState
-from engine.game.scene import Scene
+from engine.state import GameState
+from engine.scene import Scene
 from engine.camera import Camera, ScreenPixelCamera
 from engine.components.debug import Console, FpsDisplay
 
@@ -35,9 +35,9 @@ class Game:
 
         self.hud_scene: Scene = self.create_scene()
         self.hud_scene.use_camera(ScreenPixelCamera)
-        self.hud_scene.spawnComponent(FpsDisplay, (0, 0))
+        self.hud_scene.spawn_component(FpsDisplay, (0, 0))
 
-        self.console: Console = self.hud_scene.spawnComponent(Console, (0, 0))
+        self.console: Console = self.hud_scene.spawn_component(Console, (0, 0))
 
     def log(self, message):
         """
@@ -105,7 +105,7 @@ class Game:
             for scene in self.scenes:
                 for component in scene.components:
                     if isinstance(component, Entity):
-                        component.onKeyPress(symbol, modifiers)
+                        component.on_key_press(symbol, modifiers)
 
         @window.event
         def on_key_release(symbol, modifiers):
@@ -114,7 +114,7 @@ class Game:
             for scene in self.scenes:
                 for component in scene.components:
                     if isinstance(component, Entity):
-                        component.onKeyRelease(symbol, modifiers)
+                        component.on_key_release(symbol, modifiers)
 
         last_time = time.perf_counter()
         # accum_time = 0

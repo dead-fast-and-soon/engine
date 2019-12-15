@@ -3,13 +3,13 @@ from pyglet import graphics
 
 import math
 
-from engine.component import Component, SceneComponent, spawnable
+from engine.objects.component import Component, SceneComponent, spawnable
 from structs.vector import Transform
 
 
 class DotComponent(Component):
 
-    def onRender(self):
+    def on_render(self):
         pyglet.graphics.draw(
             1,
             pyglet.gl.GL_POINTS,
@@ -33,7 +33,7 @@ class BoxComponent(Component):
                  b=255,
                  parent=None,
                  view=None):
-        super().__init__(pos=(x, y), parent=parent, view=view)
+        super().__init__(pos=(x, y), parent=parent)
 
         self.w = w
         self.h = h
@@ -43,10 +43,10 @@ class BoxComponent(Component):
             4, 'v2i', ('c3B', (r, g, b) * 4)
         )
 
-    def onUpdate(self, delta):
+    def on_update(self, delta):
         pass
 
-    def onRender(self, delta):
+    def on_render(self, delta):
         wpos = self.wpos
         t = self.view.transform(Transform(wpos.x, wpos.y, self.w, self.h))
 
@@ -65,7 +65,7 @@ class BoxComponent(Component):
 #         self.radius = radius
 #         self.n = n
 
-#     def onRender(self, delta):
+#     def on_render(self, delta):
 
 #         pos = self.spos
 
@@ -95,8 +95,8 @@ class Text(SceneComponent):
             text,
             font_name='Consolas',
             font_size=12,
-            x=self.pos.x, y=self.pos.y,
-            batch=self.scene.batch
+            x=self.position.x, y=self.position.y,
+            batch=self.scene.pyglet_batch
         )
         self.text = text
 
@@ -108,9 +108,9 @@ class Text(SceneComponent):
     def text(self, text: str):
         self.handle.text = text
 
-    def onPositionChange(self):
-        self.handle.x = self.pos.x
-        self.handle.y = self.pos.y
+    def on_position_change(self):
+        self.handle.x = self.position.x
+        self.handle.y = self.position.y
 
 
 class FpsDisplay(SceneComponent):
@@ -118,12 +118,12 @@ class FpsDisplay(SceneComponent):
     @spawnable
     def __init__(self):
 
-        self.text: Text = self.spawnComponent(Text, self.pos)
+        self.text: Text = self.spawn_component(Text, self.position)
 
         self.deltas = []
         self.last_frametime = 0
 
-    def onUpdate(self, delta):
+    def on_update(self, delta):
 
         if self.last_frametime > 0:
             fps = str(round(1.0 / self.last_frametime, 2))
@@ -132,7 +132,7 @@ class FpsDisplay(SceneComponent):
 
         self.text.text = 'FPS: ' + fps
 
-    def onRender(self, delta):
+    def on_render(self, delta):
 
         # if delta > 0:
         #     self.deltas.append(delta)
@@ -148,17 +148,17 @@ class Console(SceneComponent):
     @spawnable
     def __init__(self, width=400, height=720):
 
-        print(f'placing console @({self.pos.x},{self.pos.y})')
+        print(f'placing console @({self.position.x},{self.position.y})')
         self.document = pyglet.text.document.FormattedDocument()
 
         self.layout: pyglet.text.layout.TextLayout =\
             pyglet.text.layout.TextLayout(
                 self.document, width=None, height=None,
                 multiline=True, wrap_lines=False,
-                batch=self.scene.batch
+                batch=self.scene.pyglet_batch
             )
-        self.layout.x = self.pos.x
-        self.layout.y = self.pos.y
+        self.layout.x = self.position.x
+        self.layout.y = self.position.y
         self.layout.anchor_x = 'left'
         self.layout.anchor_y = 'bottom'
 
@@ -186,11 +186,11 @@ class Console(SceneComponent):
             )
         )
 
-    def onPositionChange(self):
-        self.layout.x = self.pos.x
-        self.layout.y = self.pos.y
+    def on_position_change(self):
+        self.layout.x = self.position.x
+        self.layout.y = self.position.y
 
-    def onRender(self, delta):
+    def on_render(self, delta):
         # print("rendering console")
         # self.layout.draw()
         pass

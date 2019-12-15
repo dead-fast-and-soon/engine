@@ -2,7 +2,7 @@
 from __future__ import annotations
 import pyglet
 from pyglet import image, gl
-from engine.component import SceneComponent, spawnable
+from engine.objects.component import SceneComponent, spawnable
 from engine.asset.image import ImageAsset
 from structs.vector import Vector
 
@@ -26,7 +26,7 @@ class Sprite(SceneComponent):
         """
         self.pyglet_sprite = pyglet.sprite.Sprite(
             image.pyglet_image,
-            x=self.pos.x, y=self.pos.y,
+            x=self.position.x, y=self.position.y,
             batch=self.scene.pyglet_batch
         )
 
@@ -38,10 +38,10 @@ class Sprite(SceneComponent):
         """
         self.pyglet_sprite.scale = n
 
-    def onRender(self, delta: float):
-        pass
-        # self.pyglet_sprite.x = self.pos.x
-        # self.pyglet_sprite.y = self.pos.y
+    def on_update(self, delta: float):
+
+        self.pyglet_sprite.x = self.position.x
+        self.pyglet_sprite.y = self.position.y
         # self.pyglet_sprite.draw()
 
 
@@ -104,7 +104,7 @@ class SpriteText(SceneComponent):
         If text was previously loaded, it will be deleted first.
         """
 
-        self.deleteChildren()
+        self.children = []
 
         line, col = 0, 0
 
@@ -126,10 +126,10 @@ class SpriteText(SceneComponent):
                 x = ((self.sheet.width + self.charSpacing) * col * self.scale)
                 y = ((self.sheet.width + self.lineHeight) * line * self.scale)
 
-                self.spawnComponent(Sprite, (x, y), tile)
+                self.spawn_component(Sprite, (x, y), tile)
                 col += 1
 
         # shift all sprites up to align (0, 0) at bottom left
-        self.translateChildren(0, (self.sheet.width + self.lineHeight) * -line)
+        self.position += (0, (self.sheet.width + self.lineHeight) * -line)
 
-        print(f'rendering text at ({ self.pos.x }, { self.pos.y })')
+        print(f'rendering text at ({ self.position.x }, { self.position.y })')

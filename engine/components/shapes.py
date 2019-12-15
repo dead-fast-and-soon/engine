@@ -3,7 +3,7 @@ import math
 import pyglet
 import typing
 
-from engine.component import Component, SceneComponent, spawnable
+from engine.objects.component import Component, SceneComponent, spawnable
 from structs.color import Color, WHITE
 from structs.vector import Transform
 
@@ -22,14 +22,14 @@ class Box(SceneComponent):
 
         self.width, self.height = size
         self._color = color
-        x, y, w, h = self.pos.x, self.pos.y, self.width, self.height
+        x, y, w, h = self.position.x, self.position.y, self.width, self.height
 
-        self.vertex_list = self.scene.batch.add(
+        self.vertex_list = self.scene.pyglet_batch.add(
             4, pyglet.gl.GL_QUADS, None, 'v2f',
             ('c3B', tuple(color) * 4)
         )
 
-        self.onPositionChange()
+        self.on_position_change()
 
     @property
     def color(self):
@@ -40,11 +40,11 @@ class Box(SceneComponent):
         self._color = color
         self.vertex_list.colors = tuple(color) * 4
 
-    def onDestroy(self):
+    def on_destroy(self):
         self.vertex_list.delete()
 
-    def onPositionChange(self):
-        x, y, w, h = self.pos.x, self.pos.y, self.width, self.height
+    def on_position_change(self):
+        x, y, w, h = self.position.x, self.position.y, self.width, self.height
         self.vertex_list.vertices = [
             x + 0, y + 0,
             x + w, y + 0,
@@ -71,20 +71,20 @@ class BoxTestComponent(SceneComponent):
                 # cyan to green
                 color = Color(0, 255, int(255 * (1 - ((i - 750) / 750))))
 
-            box = self.spawnComponent(
+            box = self.spawn_component(
                 Box, ((i - 750) * 0.8, 0),
                 size=(10, 10), color=color
             )
             self.boxes.append(box)
 
-    def onUpdate(self, delta: float):
+    def on_update(self, delta: float):
 
         for i in range(0, len(self.boxes)):
             box = self.boxes[i]
             box.pos = (
                 box.pos.x,
-                math.sin(self.ticks * 0.01 + (i * 0.1)) *
-                math.cos(self.ticks * 0.01 + (i * 0.01)) * 200
+                math.sin(self.ticks * 0.01 + (i * 0.1))
+                * math.cos(self.ticks * 0.01 + (i * 0.01)) * 200
             )
 
         self.ticks += 1
@@ -104,8 +104,8 @@ class BoxBatch(Component):
         self.elements.append(quad)
         return quad
 
-    def onUpdate(self, delta: float):
+    def on_update(self, delta: float):
         pass
 
-    def onRender(self, delta: float):
+    def on_render(self, delta: float):
         self.batch.draw()

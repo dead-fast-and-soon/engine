@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from engine.camera import Camera
     from engine.game import Game
     from engine.entity import Entity
-    from engine.component import Element, Component, SceneComponent
+    from engine.objects.component import Component, SceneComponent
 
 
 class Scene:
@@ -41,10 +41,12 @@ class Scene:
 
     def use_camera(self, camera_class: Type[Camera], *args, **kwargs):
         """
-        Set the camera that will be used to render this Scene.
+        Creates a Camera that will be used to render this scene.
+        All other arguments will be forwarded to the constructor of the
+        Camera class provided.
 
         Args:
-            camera (Camera): the camera to use
+            camera_class (Type[Camera]): the class of the camera
         """
         self.camera = camera_class(self, *args, **kwargs)  # type: ignore
 
@@ -52,7 +54,7 @@ class Scene:
         """Render this scene.
 
         This method will call this scene's batch draw, as well as
-        every component's onRender() methods.
+        every component's on_render() methods.
 
         Args:
             delta (float): the time (in seconds) that passed since
@@ -63,31 +65,31 @@ class Scene:
         self.pyglet_batch.draw()  # render everything in the batch
 
         for component in self.components:
-            component.onRender(delta)
+            component.on_render(delta)
 
     def update(self, delta: float):
         """Update this scene.
 
-        This method will call every component's onUpdate() methods.
+        This method will call every component's on_update() methods.
 
         Args:
             delta (float): the time (in seconds) that passed since
                            the last tick
         """
-        self.onUpdate(delta)
+        self.on_update(delta)
 
         for component in self.components:
-            component.onUpdate(delta)
+            component.on_update(delta)
 
-    def spawnComponent(self, cmp_class: Type[SceneComponent],
-                       pos: tuple = (0, 0), *args, parent: Element = None,
-                       **kwargs) -> SceneComponent:
+    def spawn_component(self, cmp_class: Type[SceneComponent],
+                        pos: tuple = (0, 0), *args, parent: Component = None,
+                        **kwargs) -> SceneComponent:
         """Create a component from its class.
 
         Args:
             cmp_class (Type[SceneComponent]): the class of the component
             pos (tuple, optional): the position to spawn the component
-            parent (Element, optional): the parent of this component
+            parent (Object, optional): the parent of this component
 
         Returns:
             SceneComponent: the component that was spawned
@@ -116,7 +118,7 @@ class Scene:
                 f'destroying entity {type(component).__name__} '
                 f'({len(component.children)} components)'
             )
-            component.onDestroy()
+            component.on_destroy()
 
             for child in component.children:
                 if type(child) is SceneComponent:
@@ -141,6 +143,6 @@ class Scene:
         """
         pass
 
-    def onUpdate(self, delta: float):
+    def on_update(self, delta: float):
         """This method is called on every tick."""
         pass
