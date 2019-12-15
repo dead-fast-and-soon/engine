@@ -58,14 +58,10 @@ class Component(BaseObject):
     # Properties
     # -------------------------------------------------------------------------
 
-    @property
-    def position(self) -> Vector:
-        return super(Component, self).position
-
-    @position.setter
+    @BaseObject.position.setter  # type: ignore
     def position(self, position: tuple):
         """
-        Overrides `BaseObject.position`
+        Overrides `BaseObject.position` setter method
 
         Args:
             position (tuple): the new position of this component
@@ -74,10 +70,11 @@ class Component(BaseObject):
         a: Vector = self.position
         b: Vector = Vector(position)
 
+        self._pos = b
         for child in self.children:
             child.position += (b.x - a.x, b.y - a.y)
 
-        super(Component, self).position.fset(self, b)  # type: ignore
+        self.on_position_change()
 
     @property
     def local_position(self) -> Vector:
