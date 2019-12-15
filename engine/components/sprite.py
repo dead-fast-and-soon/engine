@@ -2,7 +2,7 @@
 from __future__ import annotations
 import pyglet
 from pyglet import image, gl
-from engine.objects.component import SceneComponent, spawnable
+from engine.objects.component import BatchComponent
 from engine.asset.image import ImageAsset
 from structs.vector import Vector
 
@@ -12,9 +12,9 @@ if TYPE_CHECKING:
     from engine.asset.tileset import TilesetAsset
 
 
-class Sprite(SceneComponent):
+class Sprite(BatchComponent):
 
-    @spawnable
+    @BatchComponent.spawnable
     def __init__(self, image: ImageAsset, scale: float = 1):
         """
         A sprite object. These are loaded from an image.
@@ -48,7 +48,7 @@ class Sprite(SceneComponent):
         # self.pyglet_sprite.draw()
 
 
-class SpriteText(SceneComponent):
+class SpriteText(BatchComponent):
     """
     A string of text that is rendered using sprites.
     """
@@ -76,7 +76,7 @@ class SpriteText(SceneComponent):
         '>': 109  # solid right arrow
     }
 
-    @spawnable
+    @BatchComponent.spawnable
     def __init__(self, tileset: TilesetAsset, text: str = '', scale: int = 1):
         """
         Creates text (using a sprite sheet) to be rendered.

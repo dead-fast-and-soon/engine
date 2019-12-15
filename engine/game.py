@@ -9,7 +9,8 @@ from engine.input import Input
 from engine.state import GameState
 from engine.scene import Scene
 from engine.camera import Camera, ScreenPixelCamera
-from engine.components.debug import Console, FpsDisplay
+from engine.components.debug import FpsDisplay
+from engine.components.console import Console
 
 SPT = 1.0 / 60.0  # 60 ticks per second
 
@@ -38,6 +39,9 @@ class Game:
         self.hud_scene.spawn_component(FpsDisplay, (0, 0))
 
         self.console: Console = self.hud_scene.spawn_component(Console, (0, 0))
+
+        # the time elapsed since the last frame
+        self.last_delta: float = 0
 
     def log(self, message):
         """
@@ -157,6 +161,7 @@ class Game:
             # rendering
             # ---------
 
+            self.last_delta = delta
             self.render_all_scenes(delta)
 
             if not closed:

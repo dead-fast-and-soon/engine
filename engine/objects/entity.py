@@ -32,9 +32,24 @@ class Entity(BaseObject):
         # the root Component of this entity
         self.root_component: Component = Component(pos=pos)
 
+    def render(self, delta: float):
+        """
+        Render this Entity.
+
+        Args:
+            delta (float): [description]
+        """
+        self.root_component.render(delta)
+
     def update(self, delta: float):
+        """
+        Update this Entity.
+
+        Args:
+            delta (float): [description]
+        """
         self.on_update(delta)
-        self.root_component.on_update(delta)
+        self.root_component.update(delta)
 
     # --------------------------------------------------------------------------
     # Events (to be overridden by subclasses)

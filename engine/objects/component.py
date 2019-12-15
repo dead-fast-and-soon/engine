@@ -4,7 +4,8 @@
 from __future__ import annotations
 
 import inspect
-from typing import List, Optional, Union, Type, TypeVar, TYPE_CHECKING
+from typing import (List, Optional, Union,
+                    Type, TypeVar, Callable, TYPE_CHECKING)
 
 from engine.objects.base import BaseObject
 from structs.vector import Vector
@@ -53,6 +54,27 @@ class Component(BaseObject):
             components (Component): the components to remove
         """
         self.children.remove(*components)
+
+    def render(self, delta: float):
+        """
+        Render this Component.
+
+        Args:
+            delta (float): the time difference from the last frame
+        """
+        for child in self.children:
+            if isinstance(child, RenderedComponent): child.render(delta)
+
+    def update(self, delta: float):
+        """
+        Update this Component.
+
+        Args:
+            delta (float): the time difference from the last tick
+        """
+        self.on_update(delta)
+        for child in self.children:
+            child.update(delta)
 
     # -------------------------------------------------------------------------
     # Properties
@@ -132,10 +154,6 @@ class Component(BaseObject):
     # Events (to be overridden by subclasses)
     # -------------------------------------------------------------------------
 
-    def on_render(self, delta: float):
-        """Render this component on every frame."""
-        pass
-
     def on_update(self, delta: float):
         """Update this component on every tick."""
         pass
@@ -147,15 +165,66 @@ class Component(BaseObject):
         pass
 
 
-class SceneComponent(Component):
+class RenderedComponent(Component):
     """
-    A SceneComponent is a Component that is rendered by a Scene.
+    A RenderedComponent is a Component that is rendered
+    using a render call.
+    """
+
+    def __init__(self, pos: tuple = (0, 0), parent: Component = None):
+        """
+        Create a RenderedComponent.
+
+        Args:
+            pos (tuple, optional): [description]. Defaults to (0, 0).
+            parent (Component, optional): [description]. Defaults to None.
+        """
+        super().__init__(pos=pos, parent=parent)
+
+    def render(self, delta: float):
+        """
+        Render this Component.
+
+        Args:
+            delta (float): the time difference from the last frame
+        """
+        self.on_render(delta)
+        for child in self.children:
+            if isinstance(child, RenderedComponent): child.render(delta)
+
+    def on_render(self, delta: float):
+        """Render this component on every frame."""
+        pass
+
+    @staticmethod
+    def spawnable(old_init: Callable) -> Callable:
+        """
+        [summary]
+
+        Args:
+            old_init (typing.Callable): [description]
+
+        Returns:
+            typing.Callable: [description]
+        """
+        def wrapped_init(self, *args, pos: tuple, parent: Component, **kwargs):
+
+            RenderedComponent.__init__(self, pos=pos, parent=parent)
+            old_init(self, *args, **kwargs)
+
+        return wrapped_init
+
+
+class BatchComponent(Component):
+    """
+    A BatchComponent is a Component that is rendered using
+    a batched render call from a Scene.
     """
 
     def __init__(self, scene: Scene,
                  pos: tuple = (0, 0), parent: Component = None):
         """
-        Create a SceneComponent.
+        Create a BatchComponent.
 
         Args:
             scene (Scene): the scene that renders this component
@@ -164,56 +233,47 @@ class SceneComponent(Component):
         """
         super().__init__(pos=pos, parent=parent)
 
+        # the scene to use to render this component
         self.scene: Scene = scene
+
+        # should this update every tick or every frame
+        self.is_tickrate_uncapped = False
 
     def spawn_component(self, comp_cls, pos: Union[tuple, Vector],
                         *args, **kwargs):
         """
-        Instantiate a new SceneComponent and add it to this one.
+        Instantiate a new BatchComponent and add it to this one.
         """
         component = self.scene.spawn_component(comp_cls, pos, parent=self,
                                                *args, **kwargs)
         self.add_component(component)
         return component
 
+    @staticmethod
+    def spawnable(old_init: Callable) -> Callable:
+        """
+        Implicitly adds parameters needed to call
+        `BatchComponent.__init__()`
+        and implicitly calls `super().__init__()`.
 
-def spawnable(old_init):
-    """
-    Implicitly adds parameters needed to call `SceneComponent.__init__()`
-    and implicitly calls `super().__init__()`.
+        When using this decorator, it is recommended to create instances
+        of this component using `Scene.spawn_component()`.
 
-    When using this decorator, it is recommended to create instances
-    of this component using `Scene.spawn_component()`.
+            class ExampleComponent(BatchComponent):
+                @spawnable
+                def __init__(self):
+                    pass
 
-        class ExampleComponent(SceneComponent):
-            @spawnable
-            def __init__(self):
-                pass
+            game = Game()
+            scene = game.newScene()
 
-        game = Game()
-        scene = game.newScene()
+            scene.spawn_component(ExampleComponent)
+        """
 
-        scene.spawn_component(ExampleComponent)
-    """
+        def wrapped_init(self, *args, pos: tuple, scene: Scene,
+                         parent: Component, **kwargs):
 
-    def component_super(self, *args, pos: tuple, scene: Scene,
-                        parent: Component, **kwargs):
-        SceneComponent.__init__(self, scene=scene, pos=pos, parent=parent)
+            BatchComponent.__init__(self, scene=scene, pos=pos, parent=parent)
+            old_init(self, *args, **kwargs)
 
-        old_init(self, *args, **kwargs)
-
-    sig_old = inspect.signature(old_init)
-
-    # old parameter list
-    params_a = list(sig_old.parameters.values())
-    # new parameter list
-    params_b = list(inspect.signature(component_super).parameters.values())
-
-    # insert old parameter list into new
-    new_params = (params_a[0:1] + params_b[2:5] + params_a[1:]
-                  + params_b[1:2] + params_b[5:6])
-
-    # component_super.__signature__ = sig_old.replace(
-    #     parameters=tuple(new_params))
-
-    return component_super
+        return wrapped_init

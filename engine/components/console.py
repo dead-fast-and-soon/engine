@@ -1,15 +1,15 @@
 
 import pyglet
 
-from engine.objects.component import SceneComponent, spawnable
+from engine.objects.component import BatchComponent
 
 
-class Console(SceneComponent):
+class Console(BatchComponent):
     """
     A console used for debugging.
     """
 
-    @spawnable
+    @BatchComponent.spawnable
     def __init__(self, width=400, height=720):
         """
         Create a new console.

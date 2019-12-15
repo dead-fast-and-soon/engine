@@ -7,12 +7,12 @@ import pyglet
 
 from engine.camera import PixelCamera
 from structs.vector import Vector
+from engine.objects.component import Component, BatchComponent
 
 if TYPE_CHECKING:
     from engine.camera import Camera
     from engine.game import Game
     from engine.objects.entity import Entity
-    from engine.objects.component import Component, SceneComponent
 
 
 class Scene:
@@ -69,10 +69,10 @@ class Scene:
         self.pyglet_batch.draw()  # render everything in the batch
 
         for entity in self.entities:
-            entity.root_component.on_render(delta)
+            entity.render(delta)
 
         for component in self.components:
-            component.on_render(delta)
+            component.render(delta)
 
     def update(self, delta: float):
         """Update this scene.
@@ -89,7 +89,7 @@ class Scene:
             entity.update(delta)
 
         for component in self.components:
-            component.on_update(delta)
+            component.update(delta)
 
     def spawn_entity(self, ent_class: Type[Entity], pos: tuple = (0, 0),
                      *args, **kwargs):
@@ -107,19 +107,19 @@ class Scene:
 
         self.entities.append(entity)
 
-    def spawn_component(self, cmp_class: Type[SceneComponent],
+    def spawn_component(self, cmp_class: Type[BatchComponent],
                         pos: tuple = (0, 0), *args, parent: Component = None,
-                        **kwargs) -> SceneComponent:
+                        **kwargs) -> BatchComponent:
         """
         Create a component from its class.
 
         Args:
-            cmp_class (Type[SceneComponent]): the class of the component
+            cmp_class (Type[BatchComponent]): the class of the component
             pos (tuple, optional): the position to spawn the component
             parent (Object, optional): the parent of this component
 
         Returns:
-            SceneComponent: the component that was spawned
+            BatchComponent: the component that was spawned
         """
         kwargs['pos'] = pos
         kwargs['scene'] = self

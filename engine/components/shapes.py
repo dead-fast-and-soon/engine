@@ -3,7 +3,7 @@ import math
 import pyglet
 import typing
 
-from engine.objects.component import Component, SceneComponent, spawnable
+from engine.objects.component import Component, BatchComponent
 from structs.color import Color, WHITE
 from structs.vector import Transform
 
@@ -11,10 +11,10 @@ if typing.TYPE_CHECKING:
     from engine.game.scene import Scene
 
 
-class Box(SceneComponent):
+class Box(BatchComponent):
     """A box that is a part of a scene."""
 
-    @spawnable
+    @BatchComponent.spawnable
     def __init__(self, size: tuple, color=None):
 
         if color is None:
@@ -53,10 +53,10 @@ class Box(SceneComponent):
         ]
 
 
-class BoxTestComponent(SceneComponent):
+class BoxTestComponent(BatchComponent):
     """A graphics test using boxes."""
 
-    @spawnable
+    @BatchComponent.spawnable
     def __init__(self):
 
         self.boxes = []
