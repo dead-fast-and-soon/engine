@@ -17,12 +17,12 @@ scene = game.create_scene()
 scene.use_camera(PixelCamera, zoom=4)
 
 # spawn sprites
-scene.spawnComponent(Sprite, (0, 0), tileset.get_tile(0))
-scene.spawnComponent(Sprite, (16, 0), tileset.get_tile(1))
-scene.spawnComponent(Sprite, (32, 0), tileset.get_tile(2))
-scene.spawnComponent(Sprite, (48, 0), tileset.get_tile(3))
-scene.spawnComponent(Sprite, (64, 0), tileset.get_tile(4))
-scene.spawnComponent(Sprite, (80, 0), tileset.get_tile(5))
+scene.spawn_component(Sprite, (0, 0), tileset.get_tile(0))
+scene.spawn_component(Sprite, (16, 0), tileset.get_tile(1))
+scene.spawn_component(Sprite, (32, 0), tileset.get_tile(2))
+scene.spawn_component(Sprite, (48, 0), tileset.get_tile(3))
+scene.spawn_component(Sprite, (64, 0), tileset.get_tile(4))
+scene.spawn_component(Sprite, (80, 0), tileset.get_tile(5))
 
 # start game
 game.start()
