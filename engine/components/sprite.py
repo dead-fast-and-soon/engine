@@ -41,7 +41,7 @@ class Sprite(SceneComponent):
         """
         self.pyglet_sprite.scale = n
 
-    def on_update(self, delta: float):
+    def on_position_change(self):
 
         self.pyglet_sprite.x = self.position.x
         self.pyglet_sprite.y = self.position.y
@@ -125,8 +125,10 @@ class SpriteText(SceneComponent):
 
                 tile: ImageAsset = self.sheet[i]
 
-                x = ((self.sheet.width + self.charSpacing) * col * self.scale)
-                y = ((self.sheet.width + self.lineHeight) * line * self.scale)
+                x = ((self.sheet.width + self.charSpacing)
+                     * col * self.scale + self.position.x)
+                y = ((self.sheet.width + self.lineHeight)
+                     * line * self.scale + self.position.y)
 
                 self.spawn_component(Sprite, (x, y), tile, scale=self.scale)
                 col += 1
