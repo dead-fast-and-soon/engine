@@ -20,13 +20,13 @@ class Vector:
                 the y component
         """
         if (
-            type(x_or_point_or_tuple) is float or
-            type(x_or_point_or_tuple) is int
+            type(x_or_point_or_tuple) is float
+            or type(x_or_point_or_tuple) is int
         ):
             x: float = cast(float, x_or_point_or_tuple)
             if y is None:
-                raise ValueError("must provide y component if first " +
-                                 "argument is a number")
+                raise ValueError("must provide y component if first "
+                                 + "argument is a number")
             self.x = x
             self.y = y
 
@@ -35,11 +35,11 @@ class Vector:
             if len(pos) != 2:
                 raise ValueError("tuple must contain exactly two numbers")
             if (
-                type(pos[0]) is not float and
-                type(pos[1]) is not int
+                type(pos[0]) is not float
+                and type(pos[1]) is not int
             ) or (
-                type(pos[1]) is not float and
-                type(pos[1]) is not int
+                type(pos[1]) is not float
+                and type(pos[1]) is not int
             ):
                 raise ValueError("values in tuple are not numbers")
             self.x = pos[0]
@@ -51,8 +51,8 @@ class Vector:
             self.y = other.y
 
         else:
-            raise ValueError("unable to create Vector from value: " +
-                             str(x_or_point_or_tuple))
+            raise ValueError("unable to create Vector from value: "
+                             + str(x_or_point_or_tuple))
 
     def __eq__(self, other):
         if type(other) is Vector:
