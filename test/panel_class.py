@@ -19,73 +19,70 @@ scene = game.create_scene()
 scene.use_camera(ScreenPixelCamera, zoom=4)
 
 
+TILE_SIZE = 8
+
+TILE_TL = frame.get_tile(0)
+TILE_BL = frame.get_tile(4)
+TILE_TR = frame.get_tile(2)
+TILE_BR = frame.get_tile(5)
+TILE_V = frame.get_tile(3)
+TILE_H = frame.get_tile(1)
+
+
 # spawn sprites
 class Panel():
-    def __init__(self, frame_width, frame_height, frame_offset_x, frame_offset_y):
+
+    def __init__(self, position: tuple, frame_width, frame_height):
         self.frame_width = frame_width
         self.frame_height = frame_height
-        self.frame_offset_x = frame_offset_x
-        self.frame_offset_y = frame_offset_y
+        self.x = position[0]
+        self.y = position[1]
 
+    def draw_frame(self):
 
-    def width_length(self):
+        x, y = self.x, self.y
+        height, width = self.frame_height, self.frame_width
+
+        # draw corners
         # Top Left
-        scene.spawn_component(Sprite, (self.frame_offset_x,
-                                       self.frame_offset_y + self.frame_height
-                                       * 8), frame.get_tile(0))
+        scene.spawn_component(Sprite, (x, y + height * TILE_SIZE), TILE_TL)
 
         # Bottom Left
-        scene.spawn_component(Sprite, (self.frame_offset_x,
-                              self.frame_offset_y), frame.get_tile(4))
+        scene.spawn_component(Sprite, (x, y), TILE_BL)
 
         # Top Right
-        scene.spawn_component(Sprite, (self.frame_offset_x + self.frame_width
-                                       * 8, self.frame_offset_y
-                                       + self.frame_height * 8),
-                                       frame.get_tile(2))
-
+        scene.spawn_component(Sprite, (x + width * TILE_SIZE,
+                                       y + height * TILE_SIZE), TILE_TR)
         # Bottom Right
-        scene.spawn_component(Sprite, (self.frame_offset_x + self.frame_width
-                                       * 8, self.frame_offset_y),
-                                       frame.get_tile(5))
+        scene.spawn_component(Sprite, (x + width * TILE_SIZE, y), TILE_BR)
 
+        # draw horizontal outlines
         for idx in range(self.frame_width):
-            scene.spawn_component(Sprite, (idx * 8 + self.frame_offset_x + 8,
-                                           self.frame_height * 8
-                                           + self.frame_offset_y),
-                                           frame.get_tile(1))
+            scene.spawn_component(Sprite, (idx * TILE_SIZE + x + TILE_SIZE,
+                                           height * TILE_SIZE + y), TILE_H)
 
-            scene.spawn_component(Sprite, (idx * 8 + self.frame_offset_x + 8,
-                                           0 + self.frame_offset_y),
-                                           frame.get_tile(1))
+            scene.spawn_component(Sprite, (idx * TILE_SIZE + x + TILE_SIZE,
+                                           0 + y), TILE_H)
 
-
-    def height_length(self):
+        # draw vertical outlines
         for idx in range(self.frame_height):
-            scene.spawn_component(Sprite, (self.frame_offset_x, idx * 8
-                                           + self.frame_offset_y + 8),
-                                           frame.get_tile(3))
+            scene.spawn_component(Sprite, (x, idx * TILE_SIZE
+                                           + y + TILE_SIZE), TILE_V)
 
-            scene.spawn_component(Sprite, (self.frame_offset_x
-                                           + self.frame_width * 8, idx * 8
-                                           + self.frame_offset_y),
-                                           frame.get_tile(3))
+            scene.spawn_component(Sprite, (x + width * TILE_SIZE,
+                                           idx * TILE_SIZE + self.y), TILE_V)
 
-
-    def fill_frame(self):
+        # draw inner fill
         for idx in range(self.frame_width - 1):
             for idy in range(self.frame_height - 1):
-                scene.spawn_component(Sprite, (idx * 8 + self.frame_offset_x
-                                               + 8, idy * 8
-                                               + self.frame_offset_y + 8),
-                                               white_block.get_tile(0))
-
+                scene.spawn_component(Sprite,
+                                      (idx * TILE_SIZE + x + TILE_SIZE,
+                                       idy * TILE_SIZE + y + TILE_SIZE),
+                                      white_block.get_tile(0))
 
 # start game
-window = Panel(9, 17, 80, 0)
-window.width_length()
-window.height_length()
-window.fill_frame()
-window2 = Panel(11, 6, -8, -8)
-window2.fill_frame()
+window = Panel((80, 0), 9, 17)
+window.draw_frame()
+window2 = Panel((-8, -8), 11, 6)
+window2.draw_frame()
 game.start()
