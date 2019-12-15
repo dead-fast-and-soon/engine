@@ -115,6 +115,12 @@ class Component(BaseObject):
         """Update this component on every tick."""
         pass
 
+    def on_destroy(self):
+        """
+        Called when this Component needs to be deleted.
+        """
+        pass
+
 
 class SceneComponent(Component):
     """
@@ -134,9 +140,6 @@ class SceneComponent(Component):
         super().__init__(pos=pos, parent=parent)
 
         self.scene: Scene = scene
-
-    def on_destroy(self):
-        pass
 
     def spawn_component(self, comp_cls, pos: Union[tuple, Vector],
                         *args, **kwargs):

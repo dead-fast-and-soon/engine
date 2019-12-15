@@ -16,7 +16,8 @@ class Entity(BaseObject):
     An Entity is a game object that is composed of multiple components.
     """
 
-    def __init__(self, pos: tuple = (0, 0), *args, **kwargs):
+    def __init__(self, scene: Scene, pos: tuple = (0, 0),
+                 *args, **kwargs):
         """Spawns an entity.
 
         Args:
@@ -25,11 +26,23 @@ class Entity(BaseObject):
         """
         super().__init__(pos=pos)
 
-        self.root_component: Component = Component()
+        # the Scene that spawned this entity
+        self.scene: Scene = scene
+
+        # the root Component of this entity
+        self.root_component: Component = Component(pos=pos)
 
     # --------------------------------------------------------------------------
     # Events (to be overridden by subclasses)
     # --------------------------------------------------------------------------
+
+    @BaseObject.property.getter  # type: ignore
+    def position(self) -> Vector:
+        return self.root_component.position
+
+    @BaseObject.property.setter  # type: ignore
+    def position(self, pos: tuple):
+        self.root_component.position = pos
 
     def on_key_press(self, symbol, modifier):
         """Called every time a key is pressed."""
@@ -37,4 +50,13 @@ class Entity(BaseObject):
 
     def on_key_release(self, symbol, modifier):
         """Called every time a key was released."""
+        pass
+
+    def on_update(self, delta: float):
+        """
+        Called every tick.
+
+        Args:
+            delta (float): the difference in time from the last tick
+        """
         pass

@@ -11,12 +11,13 @@ from structs.vector import Vector
 if TYPE_CHECKING:
     from engine.camera import Camera
     from engine.game import Game
-    from engine.entity import Entity
+    from engine.objects.entity import Entity
     from engine.objects.component import Component, SceneComponent
 
 
 class Scene:
-    """Represents a scene containing components.
+    """
+    Represents a scene containing components.
 
     A Scene manages a list of components and is responsible for rendering them.
     Internally, this uses a Batch provided by Pyglet. This reduces the amount
@@ -36,8 +37,11 @@ class Scene:
         # the camera to use to render this scene
         self.camera: Camera = PixelCamera(self)
 
+        # a list of entities
+        self.entities: List[Entity] = []
+
         # a list of extra raw components to render (debug)
-        self.components: List[SceneComponent] = []
+        self.components: List[Component] = []
 
     def use_camera(self, camera_class: Type[Camera], *args, **kwargs):
         """
@@ -64,6 +68,9 @@ class Scene:
         self.camera.arm()  # set openGL coordinates
         self.pyglet_batch.draw()  # render everything in the batch
 
+        for entity in self.entities:
+            entity.root_component.on_render(delta)
+
         for component in self.components:
             component.on_render(delta)
 
@@ -78,13 +85,34 @@ class Scene:
         """
         self.on_update(delta)
 
+        for entity in self.entities:
+            entity.on_update(delta)
+            entity.root_component.on_update(delta)
+
         for component in self.components:
             component.on_update(delta)
+
+    def spawn_entity(self, ent_class: Type[Entity], pos: tuple = (0, 0),
+                     *args, **kwargs):
+        """
+        Spawn an Entity into this Scene.
+
+        Args:
+            ent_class (Type[Entity]): the class of the entity
+            pos (tuple, optional): the world position of the entity
+        """
+        kwargs['pos'] = pos
+        kwargs['scene'] = self
+
+        entity = ent_class(*args, **kwargs)
+
+        self.entities.append(entity)
 
     def spawn_component(self, cmp_class: Type[SceneComponent],
                         pos: tuple = (0, 0), *args, parent: Component = None,
                         **kwargs) -> SceneComponent:
-        """Create a component from its class.
+        """
+        Create a component from its class.
 
         Args:
             cmp_class (Type[SceneComponent]): the class of the component
@@ -110,7 +138,7 @@ class Scene:
         self.components.append(component)
         return component
 
-    def destroyComponent(self, *components: SceneComponent):
+    def destroy_component(self, *components: Component):
         """Remove an entity and all its components from this scene."""
         self.components.remove(*components)
         for component in components:
@@ -121,8 +149,18 @@ class Scene:
             component.on_destroy()
 
             for child in component.children:
-                if type(child) is SceneComponent:
-                    self.destroy(child)  # type: ignore
+                if isinstance(child, Component):
+                    self.destroy_component(child)
+
+    def destroy_entity(self, entity: Entity):
+        """
+        Delete an Entity from the Scene.
+
+        Args:
+            entity (Entity): the entity to delete
+        """
+        self.entities.remove(entity)
+        self.destroy_component(entity.root_component)
 
     @property
     def component_count(self) -> int:
