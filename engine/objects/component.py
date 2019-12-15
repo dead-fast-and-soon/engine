@@ -143,8 +143,10 @@ class SceneComponent(Component):
         """
         Instantiate a new SceneComponent and add it to this one.
         """
-        return self.scene.spawn_component(comp_cls, pos, parent=self,
-                                          *args, **kwargs)
+        component = self.scene.spawn_component(comp_cls, pos, parent=self,
+                                               *args, **kwargs)
+        self.add_component(component)
+        return component
 
 
 def spawnable(old_init):
