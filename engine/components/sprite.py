@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class Sprite(SceneComponent):
 
     @spawnable
-    def __init__(self, image: ImageAsset):
+    def __init__(self, image: ImageAsset, scale: float = 1):
         """
         A sprite object. These are loaded from an image.
 
@@ -29,6 +29,9 @@ class Sprite(SceneComponent):
             x=self.position.x, y=self.position.y,
             batch=self.scene.pyglet_batch
         )
+
+        if scale != 1:
+            self.pyglet_sprite.scale = scale
 
     def set_scale(self, n: float):
         """
@@ -74,7 +77,7 @@ class SpriteText(SceneComponent):
     }
 
     @spawnable
-    def __init__(self, sheet: TilesetAsset, text: str = '', scale: int = 1):
+    def __init__(self, tileset: TilesetAsset, text: str = '', scale: int = 1):
         """
         Creates text (using a sprite sheet) to be rendered.
         """
@@ -91,7 +94,7 @@ class SpriteText(SceneComponent):
         self.loc: Vector = Vector(0, 0)
 
         # the sprite sheet currently in use
-        self.sheet: TilesetAsset = sheet
+        self.sheet: TilesetAsset = tileset
 
         if text != '':
             self.loadText(text)
@@ -121,12 +124,11 @@ class SpriteText(SceneComponent):
                 i = self.MAP.get(char, 0)
 
                 tile: ImageAsset = self.sheet[i]
-                tile.set_scale(self.scale)
 
                 x = ((self.sheet.width + self.charSpacing) * col * self.scale)
                 y = ((self.sheet.width + self.lineHeight) * line * self.scale)
 
-                self.spawn_component(Sprite, (x, y), tile)
+                self.spawn_component(Sprite, (x, y), tile, scale=self.scale)
                 col += 1
 
         # shift all sprites up to align (0, 0) at bottom left
