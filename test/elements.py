@@ -5,6 +5,7 @@ from engine.camera import ScreenPixelCamera
 from test.panel import Panel
 from engine.objects.entity import Entity
 import pyglet.window.key as key
+import sys
 
 # load assets
 tileset = TilesetAsset('assets/font.png', tile_width=8, tile_height=8)
@@ -49,14 +50,29 @@ class MoveElement(Entity):
                                               tileset, 
                                               self.text, layer=2)
         self.component.parent = self.root_component
-        self.lower_bound = 56
-        self.upper_bound = 112
+        self.lower_bound = 48
+        self.upper_bound = 120
 
     def on_key_press(self, symbol, modifier):
         if symbol == key.UP and self.position.y < self.upper_bound:
             self.position += (0, 8)
+        if symbol == key.UP and self.position.y == self.upper_bound:
+            self.position -= (0, 64)
         if symbol == key.DOWN and self.position.y > self.lower_bound:
             self.position -= (0, 8)
+        if symbol == key.DOWN and self.position.y == self.lower_bound:
+            self.position += (0, 64)
+            print(self.position.y)
+        if symbol == key.ENTER and self.position.y == self.lower_bound + 8:
+            sys.exit()
+
+        # Silly Menu stuff
+        '''
+        if symbol == key.RIGHT:
+            self.position += (4, 0)
+        if symbol == key.LEFT:
+            self.position -= (4, 0)
+        '''
 
 
 # start game
