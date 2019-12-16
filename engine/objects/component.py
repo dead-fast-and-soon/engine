@@ -48,7 +48,8 @@ class Component(BaseObject):
 
     Components can also have child Components.
     """
-    def __init__(self, pos: tuple = (0, 0), parent: Component = None):
+    def __init__(self, pos: tuple = (0, 0), parent: Component = None,
+                 name: str = None):
         """
         Initializes a Component.
 
@@ -59,6 +60,11 @@ class Component(BaseObject):
 
         """
         super().__init__(pos=pos)
+
+        if name is None:
+            self.name = type(self).__name__
+        else:
+            self.name = name
 
         self._parent: Optional[Component] = parent
         self.children: List[Component] = []
@@ -202,7 +208,8 @@ class RenderedComponent(Component):
     using a render call.
     """
 
-    def __init__(self, *, pos: tuple = (0, 0), parent: Component = None):
+    def __init__(self, *, pos: tuple = (0, 0), parent: Component = None,
+                 name: str = None):
         """
         Create a RenderedComponent.
 
@@ -210,7 +217,7 @@ class RenderedComponent(Component):
             pos (tuple, optional): [description]. Defaults to (0, 0).
             parent (Component, optional): [description]. Defaults to None.
         """
-        super().__init__(pos=pos, parent=parent)
+        super().__init__(pos=pos, parent=parent, name=name)
 
     def render(self):
         """
@@ -236,9 +243,10 @@ class RenderedComponent(Component):
         Returns:
             typing.Callable: [description]
         """
-        def wrapped_init(self, *args, pos: tuple, parent: Component, **kwargs):
+        def wrapped_init(self, *args, pos: tuple,
+                         parent: Component, name: str, **kwargs):
 
-            RenderedComponent.__init__(self, pos=pos, parent=parent)
+            RenderedComponent.__init__(self, pos=pos, parent=parent, name=name)
             old_init(self, *args, **kwargs)
 
         return wrapped_init
@@ -250,8 +258,8 @@ class BatchComponent(Component):
     a batched render call from a Scene.
     """
 
-    def __init__(self, *, pos: tuple = (0, 0),
-                 parent: Component = None, scene: Scene = None):
+    def __init__(self, *, pos: tuple = (0, 0), parent: Component = None,
+                 name: str = None, scene: Scene = None):
         """
         Create a BatchComponent.
 
@@ -260,7 +268,7 @@ class BatchComponent(Component):
             pos (tuple, optional): the position of this component
             parent (Component, optional): the parent of this component
         """
-        super().__init__(pos=pos, parent=parent)
+        super().__init__(pos=pos, parent=parent, name=name)
 
         # the scene to use to render this component
         self.scene: Scene = scene
@@ -290,9 +298,10 @@ class BatchComponent(Component):
         """
 
         def wrapped_init(self, *args, pos: tuple, scene: Scene,
-                         parent: Component, **kwargs):
+                         parent: Component, name: str, **kwargs):
 
-            BatchComponent.__init__(self, scene=scene, pos=pos, parent=parent)
+            BatchComponent.__init__(self, scene=scene, pos=pos,
+                                    parent=parent, name=name)
             old_init(self, *args, **kwargs)
 
         return wrapped_init

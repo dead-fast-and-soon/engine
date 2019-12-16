@@ -111,7 +111,7 @@ class Scene:
 
         print('spawned entity ({} components)'.format(len(components)))
         for comp in components:
-            print(' - ' + str(type(comp).__name__))
+            print(' - "{}" ({})'.format(comp.name, type(comp).__name__))
 
     def spawn_component(self, cmp_class: Type[engine.T], pos: tuple,
                         *args, **kwargs):

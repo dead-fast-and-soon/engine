@@ -9,7 +9,7 @@ T = TypeVar('T', bound=Component)
 
 
 def create_component(cmp_class: Type[T], pos: tuple = (0, 0), *args,
-                     parent: Component = None,
+                     parent: Component = None, name: str = None,
                      **kwargs) -> T:
     """
     Create a component from its class.
@@ -23,6 +23,7 @@ def create_component(cmp_class: Type[T], pos: tuple = (0, 0), *args,
     """
     kwargs['pos'] = pos
     kwargs['parent'] = parent
+    kwargs['name'] = name
 
     if issubclass(cmp_class, BatchComponent):
         if isinstance(parent, BatchComponent):
