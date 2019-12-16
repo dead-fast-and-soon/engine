@@ -2,7 +2,7 @@ from engine.game import Game
 from engine.asset.tileset import TilesetAsset
 from engine.components.sprite import SpriteText
 from engine.camera import ScreenPixelCamera
-from test.panel import Panel
+from menu.panel import Panel
 from engine.objects.entity import Entity
 import pyglet.window.key as key
 import sys
@@ -33,9 +33,10 @@ class Element(Entity):
         self.y = self.position.y
         self.text = text
         self.component = self.scene.spawn_component(SpriteText,
-                                              (self.x, self.y), 
-                                              tileset, 
-                                              self.text, layer=2)
+                                                    (self.x, self.y), 
+                                                    tileset, 
+                                                    self.text, 
+                                                    layer=2)
         self.component.parent = self.root_component
 
 
@@ -46,23 +47,25 @@ class MoveElement(Entity):
         self.y = self.position.y
         self.text = text
         self.component = self.scene.spawn_component(SpriteText,
-                                              (self.x, self.y), 
-                                              tileset, 
-                                              self.text, layer=2)
+                                                    (self.x, self.y), 
+                                                    tileset, 
+                                                    self.text, 
+                                                    layer=2)
         self.component.parent = self.root_component
         self.lower_bound = 48
         self.upper_bound = 120
 
     def on_key_press(self, symbol, modifier):
         if symbol == key.UP and self.position.y < self.upper_bound:
-            self.position += (0, 8)
+            self.position += (0, 16)
+            print(self.position.y)
         if symbol == key.UP and self.position.y == self.upper_bound:
             self.position -= (0, 64)
         if symbol == key.DOWN and self.position.y > self.lower_bound:
-            self.position -= (0, 8)
+            self.position -= (0, 16)
+            print(self.position.y)
         if symbol == key.DOWN and self.position.y == self.lower_bound:
             self.position += (0, 64)
-            print(self.position.y)
         if symbol == key.ENTER and self.position.y == self.lower_bound + 8:
             sys.exit()
 
