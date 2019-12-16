@@ -12,8 +12,6 @@ from engine.camera import Camera, ScreenPixelCamera
 from engine.components.debug import FpsDisplay
 from engine.components.console import Console
 
-SPT = 1.0 / 60.0  # 60 ticks per second
-
 
 class Game:
     """
@@ -68,14 +66,14 @@ class Game:
         """Create and return an empty Scene."""
         return self.load_scene(Scene)
 
-    def render_all_scenes(self, delta: float):
+    def render_all_scenes(self):
         """Render all scenes.
 
         Args:
             delta (float): change in time from the last frame
         """
         for scene in self.scenes:
-            scene.render(delta)
+            scene.render()
 
     def update_all_scenes(self, delta: float):
         """Update all scenes.
@@ -93,7 +91,7 @@ class Game:
                                       vsync=False)
 
         # schedule updateScenes() at fixed rate
-        pyglet.clock.schedule_interval(self.update_all_scenes, SPT)
+        # pyglet.clock.schedule_interval(self.update_all_scenes, SPT)
 
         closed = False
 
@@ -123,9 +121,6 @@ class Game:
         last_time = time.perf_counter()
         # accum_time = 0
 
-        # update scenes at 0th tick
-        self.update_all_scenes(SPT)
-
         # ----------------------------------------------------------------------
         #  Game Loop
         # ----------------------------------------------------------------------
@@ -148,6 +143,8 @@ class Game:
             # update logic
             # ------------
 
+            self.update_all_scenes(delta)
+
             # accum_time += delta
 
             # # if accumulative dt goes above SPT, run a tick and decrement
@@ -162,7 +159,7 @@ class Game:
             # ---------
 
             self.last_delta = delta
-            self.render_all_scenes(delta)
+            self.render_all_scenes()
 
             if not closed:
                 window.flip()

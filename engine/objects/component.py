@@ -14,6 +14,32 @@ if TYPE_CHECKING:
     from engine.game.scene import Scene
 
 
+def fixed_rate(update_fn: Callable, rate: float) -> Callable:
+    """
+    Modify an `on_update()` function to only call at a fixed rate.
+
+    Args:
+        update_fn (Callable): [description]
+
+    Returns:
+        Callable: the new function
+    """
+    assert rate > 0, 'rate must be higher than 0'
+    seconds_per_tick = 1 / rate
+
+    def new_update_fn(self, delta: float):
+        if self._accum_time is None:
+            self._accum_time = 0
+
+        self._accum_time += delta
+
+        while self._accum_time > seconds_per_tick:
+            update_fn(seconds_per_tick)
+            self._accum_time -= seconds_per_tick
+
+    return new_update_fn
+
+
 class Component(BaseObject):
     """
     Component is the base class for an object that defines behavior of
@@ -55,16 +81,6 @@ class Component(BaseObject):
         """
         self.children.remove(*components)
 
-    def render(self, delta: float):
-        """
-        Render this Component.
-
-        Args:
-            delta (float): the time difference from the last frame
-        """
-        for child in self.children:
-            if isinstance(child, RenderedComponent): child.render(delta)
-
     def update(self, delta: float):
         """
         Update this Component.
@@ -73,8 +89,6 @@ class Component(BaseObject):
             delta (float): the time difference from the last tick
         """
         self.on_update(delta)
-        for child in self.children:
-            child.update(delta)
 
     # -------------------------------------------------------------------------
     # Properties
@@ -181,18 +195,16 @@ class RenderedComponent(Component):
         """
         super().__init__(pos=pos, parent=parent)
 
-    def render(self, delta: float):
+    def render(self):
         """
         Render this Component.
 
         Args:
             delta (float): the time difference from the last frame
         """
-        self.on_render(delta)
-        for child in self.children:
-            if isinstance(child, RenderedComponent): child.render(delta)
+        self.on_render()
 
-    def on_render(self, delta: float):
+    def on_render(self):
         """Render this component on every frame."""
         pass
 

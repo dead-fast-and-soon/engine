@@ -107,5 +107,5 @@ class BoxBatch(Component):
     def on_update(self, delta: float):
         pass
 
-    def on_render(self, delta: float):
+    def on_render(self):
         self.batch.draw()

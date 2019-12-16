@@ -61,7 +61,7 @@ class Console(BatchComponent):
         self.layout.x = self.position.x
         self.layout.y = self.position.y
 
-    def on_render(self, delta):
+    def on_render(self):
         # print("rendering console")
         # self.layout.draw()
         pass

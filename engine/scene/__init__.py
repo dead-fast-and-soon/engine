@@ -8,7 +8,8 @@ import pyglet
 from engine.camera import PixelCamera
 from engine.graphics import BatchRenderer
 from structs.vector import Vector
-from engine.objects.component import Component, BatchComponent
+from engine.objects.component import (Component, BatchComponent,
+                                      RenderedComponent)
 
 if TYPE_CHECKING:
     from engine.camera import Camera
@@ -55,7 +56,7 @@ class Scene:
         """
         self.camera = camera_class(self, *args, **kwargs)  # type: ignore
 
-    def render(self, delta: float):
+    def render(self):
         """Render this scene.
 
         This method will call this scene's batch draw, as well as
@@ -69,11 +70,8 @@ class Scene:
         self.camera.arm()  # set openGL coordinates
         self.batch.render()  # render everything in the batch
 
-        for entity in self.entities:
-            entity.render(delta)
-
-        for component in self.components:
-            component.render(delta)
+        for component in self.components:  # render everything else
+            if isinstance(component, RenderedComponent): component.render()
 
     def update(self, delta: float):
         """Update this scene.
@@ -105,8 +103,14 @@ class Scene:
         kwargs['scene'] = self
 
         entity = ent_class(*args, **kwargs)
+        components = entity.collect_components()
 
         self.entities.append(entity)
+        self.components += components
+
+        print('spawned entity ({} components)'.format(len(components)))
+        for comp in components:
+            print(' - ' + str(type(comp).__name__))
 
     def spawn_component(self, cmp_class: Type[BatchComponent],
                         pos: tuple = (0, 0), *args, parent: Component = None,
@@ -160,7 +164,8 @@ class Scene:
             entity (Entity): the entity to delete
         """
         self.entities.remove(entity)
-        self.destroy_component(entity.root_component)
+        for comp in entity.collect_components():
+            self.destroy_component(comp)
 
     @property
     def component_count(self) -> int:

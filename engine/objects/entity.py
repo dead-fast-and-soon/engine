@@ -32,21 +32,28 @@ class Entity(BaseObject):
         # the root Component of this entity
         self.root_component: Component = Component(pos=pos)
 
-    def render(self, delta: float):
+    def collect_components(self,
+                           comp: Component = None) -> typing.List[Component]:
         """
-        Render this Entity.
+        Retrieve all components in the heirarchy as a single list.
 
-        Args:
-            delta (float): [description]
+        Returns:
+            typing.List[Component]: a list of all components in this entity
         """
-        self.root_component.render(delta)
+        if comp is None: comp = self.root_component
+        components = [comp]
+
+        for child in comp.children:
+            components += self.collect_components(child)
+
+        return list(set(components))  # delete duplicate objects
 
     def update(self, delta: float):
         """
         Update this Entity.
 
         Args:
-            delta (float): [description]
+            delta (float): the time difference from the last tick
         """
         self.on_update(delta)
         self.root_component.update(delta)

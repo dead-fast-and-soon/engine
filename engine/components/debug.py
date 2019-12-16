@@ -9,7 +9,7 @@ from structs.vector import Transform
 
 class DotComponent(RenderedComponent):
 
-    def on_render(self, delta: float):
+    def on_render(self):
         pyglet.graphics.draw(
             1,
             pyglet.gl.GL_POINTS,
@@ -35,7 +35,7 @@ class Quad(RenderedComponent):
             4, 'v2i', ('c3B', (r, g, b) * 4)
         )
 
-    def on_render(self, delta: float):
+    def on_render(self):
         pos = self.position
 
         x, y, w, h = int(pos.x), int(pos.y), int(self.w), int(self.h)
@@ -53,7 +53,7 @@ class Quad(RenderedComponent):
 #         self.radius = radius
 #         self.n = n
 
-#     def on_render(self, delta):
+#     def on_render(self):
 
 #         pos = self.spos
 
