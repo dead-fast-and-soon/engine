@@ -31,7 +31,7 @@ class BatchRenderer:
     def groups(self) -> List[pyglet.graphics.OrderedGroup]:
         """
         Get a list of groups.
-        
+
         Returns:
             List[pyglet.graphics.OrderedGroup]: the list of groups
         """
