@@ -3,58 +3,44 @@ from engine.asset.tileset import TilesetAsset
 from engine.components.sprite import Sprite
 from engine.camera import ScreenPixelCamera
 
-# load assets
-frame = TilesetAsset('assets/frame1.png', tile_width=8, tile_height=8)
-white_block = TilesetAsset('assets/white_block.png', tile_width=8, tile_height=8)
-
-# create window
-screen_width = 160
-screen_height = 144
-game = Game(width=screen_width * 4, height=screen_height * 4)
-
-# start new scene
-scene = game.create_scene()
-
-# use a zoomed in camera
-scene.use_camera(ScreenPixelCamera, zoom=4)
-
-
-TILE_SIZE = 8
-
-TILE_TL = frame.get_tile(0)
-TILE_BL = frame.get_tile(4)
-TILE_TR = frame.get_tile(2)
-TILE_BR = frame.get_tile(5)
-TILE_V = frame.get_tile(3)
-TILE_H = frame.get_tile(1)
-
 
 # spawn sprites
 class Panel():
-
-    def __init__(self, position: tuple, frame_width, frame_height):
+    def __init__(self, position: tuple, frame_width, frame_height, scene):
         self.frame_width = frame_width
         self.frame_height = frame_height
         self.x = position[0]
         self.y = position[1]
+        self.frame = TilesetAsset('assets/frame1.png', tile_width=8, tile_height=8)
+        self.white_block = TilesetAsset('assets/white_block.png', tile_width=8, tile_height=8)
+        self.scene = scene
 
     def draw_frame(self):
+        TILE_SIZE = 8
+
+        TILE_TL = self.frame.get_tile(0)
+        TILE_BL = self.frame.get_tile(4)
+        TILE_TR = self.frame.get_tile(2)
+        TILE_BR = self.frame.get_tile(5)
+        TILE_V = self.frame.get_tile(3)
+        TILE_H = self.frame.get_tile(1)
 
         x, y = self.x, self.y
         height, width = self.frame_height, self.frame_width
+        scene = self.scene
 
         # draw corners
         # Top Left
-        scene.spawn_component(Sprite, (x, y + height * TILE_SIZE), TILE_TL)
+        scene.spawn_component(Sprite, (x, y + height * TILE_SIZE), TILE_TL, layer=1)
 
         # Bottom Left
-        scene.spawn_component(Sprite, (x, y), TILE_BL)
+        scene.spawn_component(Sprite, (x, y), TILE_BL, layer=1)
 
         # Top Right
         scene.spawn_component(Sprite, (x + width * TILE_SIZE,
-                                       y + height * TILE_SIZE), TILE_TR)
+                                       y + height * TILE_SIZE), TILE_TR, layer=1)
         # Bottom Right
-        scene.spawn_component(Sprite, (x + width * TILE_SIZE, y), TILE_BR)
+        scene.spawn_component(Sprite, (x + width * TILE_SIZE, y), TILE_BR, layer=1)
 
         # draw horizontal outlines
         for idx in range(self.frame_width):
@@ -78,11 +64,21 @@ class Panel():
                 scene.spawn_component(Sprite,
                                       (idx * TILE_SIZE + x + TILE_SIZE,
                                        idy * TILE_SIZE + y + TILE_SIZE),
-                                      white_block.get_tile(0))
+                                      self.white_block.get_tile(0))
 
 # start game
-window = Panel((80, 0), 9, 17)
-window.draw_frame()
-window2 = Panel((-8, -8), 11, 6)
-window2.draw_frame()
-game.start()
+if __name__ == '__main__':
+    # create window
+    screen_width = 160
+    screen_height = 144
+    game = Game(width=screen_width * 4, height=screen_height * 4)
+
+    # start new scene
+    scene = game.create_scene()
+
+    # use a zoomed in camera
+    scene.use_camera(ScreenPixelCamera, zoom=4)
+
+    window = Panel((0, 0), 1, 1, scene)
+    window.draw_frame()
+    game.start()
