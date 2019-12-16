@@ -49,11 +49,13 @@ class MoveElement(Entity):
                                               tileset, 
                                               self.text, layer=2)
         self.component.parent = self.root_component
+        self.lower_bound = 56
+        self.upper_bound = 112
 
     def on_key_press(self, symbol, modifier):
-        if symbol == key.UP:
+        if symbol == key.UP and self.position.y < self.upper_bound:
             self.position += (0, 8)
-        if symbol == key.DOWN:
+        if symbol == key.DOWN and self.position.y > self.lower_bound:
             self.position -= (0, 8)
 
 
