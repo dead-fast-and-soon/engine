@@ -26,7 +26,7 @@ class Console(BatchComponent):
             pyglet.text.layout.TextLayout(
                 self.document, width=None, height=None,
                 multiline=True, wrap_lines=False,
-                batch=self.scene.pyglet_batch
+                batch=self.scene.batch.pyglet_batch
             )
         self.layout.x = self.position.x
         self.layout.y = self.position.y

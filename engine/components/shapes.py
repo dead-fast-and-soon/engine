@@ -24,7 +24,7 @@ class Box(BatchComponent):
         self._color = color
         x, y, w, h = self.position.x, self.position.y, self.width, self.height
 
-        self.vertex_list = self.scene.pyglet_batch.add(
+        self.vertex_list = self.scene.batch.pyglet_batch.add(
             4, pyglet.gl.GL_QUADS, None, 'v2f',
             ('c3B', tuple(color) * 4)
         )

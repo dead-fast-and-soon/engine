@@ -84,7 +84,7 @@ class Text(BatchComponent):
             font_name='Consolas',
             font_size=12,
             x=self.position.x, y=self.position.y,
-            batch=self.scene.pyglet_batch
+            batch=self.scene.batch.pyglet_batch
         )
         self.text = text
 

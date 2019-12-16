@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class Sprite(BatchComponent):
 
     @BatchComponent.spawnable
-    def __init__(self, image: ImageAsset, scale: float = 1):
+    def __init__(self, image: ImageAsset, scale: float = 1, layer: int = 0):
         """
         A sprite object. These are loaded from an image.
 
@@ -27,7 +27,8 @@ class Sprite(BatchComponent):
         self.pyglet_sprite = pyglet.sprite.Sprite(
             image.pyglet_image,
             x=self.position.x, y=self.position.y,
-            batch=self.scene.pyglet_batch
+            batch=self.scene.batch.pyglet_batch,
+            group=self.scene.batch.groups[layer]
         )
 
         if scale != 1:
@@ -77,7 +78,8 @@ class SpriteText(BatchComponent):
     }
 
     @BatchComponent.spawnable
-    def __init__(self, tileset: TilesetAsset, text: str = '', scale: int = 1):
+    def __init__(self, tileset: TilesetAsset, text: str = '', scale: int = 1,
+                 layer: int = 0):
         """
         Creates text (using a sprite sheet) to be rendered.
         """
@@ -95,6 +97,9 @@ class SpriteText(BatchComponent):
 
         # the sprite sheet currently in use
         self.sheet: TilesetAsset = tileset
+
+        # the layer to draw this text
+        self.layer: int = layer
 
         if text != '':
             self.loadText(text)
@@ -130,7 +135,8 @@ class SpriteText(BatchComponent):
                 y = ((self.sheet.width + self.lineHeight)
                      * line * self.scale + self.position.y)
 
-                self.spawn_component(Sprite, (x, y), tile, scale=self.scale)
+                self.spawn_component(Sprite, (x, y), tile,
+                                     scale=self.scale, layer=self.layer)
                 col += 1
 
         # shift all sprites up to align (0, 0) at bottom left
