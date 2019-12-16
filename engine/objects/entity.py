@@ -31,7 +31,7 @@ class Entity(BaseObject):
         self.scene: Scene = scene
 
         # the root Component of this entity
-        self.root_component: Component = Component(pos=pos)
+        self.root_component: Component = Component(pos=pos, name='Root')
 
     def create_component(self, cmp_class: Type[engine.T],
                          pos: tuple = (0, 0), *args, **kwargs) -> engine.T:

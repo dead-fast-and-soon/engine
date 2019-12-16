@@ -136,7 +136,8 @@ class SpriteText(BatchComponent):
                      * line * self.scale + self.position.y)
 
                 self.create_component(Sprite, (x, y), tile,
-                                      scale=self.scale, layer=self.layer)
+                                      scale=self.scale, layer=self.layer,
+                                      name='Sprite {}'.format(char))
                 col += 1
 
         # shift all sprites up to align (0, 0) at bottom left
