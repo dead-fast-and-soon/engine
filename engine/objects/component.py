@@ -9,6 +9,7 @@ from typing import (List, Optional, Union,
 
 from engine.objects.base import BaseObject
 from structs.vector import Vector
+import engine
 
 if TYPE_CHECKING:
     from engine.game.scene import Scene
@@ -80,6 +81,11 @@ class Component(BaseObject):
             components (Component): the components to remove
         """
         self.children.remove(*components)
+
+    def create_component(self, cmp_class: Type[engine.T],
+                         pos: tuple = (0, 0), *args, **kwargs) -> engine.T:
+        return engine.create_component(cmp_class, pos, parent=self,
+                                       *args, **kwargs)
 
     def update(self, delta: float):
         """
@@ -196,7 +202,7 @@ class RenderedComponent(Component):
     using a render call.
     """
 
-    def __init__(self, pos: tuple = (0, 0), parent: Component = None):
+    def __init__(self, *, pos: tuple = (0, 0), parent: Component = None):
         """
         Create a RenderedComponent.
 
@@ -244,8 +250,8 @@ class BatchComponent(Component):
     a batched render call from a Scene.
     """
 
-    def __init__(self, scene: Scene,
-                 pos: tuple = (0, 0), parent: Component = None):
+    def __init__(self, *, pos: tuple = (0, 0),
+                 parent: Component = None, scene: Scene = None):
         """
         Create a BatchComponent.
 
@@ -261,15 +267,6 @@ class BatchComponent(Component):
 
         # should this update every tick or every frame
         self.is_tickrate_uncapped = False
-
-    def spawn_component(self, comp_cls, pos: Union[tuple, Vector],
-                        *args, **kwargs):
-        """
-        Instantiate a new BatchComponent and add it to this one.
-        """
-        component = self.scene.spawn_component(comp_cls, pos, parent=self,
-                                               *args, **kwargs)
-        return component
 
     @staticmethod
     def spawnable(old_init: Callable) -> Callable:

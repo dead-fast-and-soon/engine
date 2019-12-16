@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Type
+from typing import TYPE_CHECKING, List, Type, TypeVar, Union
 import pyglet
 
 from engine.camera import PixelCamera
@@ -10,6 +10,7 @@ from engine.graphics import BatchRenderer
 from structs.vector import Vector
 from engine.objects.component import (Component, BatchComponent,
                                       RenderedComponent)
+import engine
 
 if TYPE_CHECKING:
     from engine.camera import Camera
@@ -103,7 +104,7 @@ class Scene:
         kwargs['scene'] = self
 
         entity = ent_class(*args, **kwargs)
-        components = entity.collect_components()
+        components = engine.collect_components(entity)
 
         self.entities.append(entity)
         self.components += components
@@ -112,49 +113,36 @@ class Scene:
         for comp in components:
             print(' - ' + str(type(comp).__name__))
 
-    def spawn_component(self, cmp_class: Type[BatchComponent],
-                        pos: tuple = (0, 0), *args, parent: Component = None,
-                        **kwargs) -> BatchComponent:
+    def spawn_component(self, cmp_class: Type[engine.T], pos: tuple,
+                        *args, **kwargs):
         """
-        Create a component from its class.
+        Spawn a component into this Scene.
 
         Args:
-            cmp_class (Type[BatchComponent]): the class of the component
-            pos (tuple, optional): the position to spawn the component
-            parent (Object, optional): the parent of this component
-
-        Returns:
-            BatchComponent: the component that was spawned
+            component: a component or list of components
         """
-        kwargs['pos'] = pos
         kwargs['scene'] = self
-        kwargs['parent'] = parent
 
-        # print('args: ' + str(args) + str(kwargs))
-        # if hasattr(self.game, 'console'):
-        # self.game.console.log('spawned component ' + str(cmp_class))
+        component = engine.create_component(cmp_class, pos, *args, **kwargs)
 
-        component = cmp_class(*args, **kwargs)
+        self.components += engine.collect_components(component)
 
-        if parent is not None:  # add it to the parent's children
-            parent.children.append(component)
+    def destroy_component(self, components: Union[List[Component], Component]):
+        """
+        Remove an entity and all its components from this Scene.
 
-        self.components.append(component)
-        return component
+        Args:
+            components: a component or list of components
+        """
+        if isinstance(components, Component): components = [components]
 
-    def destroy_component(self, *components: Component):
-        """Remove an entity and all its components from this scene."""
-        self.components.remove(*components)
         for component in components:
-            print(
-                f'destroying entity {type(component).__name__} '
-                f'({len(component.children)} components)'
-            )
+            print('destroying entity {} ({} components)'
+                  .format(type(component).__name__, len(component.children)))
             component.on_destroy()
 
             for child in component.children:
-                if isinstance(child, Component):
-                    self.destroy_component(child)
+                self.destroy_component(child)
 
     def destroy_entity(self, entity: Entity):
         """
@@ -164,7 +152,7 @@ class Scene:
             entity (Entity): the entity to delete
         """
         self.entities.remove(entity)
-        for comp in entity.collect_components():
+        for comp in engine.collect_components(entity):
             self.destroy_component(comp)
 
     @property

@@ -4,10 +4,11 @@ from __future__ import annotations
 from structs.vector import Vector
 from engine.objects.base import BaseObject
 from engine.objects.component import Component
+import engine
 
-import typing
+from typing import TYPE_CHECKING, Type, List, Callable
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from engine.game.scene import Scene
 
 
@@ -32,21 +33,12 @@ class Entity(BaseObject):
         # the root Component of this entity
         self.root_component: Component = Component(pos=pos)
 
-    def collect_components(self,
-                           comp: Component = None) -> typing.List[Component]:
-        """
-        Retrieve all components in the heirarchy as a single list.
-
-        Returns:
-            typing.List[Component]: a list of all components in this entity
-        """
-        if comp is None: comp = self.root_component
-        components = [comp]
-
-        for child in comp.children:
-            components += self.collect_components(child)
-
-        return list(set(components))  # delete duplicate objects
+    def create_component(self, cmp_class: Type[engine.T],
+                         pos: tuple = (0, 0), *args, **kwargs) -> engine.T:
+        kwargs['scene'] = self.scene  # manually add scene
+        return engine.create_component(cmp_class, pos,
+                                       parent=self.root_component,
+                                       *args, **kwargs)
 
     def update(self, delta: float):
         """
@@ -68,7 +60,7 @@ class Entity(BaseObject):
 
     @position.setter  # type: ignore
     def position(self, pos: tuple):
-        self.root_component.position = pos
+        self.root_component.position = pos  # type: ignore
 
     def on_key_press(self, symbol, modifier):
         """Called every time a key is pressed."""
@@ -88,7 +80,7 @@ class Entity(BaseObject):
         pass
 
     @staticmethod
-    def spawnable(old_init: typing.Callable) -> typing.Callable:
+    def spawnable(old_init: Callable) -> Callable:
         """
         Implicitly adds parameters needed to call `Entity.__init__()`.
 

@@ -106,7 +106,7 @@ class FpsDisplay(BatchComponent):
     @BatchComponent.spawnable
     def __init__(self):
 
-        self.text: Text = self.spawn_component(Text, self.position)
+        self.text: Text = self.create_component(Text, self.position)
 
         self.deltas = []
 

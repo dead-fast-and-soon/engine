@@ -135,8 +135,8 @@ class SpriteText(BatchComponent):
                 y = ((self.sheet.width + self.lineHeight)
                      * line * self.scale + self.position.y)
 
-                self.spawn_component(Sprite, (x, y), tile,
-                                     scale=self.scale, layer=self.layer)
+                self.create_component(Sprite, (x, y), tile,
+                                      scale=self.scale, layer=self.layer)
                 col += 1
 
         # shift all sprites up to align (0, 0) at bottom left
