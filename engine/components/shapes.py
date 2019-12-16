@@ -15,7 +15,7 @@ class Box(BatchComponent):
     """A box that is a part of a scene."""
 
     @BatchComponent.spawnable
-    def __init__(self, size: tuple, color=None):
+    def __init__(self, size: tuple, color: tuple = (255, 255, 255)):
 
         if color is None:
             color = WHITE
@@ -26,7 +26,7 @@ class Box(BatchComponent):
 
         self.vertex_list = self.scene.batch.pyglet_batch.add(
             4, pyglet.gl.GL_QUADS, None, 'v2f',
-            ('c3B', tuple(color) * 4)
+            ('c3B', color * 4)
         )
 
         self.on_position_change()
