@@ -105,18 +105,16 @@ class Game:
             self.input[symbol] = True
 
             for scene in self.scenes:
-                for component in scene.components:
-                    if isinstance(component, Entity):
-                        component.on_key_press(symbol, modifiers)
+                for entity in scene.entities:
+                    entity.on_key_press(symbol, modifiers)
 
         @window.event
         def on_key_release(symbol, modifiers):
             self.input[symbol] = False
 
             for scene in self.scenes:
-                for component in scene.components:
-                    if isinstance(component, Entity):
-                        component.on_key_release(symbol, modifiers)
+                for entity in scene.entities:
+                    entity.on_key_release(symbol, modifiers)
 
         last_time = time.perf_counter()
         # accum_time = 0
