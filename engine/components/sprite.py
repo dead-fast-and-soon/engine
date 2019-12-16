@@ -143,3 +143,4 @@ class SpriteText(BatchComponent):
         self.position += (0, (self.sheet.width + self.lineHeight) * -line)
 
         print(f'rendering text at ({ self.position.x }, { self.position.y })')
+        print('children: {}'.format(self.children))

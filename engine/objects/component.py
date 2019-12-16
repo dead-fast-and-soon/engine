@@ -119,7 +119,18 @@ class Component(BaseObject):
             if self not in parent.children:
                 parent.children.append(self)  # add self to new parent
 
-    @BaseObject.position.setter  # type: ignore
+    @property
+    def position(self) -> Vector:
+        """
+        Overrides `BaseObject.position` getter method.
+
+        Returns:
+            Vector: the world position of this component
+        """
+
+        return BaseObject.position.fget(self)  # type: ignore
+
+    @position.setter  # type: ignore
     def position(self, position: tuple):
         """
         Overrides `BaseObject.position` setter method
@@ -131,11 +142,11 @@ class Component(BaseObject):
         a: Vector = self.position
         b: Vector = Vector(position)
 
-        self._pos = b
-        for child in self.children:
-            child.position += (b.x - a.x, b.y - a.y)
+        diff = b - a
 
-        self.on_position_change()
+        BaseObject.position.fset(self, b)  # type: ignore
+        for child in self.children:
+            child.position += diff
 
     @property
     def local_position(self) -> Vector:
@@ -258,7 +269,6 @@ class BatchComponent(Component):
         """
         component = self.scene.spawn_component(comp_cls, pos, parent=self,
                                                *args, **kwargs)
-        self.add_component(component)
         return component
 
     @staticmethod

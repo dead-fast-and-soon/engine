@@ -62,11 +62,11 @@ class Entity(BaseObject):
     # Events (to be overridden by subclasses)
     # --------------------------------------------------------------------------
 
-    @property  # type: ignore
+    @BaseObject.position.getter  # type: ignore
     def position(self) -> Vector:
         return self.root_component.position
 
-    @position.setter  # type: ignore
+    @BaseObject.position.setter  # type: ignore
     def position(self, pos: tuple):
         self.root_component.position = pos
 
