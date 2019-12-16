@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List, Type
 import pyglet
 
 from engine.camera import PixelCamera
+from engine.graphics import BatchRenderer
 from structs.vector import Vector
 from engine.objects.component import Component, BatchComponent
 
@@ -32,7 +33,7 @@ class Scene:
         self.game: Game = game
 
         # the batch to use to minimize draw calls
-        self.pyglet_batch = pyglet.graphics.Batch()
+        self.batch: BatchRenderer = BatchRenderer(10)  # 10 layers
 
         # the camera to use to render this scene
         self.camera: Camera = PixelCamera(self)
@@ -66,7 +67,7 @@ class Scene:
 
         """
         self.camera.arm()  # set openGL coordinates
-        self.pyglet_batch.draw()  # render everything in the batch
+        self.batch.render()  # render everything in the batch
 
         for entity in self.entities:
             entity.render(delta)
