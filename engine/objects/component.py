@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from engine.game.scene import Scene
 
 
-def fixed_rate(update_fn: Callable, rate: float) -> Callable:
+def fixed_rate(rate: float) -> Callable:
     """
     Modify an `on_update()` function to only call at a fixed rate.
 
@@ -28,17 +28,19 @@ def fixed_rate(update_fn: Callable, rate: float) -> Callable:
     assert rate > 0, 'rate must be higher than 0'
     seconds_per_tick = 1 / rate
 
-    def new_update_fn(self, delta: float):
-        if self._accum_time is None:
-            self._accum_time = 0
+    def decorator(update_fn: Callable) -> Callable:
+        def new_update_fn(self, delta: float):
+            if not hasattr(self, '_accum_time'):
+                self._accum_time = 0
 
-        self._accum_time += delta
+            self._accum_time += delta
 
-        while self._accum_time > seconds_per_tick:
-            update_fn(seconds_per_tick)
-            self._accum_time -= seconds_per_tick
+            while self._accum_time > seconds_per_tick:
+                update_fn(self, seconds_per_tick)
+                self._accum_time -= seconds_per_tick
 
-    return new_update_fn
+        return new_update_fn
+    return decorator
 
 
 class Component(BaseObject):
