@@ -10,7 +10,7 @@ from typing import cast
 
 from engine.components.debug import Console, Text
 from engine.components.shapes import Box
-from engine.component import SceneComponent, spawnable
+from engine.objects.component import BatchComponent, spawnable
 from engine.entity import Entity
 from engine.camera import PixelCamera
 from engine.game import Game
@@ -28,9 +28,9 @@ SELECT_POS_L = Vector(-85, 0)
 SELECT_POS_R = Vector(85, 0)
 
 
-class BackgroundComponent(SceneComponent):
+class BackgroundComponent(BatchComponent):
 
-    @spawnable
+    @BatchComponent.spawnable
     def __init__(self, size: tuple):
 
         color_1 = Color(20, 20, 20)
@@ -48,7 +48,7 @@ class BackgroundComponent(SceneComponent):
 
                 pos = ctr + Vector(i * BLOCK_SIZE, j * BLOCK_SIZE) + self.pos
 
-                self.spawnComponent(
+                self.spawn_component(
                     Box, tuple(pos),
                     size=(BLOCK_SIZE, BLOCK_SIZE), color=color
                 )
@@ -58,7 +58,7 @@ class BackgroundComponent(SceneComponent):
 
 class Cursor(Entity):
 
-    @spawnable
+    @BatchComponent.spawnable
     def __init__(self):
 
         self.color_select = Color(64, 163, 239)  # sky-blueish
@@ -73,7 +73,7 @@ class Cursor(Entity):
                     self.pos +      \
                     Vector(x * BLOCK_SIZE, y * BLOCK_SIZE)
 
-                self.boxes[(x, y)] = self.spawnComponent(
+                self.boxes[(x, y)] = self.spawn_component(
                     Block, pos,
                     size=(BLOCK_SIZE, BLOCK_SIZE),
                     color=Color(10, 10, 10)
@@ -106,7 +106,7 @@ class Cursor(Entity):
             else:
                 box.color = Color(10, 10, 10)
 
-    def onUpdate(self, delta: float):
+    def on_update(self, delta: float):
 
         # print(f'{self.dir_x}, {self.dir_y}')
         global console
@@ -141,7 +141,7 @@ class Cursor(Entity):
         console.line(2, 'select: ' + str(self.selected_coords))
         console.line(3, 'stun: ' + str(self.stun_ticks))
 
-    def onKeyPress(self, k: int, mod):
+    def on_key_press(self, k: int, mod):
         if k is key.UP:
             if self.dir_y == -1:
                 self.dir_y = 0
@@ -166,7 +166,7 @@ class Cursor(Entity):
             else:
                 self.dir_x = -1
 
-    def onKeyRelease(self, k: int, mod):
+    def on_key_release(self, k: int, mod):
         if k is key.UP:
             if self.dir_y == 1:
                 self.dir_y = 0
@@ -191,7 +191,7 @@ class Cursor(Entity):
             else:
                 self.dir_x = 1
 
-    def onPositionChange(self):
+    def on_position_change(self):
         # shift block position to be center on entity position
         # self.block.pos = self.pos - Vector(BLOCK_SIZE // 2, BLOCK_SIZE // 2)
         pass
@@ -204,12 +204,12 @@ class CombatScene(Scene):
 
         self.ticks = 0  # accumulate total ticks
 
-        self.spawnComponent(BackgroundComponent, (0, 0), (15, 9))
-        self.spawnComponent(BackgroundComponent, SELECT_POS_L, (5, 5))
-        self.spawnComponent(Cursor, (0, 0))
+        self.spawn_component(BackgroundComponent, (0, 0), (15, 9))
+        self.spawn_component(BackgroundComponent, SELECT_POS_L, (5, 5))
+        self.spawn_component(Cursor, (0, 0))
 
     # overridden from Scene
-    def onUpdate(self, delta: float):
+    def on_update(self, delta: float):
 
         self.ticks += 1
 
@@ -218,18 +218,14 @@ class CombatScene(Scene):
 game = Game(width=1280, height=720)
 
 # spawn entities
-scene = game.loadScene(CombatScene)
+scene = game.load_scene(CombatScene)
 # scene = game.createScene()
 
 # create new camera
 camera = game.createCamera(PixelCamera, zoom=4)
 camera.assignScene(scene)
 
-hud_scene = game.createScene()
-console = hud_scene.spawnComponent(Console, (-640, 320), 800, 320)
-
-hud_cam = game.createCamera(PixelCamera)
-hud_cam.assignScene(hud_scene)
+console = game.hud_scene.spawn_component(Console, (0, 600), 800, 320)
 
 # game.log("test")
 

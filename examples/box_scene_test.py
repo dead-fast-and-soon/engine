@@ -29,7 +29,7 @@ class BoxTestScene(Scene):
                 # cyan to green
                 color = Color(0, 255, int(255 * (1 - ((i - 750) / 750))))
 
-            box = self.spawnComponent(
+            box = self.spawn_component(
                 Box, ((i - 750) * 0.8, 0),
                 size=(10, 10), color=color
             )
@@ -37,7 +37,7 @@ class BoxTestScene(Scene):
             self.boxes.append(box)
 
     # overridden from Scene
-    def onUpdate(self, delta: float):
+    def on_update(self, delta: float):
 
         for i in range(len(self.boxes)):
             box = self.boxes[i]
@@ -53,12 +53,10 @@ class BoxTestScene(Scene):
 game = Game(width=1280, height=720)
 
 # spawn entities
-scene = game.loadScene(BoxTestScene)
+scene = game.load_scene(BoxTestScene)
 
 # create new camera
-camera = game.createCamera(PixelCamera)
-camera.assignScene(scene)
+camera = scene.use_camera(PixelCamera)
 
 # start game
-print('starting game')
 game.start()

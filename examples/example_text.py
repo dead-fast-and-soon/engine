@@ -17,7 +17,8 @@ scene = game.create_scene()
 scene.use_camera(PixelCamera, zoom=4)
 
 # spawn sprites
-scene.spawn_component(SpriteText, (0, 8), tileset, 'hello')
+scene.spawn_component(SpriteText, (0, 0), tileset, 'hello', layer=0)
+scene.spawn_component(SpriteText, (0, 4), tileset, 'not', layer=1)
 
 # start game
 game.start()
