@@ -142,6 +142,3 @@ class SpriteText(BatchComponent):
 
         # shift all sprites up to align (0, 0) at bottom left
         self.position += (0, (self.sheet.width + self.lineHeight) * -line)
-
-        print(f'rendering text at ({ self.position.x }, { self.position.y })')
-        print('children: {}'.format(self.children))

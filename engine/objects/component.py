@@ -7,7 +7,7 @@ import inspect
 from typing import (List, Optional, Union,
                     Type, TypeVar, Callable, TYPE_CHECKING)
 
-from engine.objects.base import BaseObject
+from engine.objects.base import BaseObject, ScriptableObject
 from structs.vector import Vector
 import engine
 
@@ -43,7 +43,7 @@ def fixed_rate(rate: float) -> Callable:
     return decorator
 
 
-class Component(BaseObject):
+class Component(ScriptableObject):
     """
     Component is the base class for an object that defines behavior of
     an Entity.
@@ -94,15 +94,6 @@ class Component(BaseObject):
                          pos: tuple = (0, 0), *args, **kwargs) -> engine.T:
         return engine.create_component(cmp_class, pos, parent=self,
                                        *args, **kwargs)
-
-    def update(self, delta: float):
-        """
-        Update this Component.
-
-        Args:
-            delta (float): the time difference from the last tick
-        """
-        self.on_update(delta)
 
     # -------------------------------------------------------------------------
     # Properties
@@ -192,10 +183,6 @@ class Component(BaseObject):
     # -------------------------------------------------------------------------
     # Events (to be overridden by subclasses)
     # -------------------------------------------------------------------------
-
-    def on_update(self, delta: float):
-        """Update this component on every tick."""
-        pass
 
     def on_destroy(self):
         """

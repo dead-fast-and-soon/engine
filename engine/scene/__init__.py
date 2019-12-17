@@ -11,8 +11,10 @@ from structs.vector import Vector
 from engine.objects.component import (Component, BatchComponent,
                                       RenderedComponent)
 import engine
+import engine.utils
 
 if TYPE_CHECKING:
+    from engine.objects.base import ScriptableObject
     from engine.camera import Camera
     from engine.game import Game
     from engine.objects.entity import Entity
@@ -47,7 +49,10 @@ class Scene:
         self.components: List[Component] = []
 
         # a list of components that need draw calls
-        self.rendered_components: List[RenderedComponent] = []
+        self._renderable_components: List[RenderedComponent] = []
+
+        # a list of objects that need update calls
+        self._updatable_objects: List[ScriptableObject] = []
 
     def use_camera(self, camera_class: Type[Camera], *args, **kwargs):
         """
@@ -74,7 +79,7 @@ class Scene:
         self.camera.arm()  # set openGL coordinates
         self.batch.render()  # render everything in the batch
 
-        for component in self.rendered_components:  # render everything else
+        for component in self._renderable_components:  # render everything else
             component.render()
 
     def update(self, delta: float):
@@ -88,14 +93,11 @@ class Scene:
         """
         self.on_update(delta)
 
-        for entity in self.entities:
-            entity.update(delta)
-
-        for component in self.components:
-            component.update(delta)
+        for obj in self._updatable_objects:
+            obj.on_update(delta)
 
     def spawn_component(self, cmp_class: Type[engine.T], pos: tuple,
-                        *args, **kwargs):
+                        *args, **kwargs) -> engine.T:
         """
         Spawn a component into this Scene.
 
@@ -105,7 +107,9 @@ class Scene:
         kwargs['scene'] = self
 
         component = engine.create_component(cmp_class, pos, *args, **kwargs)
-        self.components += engine.collect_components(component)
+        self._register_components(engine.collect_components(component))
+
+        return component
 
     def destroy_component(self, components: Union[List[Component], Component]):
         """
@@ -124,8 +128,8 @@ class Scene:
             for child in component.children:
                 self.destroy_component(child)
 
-    def spawn_entity(self, ent_class: Type[Entity], pos: tuple = (0, 0),
-                     *args, **kwargs):
+    def spawn_entity(self, ent_class: Type[engine.E], pos: tuple = (0, 0),
+                     *args, **kwargs) -> engine.E:
         """
         Spawn an Entity into this Scene.
 
@@ -143,6 +147,8 @@ class Scene:
         print('spawned entity ({} components)'.format(len(components)))
         for comp in components:
             print(' - "{}" ({})'.format(comp.name, type(comp).__name__))
+
+        return entity
 
     def destroy_entity(self, entity: Entity):
         """
@@ -167,7 +173,9 @@ class Scene:
         for component in components:
             self.components.append(component)
             if isinstance(component, RenderedComponent):
-                self.rendered_components.append(component)
+                self._renderable_components.append(component)
+            if engine.utils.is_function_defined(component.on_update):
+                self._updatable_objects.append(component)
 
     def _unregister_components(self, components: List[Component]):
         """
@@ -179,7 +187,9 @@ class Scene:
         for component in components:
             self.components.remove(component)
             if isinstance(component, RenderedComponent):
-                self.rendered_components.remove(component)
+                self._renderable_components.remove(component)
+            if engine.utils.is_function_defined(component.on_update):
+                self._updatable_objects.remove(component)
 
     @property
     def component_count(self) -> int:

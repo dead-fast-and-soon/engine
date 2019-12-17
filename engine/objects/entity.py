@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from structs.vector import Vector
-from engine.objects.base import BaseObject
+from engine.objects.base import ScriptableObject
 from engine.objects.component import Component
 import engine
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from engine.scene import Scene
 
 
-class Entity(BaseObject):
+class Entity(ScriptableObject):
     """
     An Entity is a game object that is composed of multiple components.
     """
@@ -40,15 +40,6 @@ class Entity(BaseObject):
                                        parent=self.root_component,
                                        *args, **kwargs)
 
-    def update(self, delta: float):
-        """
-        Update this Entity.
-
-        Args:
-            delta (float): the time difference from the last tick
-        """
-        self.on_update(delta)
-
     # --------------------------------------------------------------------------
     # Events (to be overridden by subclasses)
     # --------------------------------------------------------------------------
@@ -67,15 +58,6 @@ class Entity(BaseObject):
 
     def on_key_release(self, symbol, modifier):
         """Called every time a key was released."""
-        pass
-
-    def on_update(self, delta: float):
-        """
-        Called every tick.
-
-        Args:
-            delta (float): the difference in time from the last tick
-        """
         pass
 
     @staticmethod

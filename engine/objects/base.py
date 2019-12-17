@@ -43,3 +43,23 @@ class BaseObject():
     def on_position_change(self):
         """Called when this object's position changes."""
         pass
+
+
+class ScriptableObject(BaseObject):
+    """
+    An object that can recieve updates every tick.
+    """
+    def __init__(self, pos: tuple):
+        super().__init__(pos=pos)
+
+    def update(self, delta: float):
+        """
+        Update this object.
+        """
+        self.on_update(delta)
+
+    def on_update(self, delta: float):
+        """
+        Called every tick.
+        """
+        pass

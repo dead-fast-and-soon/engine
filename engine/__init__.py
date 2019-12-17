@@ -41,15 +41,14 @@ def create_component(cmp_class: Type[T], pos: tuple = (0, 0), *args,
     kwargs['pos'] = pos
     kwargs['parent'] = parent
     kwargs['name'] = name
-    kwargs['scene'] = scene
 
     if scene is None and issubclass(cmp_class, BatchComponent):
         # try to find a scene
         if isinstance(parent, BatchComponent):
-            kwargs['scene'] = parent.scene
-        else:
-            assert 'scene' in kwargs, ('must have "scene" parameter '
-                                       'to create a BatchComponent')
+            scene = parent.scene
+        assert scene is not None, ('must have "scene" parameter to '
+                                   'create a {}'.format(cmp_class.__name__))
+    kwargs['scene'] = scene
 
     component: T = cmp_class(*args, **kwargs)
 
