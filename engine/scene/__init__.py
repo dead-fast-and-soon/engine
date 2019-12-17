@@ -80,8 +80,10 @@ class Scene:
         self.camera.arm()  # set openGL coordinates
         self.batch.render()  # render everything in the batch
 
-        for component in self._renderable_components:  # render everything else
-            component.render()
+        # render everything else
+        [component.render() for component in self._renderable_components]
+        # for component in self._renderable_components:
+        #     component.render()
 
     def update(self, delta: float):
         """Update this scene.
