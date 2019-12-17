@@ -8,3 +8,4 @@ testing_tools/
 tags
 *.lprof
 *.prof
+.pytest_cache
