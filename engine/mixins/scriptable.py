@@ -27,7 +27,7 @@ class Scriptable:
         pass
 
     @staticmethod
-    def fix_rate(rate: float) -> Callable:
+    def limit_rate(rate: float) -> Callable:
         """
         Modify an `on_update()` function to only call at a fixed rate.
 
@@ -46,10 +46,10 @@ class Scriptable:
                     self._accum_time = 0
 
                 self._accum_time += delta
-
-                while self._accum_time > seconds_per_tick:
+                if self._accum_time > seconds_per_tick:
                     update_fn(self, seconds_per_tick)
-                    self._accum_time -= seconds_per_tick
+                    while self._accum_time > seconds_per_tick:
+                        self._accum_time -= seconds_per_tick
 
             return new_update_fn
         return decorator
