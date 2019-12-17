@@ -35,11 +35,8 @@ class Vector:
             if len(pos) != 2:
                 raise ValueError("tuple must contain exactly two numbers")
             if (
-                type(pos[0]) is not float
-                and type(pos[1]) is not int
-            ) or (
-                type(pos[1]) is not float
-                and type(pos[1]) is not int
+                not isinstance(pos[0], (int, float))
+                or not isinstance(pos[1], (int, float))
             ):
                 raise ValueError("values in tuple are not numbers")
             self.x = pos[0]
@@ -94,6 +91,15 @@ class Vector:
             return Vector(x - other.x, y - other.y)
 
         raise ValueError(f'unable to subtract 2D point to value { other }')
+
+    def __mul__(self, other):
+        """
+        * operator
+        """
+        assert isinstance(other, (int, float)), ('unable to multiply value'
+                                                 'by {}'.format(other))
+
+        return Vector(self.x * other, self.y * other)
 
     def __iter__(self):
         """Convert this Vector into an Iterable."""
