@@ -100,10 +100,8 @@ class Scene:
             ent_class (Type[Entity]): the class of the entity
             pos (tuple, optional): the world position of the entity
         """
-        kwargs['pos'] = pos
-        kwargs['scene'] = self
-
-        entity = ent_class(*args, **kwargs)
+        entity = engine.create_entity(ent_class, pos, *args,
+                                      scene=self, **kwargs)
         components = engine.collect_components(entity)
 
         self.entities.append(entity)
@@ -124,7 +122,6 @@ class Scene:
         kwargs['scene'] = self
 
         component = engine.create_component(cmp_class, pos, *args, **kwargs)
-
         self.components += engine.collect_components(component)
 
     def destroy_component(self, components: Union[List[Component], Component]):
