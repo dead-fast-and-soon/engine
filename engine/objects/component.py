@@ -278,6 +278,16 @@ class BatchComponent(Component):
         # should this update every tick or every frame
         self.is_tickrate_uncapped = False
 
+    def short_super_init(self, *args, **kwargs):
+        """
+        Calls `super().__init__` but automatically provides the `pos`,
+        `parent`, `scene`, and `name` arguments.
+        """
+        super(type(self), self).__init__(
+            *args, pos=self.position, scene=self.scene,
+            name=self.name, parent=self.parent, **kwargs
+        )
+
     @staticmethod
     def spawnable(old_init: Callable) -> Callable:
         """
