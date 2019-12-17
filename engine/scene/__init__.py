@@ -214,7 +214,7 @@ class Scene:
     #  Event Methods
     # --------------------------------------------------------------------------
 
-    def onLoad(self):
+    def on_load(self):
         """This method is called when this scene is loaded.
 
         Overriding this method eliminates the need to override __init__().

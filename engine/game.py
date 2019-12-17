@@ -59,7 +59,7 @@ class Game:
         """
         scene = scene_class(self)
         scene.use_camera(PixelCamera)
-        scene.onLoad()
+        scene.on_load()
         self.scenes.insert(0, scene)
         return scene
 
