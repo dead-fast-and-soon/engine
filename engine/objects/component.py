@@ -7,7 +7,9 @@ import inspect
 from typing import (List, Optional, Union,
                     Type, TypeVar, Callable, TYPE_CHECKING)
 
-from engine.objects.base import BaseObject, ScriptableObject
+from engine.objects.base import GameObject, ScriptableObject
+from engine.mixins.nameable import Nameable
+from engine.mixins.renderable import Renderable, BatchRenderable
 from structs.vector import Vector
 import engine
 
@@ -15,43 +17,15 @@ if TYPE_CHECKING:
     from engine.scene import Scene
 
 
-def fixed_rate(rate: float) -> Callable:
-    """
-    Modify an `on_update()` function to only call at a fixed rate.
-
-    Args:
-        update_fn (Callable): [description]
-
-    Returns:
-        Callable: the new function
-    """
-    assert rate > 0, 'rate must be higher than 0'
-    seconds_per_tick = 1 / rate
-
-    def decorator(update_fn: Callable) -> Callable:
-        def new_update_fn(self, delta: float):
-            if not hasattr(self, '_accum_time'):
-                self._accum_time = 0
-
-            self._accum_time += delta
-
-            while self._accum_time > seconds_per_tick:
-                update_fn(self, seconds_per_tick)
-                self._accum_time -= seconds_per_tick
-
-        return new_update_fn
-    return decorator
-
-
-class Component(ScriptableObject):
+class Component(ScriptableObject, Nameable):
     """
     Component is the base class for an object that defines behavior of
     an Entity.
 
     Components can also have child Components.
     """
-    def __init__(self, pos: tuple = (0, 0), parent: Component = None,
-                 name: str = None):
+    def __init__(self, *args, parent: Component = None,
+                 name: str = None, **kwargs):
         """
         Initializes a Component.
 
@@ -61,12 +35,7 @@ class Component(ScriptableObject):
             view (Camera, optional): [description]. Defaults to None.
 
         """
-        super().__init__(pos=pos)
-
-        if name is None:
-            self.name = type(self).__name__
-        else:
-            self.name = name
+        super().__init__(*args, name=name, **kwargs)
 
         self._parent: Optional[Component] = parent
         self.children: List[Component] = []
@@ -127,18 +96,18 @@ class Component(ScriptableObject):
     @property
     def position(self) -> Vector:
         """
-        Overrides `BaseObject.position` getter method.
+        Overrides `GameObject.position` getter method.
 
         Returns:
             Vector: the world position of this component
         """
 
-        return BaseObject.position.fget(self)  # type: ignore
+        return GameObject.position.fget(self)  # type: ignore
 
     @position.setter  # type: ignore
     def position(self, position: tuple):
         """
-        Overrides `BaseObject.position` setter method
+        Overrides `GameObject.position` setter method
 
         Args:
             position (tuple): the new position of this component
@@ -149,7 +118,7 @@ class Component(ScriptableObject):
 
         diff = b - a
 
-        BaseObject.position.fset(self, b)  # type: ignore
+        GameObject.position.fset(self, b)  # type: ignore
         for child in self.children:
             child.position += diff
 
@@ -191,7 +160,7 @@ class Component(ScriptableObject):
         pass
 
 
-class RenderedComponent(Component):
+class RenderedComponent(Component, Renderable):
     """
     A RenderedComponent is a Component that is rendered
     using a render call.
@@ -241,12 +210,11 @@ class RenderedComponent(Component):
         return wrapped_init
 
 
-class BatchComponent(Component):
+class BatchComponent(Component, BatchRenderable):
     """
     A BatchComponent is a Component that is rendered using
     a batched render call from a Scene.
     """
-
     def __init__(self, *, scene: Scene, pos: tuple = (0, 0),
                  parent: Component = None, name: str = None):
         """
@@ -257,13 +225,7 @@ class BatchComponent(Component):
             pos (tuple, optional): the position of this component
             parent (Component, optional): the parent of this component
         """
-        super().__init__(pos=pos, parent=parent, name=name)
-
-        # the scene to use to render this component
-        self.scene: Scene = scene
-
-        # should this update every tick or every frame
-        self.is_tickrate_uncapped = False
+        super().__init__(pos=pos, parent=parent, scene=scene, name=name)
 
     def short_super_init(self, *args, **kwargs):
         """

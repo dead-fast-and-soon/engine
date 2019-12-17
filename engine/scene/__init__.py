@@ -5,16 +5,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Type, TypeVar, Union
 import pyglet
 
+import engine
+import engine.utils
 from engine.camera import PixelCamera
 from engine.graphics import BatchRenderer
 from structs.vector import Vector
+from engine.mixins.renderable import Renderable
+from engine.mixins.scriptable import Scriptable
 from engine.objects.component import (Component, BatchComponent,
                                       RenderedComponent)
-import engine
-import engine.utils
 
 if TYPE_CHECKING:
-    from engine.objects.base import ScriptableObject
     from engine.camera import Camera
     from engine.game import Game
     from engine.objects.entity import Entity
@@ -48,11 +49,11 @@ class Scene:
         # a list of all components in the scene
         self.components: List[Component] = []
 
-        # a list of components that need draw calls
-        self._renderable_components: List[RenderedComponent] = []
+        # a list of objects that need draw calls
+        self._renderable_components: List[Renderable] = []
 
         # a list of objects that need update calls
-        self._updatable_objects: List[ScriptableObject] = []
+        self._updatable_objects: List[Scriptable] = []
 
     def use_camera(self, camera_class: Type[Camera], *args, **kwargs):
         """
@@ -144,7 +145,12 @@ class Scene:
         self.entities.append(entity)
         self._register_components(components)
 
-        print('spawned entity ({} components)'.format(len(components)))
+        if engine.utils.is_function_defined(entity.on_update):
+            self._updatable_objects.append(entity)
+
+        print('spawned entity {} ({} components)'
+              .format(entity.name, len(components)))
+
         for comp in components:
             print(' - "{}" ({})'.format(comp.name, type(comp).__name__))
 
@@ -163,6 +169,9 @@ class Scene:
             self.destroy_component(component)
         self._unregister_components(components)
 
+        if engine.utils.is_function_defined(entity.on_update):
+            self._updatable_objects.remove(entity)
+
     def _register_components(self, components: List[Component]):
         """
         Register components as part of this scene.
@@ -172,7 +181,7 @@ class Scene:
         """
         for component in components:
             self.components.append(component)
-            if isinstance(component, RenderedComponent):
+            if isinstance(component, Renderable):
                 self._renderable_components.append(component)
             if engine.utils.is_function_defined(component.on_update):
                 self._updatable_objects.append(component)
@@ -186,7 +195,7 @@ class Scene:
         """
         for component in components:
             self.components.remove(component)
-            if isinstance(component, RenderedComponent):
+            if isinstance(component, Renderable):
                 self._renderable_components.remove(component)
             if engine.utils.is_function_defined(component.on_update):
                 self._updatable_objects.remove(component)

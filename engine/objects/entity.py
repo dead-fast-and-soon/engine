@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from structs.vector import Vector
 from engine.objects.base import ScriptableObject
+from engine.mixins.nameable import Nameable
 from engine.objects.component import Component
 import engine
 
@@ -12,15 +13,14 @@ if TYPE_CHECKING:
     from engine.scene import Scene
 
 
-class Entity(ScriptableObject):
+class Entity(ScriptableObject, Nameable):
     """
     An Entity is a game object that is composed of multiple components.
     """
 
-    def __init__(self, scene: Scene, pos: tuple = (0, 0),
-                 *args, **kwargs):
+    def __init__(self, *args, scene: Scene, pos: tuple, **kwargs):
         """
-        Spawns an entity.
+        Create an Entity.
 
         Args:
             pos (tuple, optional): the position to spawn this entity

@@ -5,21 +5,23 @@ A GameObject can contain one or more Components.
 """
 
 from typing import Optional, List, Union
+from engine.mixins.scriptable import Scriptable
 from structs.vector import Vector
 
 
-class BaseObject():
+class GameObject():
     """
-    BaseObject is the base class for an object with an in-game position.
+    GameObject is the base class for an object with an in-game position.
     """
-    def __init__(self, pos: tuple = (0, 0)):
+    def __init__(self, *args, pos: tuple, **kwargs):
         """
         Initializes a Component.
 
         Args:
-            pos (tuple, optional): . Defaults to (0, 0).
+            pos (tuple, optional): the initial world position of the object
         """
         self._pos: Vector = Vector.createFrom(pos)
+        super(GameObject, self).__init__(*args, **kwargs)
 
     # -------------------------------------------------------------------------
     # Properties
@@ -31,8 +33,8 @@ class BaseObject():
 
     @position.setter
     def position(self, position: Union[tuple, Vector]):
-        """Set the position of this element. This will also set the position
-        of any child elements.
+        """
+        Set the world position of this object.
 
         Args:
             pos (Union[tuple, Vector]): [description]
@@ -41,25 +43,15 @@ class BaseObject():
         self.on_position_change()
 
     def on_position_change(self):
-        """Called when this object's position changes."""
-        pass
-
-
-class ScriptableObject(BaseObject):
-    """
-    An object that can recieve updates every tick.
-    """
-    def __init__(self, pos: tuple):
-        super().__init__(pos=pos)
-
-    def update(self, delta: float):
         """
-        Update this object.
-        """
-        self.on_update(delta)
-
-    def on_update(self, delta: float):
-        """
-        Called every tick.
+        Called when this object's position changes.
         """
         pass
+
+
+class ScriptableObject(GameObject, Scriptable):
+    """
+    A game object that can recieve updates every tick.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
