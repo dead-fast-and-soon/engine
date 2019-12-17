@@ -48,7 +48,6 @@ class Entity(BaseObject):
             delta (float): the time difference from the last tick
         """
         self.on_update(delta)
-        self.root_component.update(delta)
 
     # --------------------------------------------------------------------------
     # Events (to be overridden by subclasses)

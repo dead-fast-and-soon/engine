@@ -43,8 +43,11 @@ class Scene:
         # a list of entities
         self.entities: List[Entity] = []
 
-        # a list of extra raw components to render (debug)
+        # a list of all components in the scene
         self.components: List[Component] = []
+
+        # a list of components that need draw calls
+        self.rendered_components: List[RenderedComponent] = []
 
     def use_camera(self, camera_class: Type[Camera], *args, **kwargs):
         """
@@ -71,8 +74,8 @@ class Scene:
         self.camera.arm()  # set openGL coordinates
         self.batch.render()  # render everything in the batch
 
-        for component in self.components:  # render everything else
-            if isinstance(component, RenderedComponent): component.render()
+        for component in self.rendered_components:  # render everything else
+            component.render()
 
     def update(self, delta: float):
         """Update this scene.
@@ -90,26 +93,6 @@ class Scene:
 
         for component in self.components:
             component.update(delta)
-
-    def spawn_entity(self, ent_class: Type[Entity], pos: tuple = (0, 0),
-                     *args, **kwargs):
-        """
-        Spawn an Entity into this Scene.
-
-        Args:
-            ent_class (Type[Entity]): the class of the entity
-            pos (tuple, optional): the world position of the entity
-        """
-        entity = engine.create_entity(ent_class, pos, *args,
-                                      scene=self, **kwargs)
-        components = engine.collect_components(entity)
-
-        self.entities.append(entity)
-        self.components += components
-
-        print('spawned entity ({} components)'.format(len(components)))
-        for comp in components:
-            print(' - "{}" ({})'.format(comp.name, type(comp).__name__))
 
     def spawn_component(self, cmp_class: Type[engine.T], pos: tuple,
                         *args, **kwargs):
@@ -141,6 +124,26 @@ class Scene:
             for child in component.children:
                 self.destroy_component(child)
 
+    def spawn_entity(self, ent_class: Type[Entity], pos: tuple = (0, 0),
+                     *args, **kwargs):
+        """
+        Spawn an Entity into this Scene.
+
+        Args:
+            ent_class (Type[Entity]): the class of the entity
+            pos (tuple, optional): the world position of the entity
+        """
+        entity = engine.create_entity(ent_class, pos, *args,
+                                      scene=self, **kwargs)
+        components = engine.collect_components(entity)
+
+        self.entities.append(entity)
+        self._register_components(components)
+
+        print('spawned entity ({} components)'.format(len(components)))
+        for comp in components:
+            print(' - "{}" ({})'.format(comp.name, type(comp).__name__))
+
     def destroy_entity(self, entity: Entity):
         """
         Delete an Entity from the Scene.
@@ -149,8 +152,34 @@ class Scene:
             entity (Entity): the entity to delete
         """
         self.entities.remove(entity)
-        for comp in engine.collect_components(entity):
-            self.destroy_component(comp)
+        components = engine.collect_components(entity)
+        for component in components:
+            self.destroy_component(component)
+        self._unregister_components(components)
+
+    def _register_components(self, components: List[Component]):
+        """
+        Register components as part of this scene.
+
+        Args:
+            components (List[Component]): a list of components
+        """
+        for component in components:
+            self.components.append(component)
+            if isinstance(component, RenderedComponent):
+                self.rendered_components.append(component)
+
+    def _unregister_components(self, components: List[Component]):
+        """
+        Unregister components from this scene.
+
+        Args:
+            components (List[Component]): a list of components
+        """
+        for component in components:
+            self.components.remove(component)
+            if isinstance(component, RenderedComponent):
+                self.rendered_components.remove(component)
 
     @property
     def component_count(self) -> int:
