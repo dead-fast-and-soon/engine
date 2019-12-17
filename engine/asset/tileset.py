@@ -6,7 +6,7 @@ from engine.asset.image import ImageAsset
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from engine.game.scene import Scene
+    from engine.scene import Scene
 
 
 class TilesetAsset(ImageAsset):

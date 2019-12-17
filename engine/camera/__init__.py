@@ -10,34 +10,37 @@ from structs.vector import Vector, Transform
 
 if typing.TYPE_CHECKING:
     from engine.game import Game
-    from engine.game.scene import Scene
+    from engine.scene import Scene
 
 
 class Camera:
-    """A camera defining the perspective of which to render scenes."""
+    """
+    A camera defining the perspective of which to render scenes.
+    """
 
     def __init__(self, scene: Scene):
-        """Initializes a Camera
+        """
+        Initializes a Camera
 
         Args:
             game (Game): the Scene that this camera will render
-
         """
         self.scene = scene
 
     def arm(self):
-        """Arm this camera.
+        """
+        Arm this camera.
 
         This method will modify the coordinate system used by OpenGL.
         Any future draw calls will be rendered from the perspective of this
         new coordinate system.
-
         """
         pass
 
 
 class PixelCamera(Camera):
-    """An orthographic camera using pixels as units.
+    """
+    An orthographic camera using pixels as units.
 
     This camera is recommended for world-space 2D rendering.
 
@@ -47,7 +50,6 @@ class PixelCamera(Camera):
     The zoom factor (defaulting to 1) is the amount to zoom the camera in.
     Providing integer values for the zoom factor ensures pixel-perfect
     rendering.
-
     """
 
     def __init__(self, scene: Scene, focus: tuple = (0, 0), zoom: float = 1.0):
@@ -89,7 +91,8 @@ class PixelCamera(Camera):
 
 
 class ScreenPixelCamera(PixelCamera):
-    """An orthographic camera using pixels as units.
+    """
+    An orthographic camera using pixels as units.
 
     This camera sets coordinates to behave like Pyglet's default coordinates.
     The point [0, 0] corresponds to the bottom-left of the screen.
@@ -97,9 +100,9 @@ class ScreenPixelCamera(PixelCamera):
     The zoom factor (defaulting to 1) is the amount to zoom the camera in.
     Providing integer values for the zoom factor ensures pixel-perfect
     rendering.
-
     """
 
     def __init__(self, scene: Scene, zoom: float = 1.0):
-        focus = (scene.game.width // 2, scene.game.height // 2)  # center of screen
+        # set (0, 0) to bottom right
+        focus = (scene.game.width // 2, scene.game.height // 2)
         super().__init__(scene, focus, zoom)

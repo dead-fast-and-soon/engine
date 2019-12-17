@@ -46,7 +46,6 @@ class Quad(RenderedComponent):
         self.vertices.draw(pyglet.gl.GL_QUADS)
 
 
-
 class Text(BatchComponent):
 
     @BatchComponent.spawnable

@@ -12,7 +12,7 @@ from structs.vector import Vector
 import engine
 
 if TYPE_CHECKING:
-    from engine.game.scene import Scene
+    from engine.scene import Scene
 
 
 def fixed_rate(rate: float) -> Callable:
@@ -260,8 +260,8 @@ class BatchComponent(Component):
     a batched render call from a Scene.
     """
 
-    def __init__(self, *, pos: tuple = (0, 0), parent: Component = None,
-                 name: str = None, scene: Scene = None):
+    def __init__(self, *, scene: Scene, pos: tuple = (0, 0),
+                 parent: Component = None, name: str = None):
         """
         Create a BatchComponent.
 

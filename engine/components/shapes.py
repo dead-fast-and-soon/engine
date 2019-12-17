@@ -8,7 +8,7 @@ from structs.color import Color, WHITE
 from structs.vector import Transform
 
 if TYPE_CHECKING:
-    from engine.game.scene import Scene
+    from engine.scene import Scene
 
 
 class Shape2D(BatchComponent):

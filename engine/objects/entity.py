@@ -9,7 +9,7 @@ import engine
 from typing import TYPE_CHECKING, Type, List, Callable
 
 if TYPE_CHECKING:
-    from engine.game.scene import Scene
+    from engine.scene import Scene
 
 
 class Entity(BaseObject):
@@ -19,11 +19,11 @@ class Entity(BaseObject):
 
     def __init__(self, scene: Scene, pos: tuple = (0, 0),
                  *args, **kwargs):
-        """Spawns an entity.
+        """
+        Spawns an entity.
 
         Args:
             pos (tuple, optional): the position to spawn this entity
-
         """
         super().__init__(pos=pos)
 
