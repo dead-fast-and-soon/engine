@@ -32,10 +32,6 @@ def create_component(cmp_class: Type[T], pos: tuple = (0, 0), *args,
             assert 'scene' in kwargs, ('must have "scene" parameter '
                                        'to create a BatchComponent')
 
-    # print('args: ' + str(args) + str(kwargs))
-    # if hasattr(self.game, 'console'):
-    # self.game.console.log('spawned component ' + str(cmp_class))
-
     component: T = cmp_class(*args, **kwargs)
 
     if parent is not None:

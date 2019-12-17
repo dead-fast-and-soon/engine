@@ -46,33 +46,6 @@ class Quad(RenderedComponent):
         self.vertices.draw(pyglet.gl.GL_QUADS)
 
 
-# class CircleComponent(Component):
-#     def __init__(self, radius: float = 5, n: int = 6, x=0, y=0, parent=None):
-#         super().__init__(pos=(x, y), parent=parent, view=view)
-
-#         self.radius = radius
-#         self.n = n
-
-#     def on_render(self):
-
-#         pos = self.spos
-
-#         verts = []
-#         colors = []
-
-#         for i in range(0, self.n):
-
-#             verts.extend([
-#                 (math.sin((i / self.n) * 2 * math.pi) * self.radius) + pos.x,
-#                 (math.cos((i / self.n) * 2 * math.pi) * self.radius) + pos.y
-#             ])
-
-#             colors.extend([255, 0, 0])  # red
-
-#         print(f'rendering circle at ({ pos.x }, { pos.y }))')
-#         pyglet.graphics.draw(self.n, pyglet.gl.GL_LINE_LOOP,
-#                              ('v2f', tuple(verts)), ('c3B', tuple(colors)))
-
 
 class Text(BatchComponent):
 

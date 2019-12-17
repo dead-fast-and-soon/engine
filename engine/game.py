@@ -8,7 +8,7 @@ from engine.objects.entity import Entity
 from engine.input import Input
 from engine.state import GameState
 from engine.scene import Scene
-from engine.camera import Camera, ScreenPixelCamera
+from engine.camera import Camera, PixelCamera, ScreenPixelCamera
 from engine.components.debug import FpsDisplay
 from engine.components.console import Console
 
@@ -58,6 +58,7 @@ class Game:
 
         """
         scene = scene_class(self)
+        scene.use_camera(PixelCamera)
         scene.onLoad()
         self.scenes.insert(0, scene)
         return scene
@@ -87,6 +88,11 @@ class Game:
     def start(self):
         """Open the main window and start the main game loop."""
 
+        print('starting game...')
+
+        for scene in self.scenes:
+            print(' > rendering scene ({} components)'
+                  .format(len(scene.components)))
         window = pyglet.window.Window(width=self.width, height=self.height,
                                       vsync=False)
 
