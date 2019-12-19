@@ -99,17 +99,18 @@ class Scene:
         for obj in self._updatable_objects:
             obj.on_update(delta)
 
-    def spawn_component(self, cmp_class: Type[engine.T], pos: tuple,
-                        *args, **kwargs) -> engine.T:
+    def spawn_component(self, cmp_class: Type[engine.T], pos: tuple, *args,
+                        name: str = None, parent: Component = None,
+                        **kwargs) -> engine.T:
         """
         Spawn a component into this Scene.
 
         Args:
             component: a component or list of components
         """
-        kwargs['scene'] = self
-
-        component = engine.create_component(cmp_class, pos, *args, **kwargs)
+        component = engine.create_component(cmp_class, pos, *args, name=name,
+                                            parent=parent, scene=self,
+                                            **kwargs)
         self._register_components(engine.collect_components(component))
 
         return component
@@ -140,8 +141,8 @@ class Scene:
             ent_class (Type[Entity]): the class of the entity
             pos (tuple, optional): the world position of the entity
         """
-        entity = engine.create_entity(ent_class, pos, *args,
-                                      scene=self, **kwargs)
+        entity = engine.create_entity(ent_class, pos, *args, **kwargs,
+                                      scene=self)
         components = engine.collect_components(entity)
 
         self.entities.append(entity)

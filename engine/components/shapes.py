@@ -15,8 +15,7 @@ class Shape2D(BatchComponent):
     """
     A geometric shape that is created using points.
     """
-    @BatchComponent.spawnable
-    def __init__(self, points: List[tuple], color: tuple = (255, 255, 255),
+    def on_spawn(self, points: List[tuple], color: tuple = (255, 255, 255),
                  is_filled: bool = True, is_looped: bool = True):
         """
         Create a primitive shape.
@@ -63,8 +62,8 @@ class Shape2D(BatchComponent):
 
     @color.setter
     def color(self, color: tuple):
-        self._color = color
-        self.vertex_list.colors = color * self.num_points
+        self._color = tuple(color)
+        self.vertex_list.colors = tuple(color) * self.num_points
 
     @property
     def translated_points(self) -> list:
@@ -121,25 +120,24 @@ class Box2D(Shape2D):
     """
     A 2D box.
     """
-    @BatchComponent.spawnable
-    def __init__(self, size: tuple, color: tuple = (255, 255, 255),
-                 is_filled: bool = True):
+    def on_spawn(self, size: tuple, color: tuple, **kwargs):
         width, height = size
         points = [
             (0, 0), (0, height),
             (width, height), (width, 0)
         ]
-        self.short_super_init(points=points, color=color, is_filled=is_filled)
+        super().on_spawn(color=color, points=points, **kwargs)
 
 
 class Circle2D(Shape2D):
-    @BatchComponent.spawnable
-    def __init__(self, radius: float = 5, n: int = 6,
-                 color: tuple = (255, 255, 255), is_filled: bool = True):
+    """
+    A 2D circle.
+    """
+    def on_spawn(self, radius: float = 5, n: int = 6, *args, **kwargs):
         points = []
         for i in range(n):
             points.append((
                 (math.sin((i / n) * 2 * math.pi) * radius),
                 (math.cos((i / n) * 2 * math.pi) * radius)
             ))
-        self.short_super_init(points=points, color=color, is_filled=is_filled)
+        super().on_spawn(*args, points=points, **kwargs)

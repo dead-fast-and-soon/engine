@@ -24,19 +24,17 @@ class Component(ScriptableObject, Nameable):
 
     Components can also have child Components.
     """
-    def __init__(self, *args, parent: Component = None,
-                 name: str = None, **kwargs):
+    def __init__(self, *args, pos: tuple, name: str, parent: Component = None,
+                 **kwargs):
         """
-        Initializes a Component.
+        Create a Component.
 
         Args:
-            pos (tuple, optional): the position of this component
+            pos (tuple): [description]
+            name (str): [description]
             parent (Component, optional): [description]. Defaults to None.
-            view (Camera, optional): [description]. Defaults to None.
-
         """
-        super().__init__(*args, name=name, **kwargs)
-
+        super().__init__(*args, pos=pos, name=name, **kwargs)
         self._parent: Optional[Component] = parent
         self.children: List[Component] = []
 
@@ -61,7 +59,7 @@ class Component(ScriptableObject, Nameable):
 
     def create_component(self, cmp_class: Type[engine.T],
                          pos: tuple = (0, 0), *args, **kwargs) -> engine.T:
-        return engine.create_component(cmp_class, pos, parent=self,
+        return engine.create_component(cmp_class, pos=pos, parent=self,
                                        *args, **kwargs)
 
     # -------------------------------------------------------------------------
@@ -165,49 +163,17 @@ class RenderedComponent(Component, Renderable):
     A RenderedComponent is a Component that is rendered
     using a render call.
     """
-
-    def __init__(self, *, pos: tuple = (0, 0), parent: Component = None,
-                 name: str = None):
+    def __init__(self, pos: tuple, name: str, parent: Component,
+                 *args, **kwargs):
         """
         Create a RenderedComponent.
 
         Args:
-            pos (tuple, optional): [description]. Defaults to (0, 0).
-            parent (Component, optional): [description]. Defaults to None.
+            pos (tuple, optional): [description].
+            name (str):
+            parent (Component, optional): [description].
         """
-        super().__init__(pos=pos, parent=parent, name=name)
-
-    def render(self):
-        """
-        Render this Component.
-
-        Args:
-            delta (float): the time difference from the last frame
-        """
-        self.on_render()
-
-    def on_render(self):
-        """Render this component on every frame."""
-        pass
-
-    @staticmethod
-    def spawnable(old_init: Callable) -> Callable:
-        """
-        [summary]
-
-        Args:
-            old_init (typing.Callable): [description]
-
-        Returns:
-            typing.Callable: [description]
-        """
-        def wrapped_init(self, *args, pos: tuple,
-                         parent: Component, name: str, **kwargs):
-
-            RenderedComponent.__init__(self, pos=pos, parent=parent, name=name)
-            old_init(self, *args, **kwargs)
-
-        return wrapped_init
+        super().__init__(*args, **kwargs, pos=pos, name=name, parent=parent)
 
 
 class BatchComponent(Component, BatchRenderable):
@@ -215,54 +181,23 @@ class BatchComponent(Component, BatchRenderable):
     A BatchComponent is a Component that is rendered using
     a batched render call from a Scene.
     """
-    def __init__(self, *, scene: Scene, pos: tuple = (0, 0),
-                 parent: Component = None, name: str = None):
+    def __init__(self, *args, pos: tuple, name: str = None,
+                 parent: Component = None, scene: Scene, **kwargs):
         """
         Create a BatchComponent.
 
         Args:
-            scene (Scene): the scene that renders this component
-            pos (tuple, optional): the position of this component
-            parent (Component, optional): the parent of this component
+            pos (tuple): [description]
+            name (str): [description]
+            parent (Component): [description]
+            scene (Scene): [description]
         """
-        super().__init__(pos=pos, parent=parent, scene=scene, name=name)
-
-    def short_super_init(self, *args, **kwargs):
-        """
-        Calls `super().__init__` but automatically provides the `pos`,
-        `parent`, `scene`, and `name` arguments.
-        """
-        super(type(self), self).__init__(
-            *args, pos=self.position, scene=self.scene,
-            name=self.name, parent=self.parent, **kwargs
+        super(BatchComponent, self).__init__(
+            pos=pos, name=name, parent=parent, scene=scene
         )
 
-    @staticmethod
-    def spawnable(old_init: Callable) -> Callable:
-        """
-        Implicitly adds parameters needed to call
-        `BatchComponent.__init__()`
-        and implicitly calls `super().__init__()`.
-
-        When using this decorator, it is recommended to create instances
-        of this component using `Scene.spawn_component()`.
-
-            class ExampleComponent(BatchComponent):
-                @spawnable
-                def __init__(self):
-                    pass
-
-            game = Game()
-            scene = game.newScene()
-
-            scene.spawn_component(ExampleComponent)
-        """
-
-        def wrapped_init(self, *args, pos: tuple, scene: Scene,
-                         parent: Component, name: str, **kwargs):
-
-            BatchComponent.__init__(self, scene=scene, pos=pos,
-                                    parent=parent, name=name)
-            old_init(self, *args, **kwargs)
-
-        return wrapped_init
+    def create_component(self, cmp_class: Type[engine.T], pos: tuple, *args,
+                         name: str = None,
+                         **kwargs) -> engine.T:
+        return engine.create_component(cmp_class, pos, *args, name=name,
+                                       parent=self, scene=self.scene, **kwargs)

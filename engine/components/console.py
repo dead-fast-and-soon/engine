@@ -8,9 +8,7 @@ class Console(BatchComponent):
     """
     A console used for debugging.
     """
-
-    @BatchComponent.spawnable
-    def __init__(self, width=400, height=720):
+    def on_spawn(self, width=400, height=720):
         """
         Create a new console.
 
@@ -18,7 +16,6 @@ class Console(BatchComponent):
             width (int, optional): the width of the console. Defaults to 400.
             height (int, optional): the height of the console. Defaults to 720.
         """
-
         print(f'placing console @({self.position.x},{self.position.y})')
         self.document = pyglet.text.document.FormattedDocument()
 

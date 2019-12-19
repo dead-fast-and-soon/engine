@@ -1,6 +1,7 @@
 
 from __future__ import annotations
 import typing
+import engine.utils
 
 if typing.TYPE_CHECKING:
     from engine.scene import Scene
@@ -10,8 +11,8 @@ class Renderable:
     """
     An object that requires a draw call to be rendered.
     """
-    def __init__(self):
-        pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def render(self):
         """
@@ -33,4 +34,4 @@ class BatchRenderable:
     """
     def __init__(self, *args, scene: Scene, **kwargs):
         self.scene = scene
-        super(BatchRenderable, self).__init__(*args, **kwargs)  # type: ignore
+        super(BatchRenderable, self).__init__(*args, **kwargs)

@@ -26,6 +26,12 @@ class Scriptable:
         """
         pass
 
+    def on_spawn(self, *args, **kwargs):
+        """
+        Called when this object has spawned.
+        """
+        pass
+
     @staticmethod
     def limit_rate(rate: float) -> Callable:
         """

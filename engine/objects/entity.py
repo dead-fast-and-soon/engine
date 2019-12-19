@@ -6,6 +6,7 @@ from engine.objects.base import ScriptableObject
 from engine.mixins.nameable import Nameable
 from engine.objects.component import Component
 import engine
+import engine.utils
 
 from typing import TYPE_CHECKING, Type, List, Callable
 
@@ -17,15 +18,15 @@ class Entity(ScriptableObject, Nameable):
     """
     An Entity is a game object that is composed of multiple components.
     """
-
-    def __init__(self, *args, scene: Scene, pos: tuple, **kwargs):
+    def __init__(self, pos: tuple, scene: Scene, name: str = None,
+                 *args, **kwargs):
         """
         Create an Entity.
 
         Args:
             pos (tuple, optional): the position to spawn this entity
         """
-        super().__init__(pos=pos)
+        super().__init__(pos=pos, name=name, *args, **kwargs)
 
         # the Scene that spawned this entity
         self.scene: Scene = scene
@@ -59,21 +60,3 @@ class Entity(ScriptableObject, Nameable):
     def on_key_release(self, symbol, modifier):
         """Called every time a key was released."""
         pass
-
-    @staticmethod
-    def spawnable(old_init: Callable) -> Callable:
-        """
-        Implicitly adds parameters needed to call `Entity.__init__()`.
-
-        Args:
-            old_init (typing.Callable): the original __init__ function
-
-        Returns:
-            typing.Callable: the new __init__ function
-        """
-        def wrapped_entity_init(self, *args,
-                                pos: tuple, scene: Scene, **kwargs):
-            Entity.__init__(self, scene=scene, pos=pos)
-            old_init(self, *args, **kwargs)
-
-        return wrapped_entity_init

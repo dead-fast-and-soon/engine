@@ -22,9 +22,7 @@ class Quad(RenderedComponent):
     """
     A simple box.
     """
-
-    @RenderedComponent.spawnable
-    def __init__(self, width: float, height: float,
+    def on_spawn(self, width: float, height: float,
                  r=255, g=255, b=255):
 
         self.w = width
@@ -48,8 +46,7 @@ class Quad(RenderedComponent):
 
 class Text(BatchComponent):
 
-    @BatchComponent.spawnable
-    def __init__(self, text: str = ''):
+    def on_spawn(self, text: str = ''):
 
         self.pyglet_text = pyglet.text.Label(
             text,
@@ -75,11 +72,9 @@ class Text(BatchComponent):
 
 class FpsDisplay(BatchComponent):
 
-    @BatchComponent.spawnable
-    def __init__(self):
+    def on_spawn(self):
 
         self.text: Text = self.create_component(Text, self.position)
-
         self.deltas = []
 
     def on_update(self, delta):

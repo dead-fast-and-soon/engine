@@ -14,8 +14,7 @@ if TYPE_CHECKING:
 
 class Sprite(BatchComponent):
 
-    @BatchComponent.spawnable
-    def __init__(self, image: ImageAsset, scale: float = 1, layer: int = 0):
+    def on_spawn(self, image: ImageAsset, scale: float = 1, layer: int = 0):
         """
         A sprite object. These are loaded from an image.
 
@@ -77,8 +76,7 @@ class SpriteText(BatchComponent):
         '>': 109  # solid right arrow
     }
 
-    @BatchComponent.spawnable
-    def __init__(self, tileset: TilesetAsset, text: str = '', scale: int = 1,
+    def on_spawn(self, tileset: TilesetAsset, text: str = '', scale: int = 1,
                  layer: int = 0):
         """
         Creates text (using a sprite sheet) to be rendered.

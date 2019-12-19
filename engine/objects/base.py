@@ -7,6 +7,7 @@ A GameObject can contain one or more Components.
 from typing import Optional, List, Union
 from engine.mixins.scriptable import Scriptable
 from structs.vector import Vector
+import engine.utils
 
 
 class GameObject():
@@ -20,8 +21,8 @@ class GameObject():
         Args:
             pos (tuple, optional): the initial world position of the object
         """
-        self._pos: Vector = Vector.createFrom(pos)
         super(GameObject, self).__init__(*args, **kwargs)
+        self._pos: Vector = Vector.createFrom(pos)
 
     # -------------------------------------------------------------------------
     # Properties
@@ -53,5 +54,5 @@ class ScriptableObject(GameObject, Scriptable):
     """
     A game object that can recieve updates every tick.
     """
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, *args, pos: tuple, **kwargs):
+        super().__init__(*args, **kwargs, pos=pos)
