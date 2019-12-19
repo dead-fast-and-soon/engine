@@ -1,12 +1,12 @@
 
 from __future__ import annotations
+
 import pyglet
-from pyglet import image, gl
+from typing import List, TYPE_CHECKING
+
 from engine.objects.component import BatchComponent
 from engine.asset.image import ImageAsset
 from structs.vector import Vector
-
-from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from engine.asset.tileset import TilesetAsset
@@ -23,8 +23,10 @@ class Sprite(BatchComponent):
             batch ([type], optional): the pyglet batch to render this sprite.
                                       Defaults to None.
         """
+        self._image = image
+
         self.pyglet_sprite = pyglet.sprite.Sprite(
-            image.pyglet_image,
+            self._image.pyglet_image,
             x=self.position.x, y=self.position.y,
             batch=self.scene.batch.pyglet_batch,
             group=self.scene.batch.groups[layer]
@@ -32,6 +34,51 @@ class Sprite(BatchComponent):
 
         if scale != 1:
             self.pyglet_sprite.scale = scale
+
+        # offset of position due to inverse scaling
+        self._offset = (0, 0)
+
+        self.is_flipped_x = False
+        self.is_flipped_y = False
+
+    @property
+    def image(self) -> ImageAsset:
+        return self._image
+
+    @image.setter
+    def image(self, image: ImageAsset):
+        self._image = image
+        self.pyglet_sprite.image = image.pyglet_image
+
+    @property
+    def width(self) -> int:
+        return self.pyglet_sprite.width
+
+    @property
+    def height(self) -> int:
+        return self.pyglet_sprite.height
+
+    def flip_x(self):
+        self.pyglet_sprite.scale_x *= -1
+        self.is_flipped_x = not self.is_flipped_x
+        self.on_position_change()
+
+    def flip_y(self):
+        self.pyglet_sprite.scale_y *= -1
+        self.is_flipped_y = not self.is_flipped_y
+        self.on_position_change()
+
+    @property
+    def offset(self) -> list:
+        offset = list(self._offset[::])
+        if self.is_flipped_x: offset[0] *= -1
+        if self.is_flipped_y: offset[1] *= -1
+        return offset
+
+    @offset.setter
+    def offset(self, offset: tuple):
+        self._offset = offset
+        self.on_position_change()
 
     def set_scale(self, n: float):
         """
@@ -43,8 +90,9 @@ class Sprite(BatchComponent):
 
     def on_position_change(self):
 
-        self.pyglet_sprite.x = self.position.x
-        self.pyglet_sprite.y = self.position.y
+        offset = self.offset
+        self.pyglet_sprite.x = self.position.x + offset[0]
+        self.pyglet_sprite.y = self.position.y + offset[1]
         # self.pyglet_sprite.draw()
 
 
@@ -140,3 +188,47 @@ class SpriteText(BatchComponent):
 
         # shift all sprites up to align (0, 0) at bottom left
         self.position += (0, (self.sheet.width + self.lineHeight) * -line)
+
+
+class AnimatedSprite(BatchComponent):
+
+    def on_spawn(self, frames: List[ImageAsset], frame_duration: float):
+        """
+        An animated sprite.
+
+        Args:
+            frames (List[ImageAsset]): a list of frames to use in this
+                                       animation
+            frame_duration (float): the duration of each frame of the
+                                    animation
+        """
+        self.frames = frames
+        self.sprite = self.create_component(Sprite, self.position,
+                                            self.frames[0])
+        self.sprite.offset = (-8, -8)  # center image
+        self.frame_duration = frame_duration
+        self._timer = 0
+
+        self.current_frame = 0
+
+    def next_frame(self) -> ImageAsset:
+        """
+        Return the next frame in the animation.
+
+        Returns:
+            ImageAsset: the next frame in the animation
+        """
+        next_frame = self.current_frame + 1
+        if next_frame >= len(self.frames):
+            next_frame = 0
+            self.sprite.flip_x()
+        self.current_frame = next_frame
+        return self.frames[next_frame]
+
+    def on_update(self, delta: float):
+
+        self._timer += delta
+
+        while self._timer >= self.frame_duration:
+            self.sprite.image = self.next_frame()
+            self._timer -= self.frame_duration
