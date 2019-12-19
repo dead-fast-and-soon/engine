@@ -1,48 +1,9 @@
-import pyglet
-from pyglet import graphics
+"""
+Components used for the purpose of debugging.
+"""
 
-import math
-
-from engine.objects.component import RenderedComponent, BatchComponent
+from engine.objects.component import BatchComponent
 from engine.components.text import Text
-from structs.vector import Transform
-
-
-class DotComponent(RenderedComponent):
-
-    def on_render(self):
-        pyglet.graphics.draw(
-            1,
-            pyglet.gl.GL_POINTS,
-            ('v2i', (int(self.position.x), int(self.position.y))),
-            ('c3B', (255, 0, 0))  # red
-        )
-
-
-class Quad(RenderedComponent):
-    """
-    A simple box.
-    """
-    def on_spawn(self, width: float, height: float,
-                 r=255, g=255, b=255):
-
-        self.w = width
-        self.h = height
-        self.r, self.g, self.b = r, g, b
-
-        self.vertices = pyglet.graphics.vertex_list(
-            4, 'v2i', ('c3B', (r, g, b) * 4)
-        )
-
-    def on_render(self):
-        pos = self.position
-
-        x, y, w, h = int(pos.x), int(pos.y), int(self.w), int(self.h)
-
-        self.vertices.vertices =\
-            [x, y] + [x + w, y] + [x + w, y + h] + [x, y + h]
-
-        self.vertices.draw(pyglet.gl.GL_QUADS)
 
 
 class FpsDisplay(BatchComponent):
