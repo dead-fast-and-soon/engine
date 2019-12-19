@@ -65,3 +65,12 @@ class TilesetAsset(ImageAsset):
     def __getitem__(self, key) -> ImageAsset:
         """ Retrieves a sprite from this sprite sheet by index. """
         return self.get_tile(key)
+
+    def __iter__(self) -> List[ImageAsset]:
+        """
+        Convert this tileset into a list of images.
+
+        Returns:
+            List[ImageAsset]: a list of images
+        """
+        yield from self.tiles
