@@ -4,6 +4,7 @@ from pyglet import graphics
 import math
 
 from engine.objects.component import RenderedComponent, BatchComponent
+from engine.components.text import Text
 from structs.vector import Transform
 
 
@@ -42,32 +43,6 @@ class Quad(RenderedComponent):
             [x, y] + [x + w, y] + [x + w, y + h] + [x, y + h]
 
         self.vertices.draw(pyglet.gl.GL_QUADS)
-
-
-class Text(BatchComponent):
-
-    def on_spawn(self, text: str = ''):
-
-        self.pyglet_text = pyglet.text.Label(
-            text,
-            font_name='Consolas',
-            font_size=12,
-            x=self.position.x, y=self.position.y,
-            batch=self.scene.batch.pyglet_batch
-        )
-        self.text = text
-
-    @property
-    def text(self):
-        return self.pyglet_text.text
-
-    @text.setter
-    def text(self, text: str):
-        self.pyglet_text.text = text
-
-    def on_position_change(self):
-        self.pyglet_text.x = self.position.x
-        self.pyglet_text.y = self.position.y
 
 
 class FpsDisplay(BatchComponent):
