@@ -52,3 +52,9 @@ class AnimatedSprite(BatchComponent):
         while self._timer >= self.frame_duration:
             self.sprite.image = self.next_frame()
             self._timer -= self.frame_duration
+
+    def on_set_visible(self):
+        self.sprite.is_visible = True
+
+    def on_set_hidden(self):
+        self.sprite.is_visible = False

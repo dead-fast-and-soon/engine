@@ -158,7 +158,50 @@ class Component(ScriptableObject, Nameable):
         pass
 
 
-class RenderedComponent(Component, Renderable):
+class GameComponent(Component):
+    """
+    A GameComponent is a Component that has an in-game
+    visual representation
+
+    Args:
+        Component ([type]): [description]
+    """
+    def __init__(self, pos: tuple, name: str, parent: Component,
+                 *args, **kwargs):
+
+        super().__init__(*args, **kwargs, pos=pos, name=name, parent=parent)
+
+        self._is_visible = True
+
+    @property
+    def is_visible(self) -> bool:
+        return self._is_visible
+
+    @is_visible.setter
+    def is_visible(self, visible: bool):
+        if visible != self._is_visible:
+            self._is_visible = visible
+            if visible:
+                self.on_set_visible()
+            else:
+                self.on_set_hidden()
+
+    def on_set_visible(self):
+        """
+        Called when this component has become visible.
+        """
+        raise NotImplementedError('this method was not implemented by {}'
+                                  .format(type(self).__name__))
+
+    def on_set_hidden(self):
+        """
+        Called when this component has become hidden.
+        """
+        raise NotImplementedError('this method was not implemented by {}'
+                                  .format(type(self).__name__))
+
+
+class RenderedComponent(GameComponent, Renderable):
     """
     A RenderedComponent is a Component that is rendered
     using a render call.
@@ -176,7 +219,7 @@ class RenderedComponent(Component, Renderable):
         super().__init__(*args, **kwargs, pos=pos, name=name, parent=parent)
 
 
-class BatchComponent(Component, BatchRenderable):
+class BatchComponent(GameComponent, BatchRenderable):
     """
     A BatchComponent is a Component that is rendered using
     a batched render call from a Scene.

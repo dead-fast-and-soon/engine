@@ -94,3 +94,11 @@ class Sprite(BatchComponent):
         self.pyglet_sprite.x = self.position.x + offset[0]
         self.pyglet_sprite.y = self.position.y + offset[1]
         # self.pyglet_sprite.draw()
+
+    def on_set_visible(self):
+
+        self.pyglet_sprite.visible = True
+
+    def on_set_hidden(self):
+        print("hidden")
+        self.pyglet_sprite.visible = False
