@@ -4,6 +4,7 @@ from __future__ import annotations
 import typing as t
 
 from engine.objects.component import BatchComponent
+from structs.vector import Vector
 
 if t.TYPE_CHECKING:
     from engine.asset.image import ImageAsset
