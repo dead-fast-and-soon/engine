@@ -4,6 +4,7 @@ from __future__ import annotations
 import typing as t
 
 from engine.objects.component import BatchComponent
+from engine.components.sprite import Sprite
 from structs.vector import Vector
 
 if t.TYPE_CHECKING:
