@@ -100,5 +100,5 @@ class Sprite(BatchComponent):
         self.pyglet_sprite.visible = True
 
     def on_set_hidden(self):
-        print("hidden")
+
         self.pyglet_sprite.visible = False
