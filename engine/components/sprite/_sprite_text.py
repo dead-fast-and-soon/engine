@@ -42,7 +42,7 @@ class SpriteText(BatchComponent):
     }
 
     def on_spawn(self, tileset: TilesetAsset, text: str = '', scale: int = 1,
-                 layer: int = 0):
+                 layer: int = 0, line_height: int = 4):
         """
         Creates text (using a sprite sheet) to be rendered.
         """
@@ -50,7 +50,7 @@ class SpriteText(BatchComponent):
         self.charSpacing: int = 0
 
         # the spacing between each line
-        self.lineHeight: int = 4
+        self.lineHeight: int = line_height
 
         # the scaling of the text (as int to keep pixel perfect)
         self.scale: int = scale
@@ -64,10 +64,10 @@ class SpriteText(BatchComponent):
         # the layer to draw this text
         self.layer: int = layer
 
+        self.sprites: t.List[Sprite] = []
+
         if text != '':
             self.loadText(text)
-
-        self.sprites: t.List[Sprite] = []
 
     def loadText(self, text: str):
         """
