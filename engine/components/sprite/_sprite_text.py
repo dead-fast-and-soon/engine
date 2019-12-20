@@ -34,7 +34,9 @@ class SpriteText(BatchComponent):
 
         '^': 106,  # accented 'e'
 
-        '>': 109  # solid right arrow
+        '>': 109,  # solid right arrow
+
+        '\'': 96  # apostrophe
     }
 
     def on_spawn(self, tileset: TilesetAsset, text: str = '', scale: int = 1,
