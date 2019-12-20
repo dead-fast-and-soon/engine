@@ -1,0 +1,11 @@
+source
+======
+
+.. toctree::
+   :maxdepth: 4
+
+   config
+   engine
+   game
+   main
+   structs

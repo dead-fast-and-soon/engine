@@ -1,0 +1,7 @@
+structs.type
+============
+
+.. automodule:: structs.type
+   :members:
+   :undoc-members:
+   :show-inheritance:

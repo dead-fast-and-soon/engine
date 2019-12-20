@@ -1,0 +1,7 @@
+structs.vector
+==============
+
+.. automodule:: structs.vector
+   :members:
+   :undoc-members:
+   :show-inheritance:

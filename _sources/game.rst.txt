@@ -1,0 +1,14 @@
+game
+====
+
+.. automodule:: game
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   game.player

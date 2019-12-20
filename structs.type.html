@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>structs.type &mdash; engine 2019 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="structs.vector" href="structs.vector.html" />
+    <link rel="prev" title="structs.stats" href="structs.stats.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> engine
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="config.html">config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.html">engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.camera.html">engine.camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.game.html">engine.game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.graphics.html">engine.graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.input.html">engine.input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.html">engine.mixins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.nameable.html">engine.mixins.nameable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.renderable.html">engine.mixins.renderable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.scriptable.html">engine.mixins.scriptable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.html">engine.objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.base.html">engine.objects.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.component.html">engine.objects.component</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.entity.html">engine.objects.entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.scene.html">engine.scene</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.state.html">engine.state</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.utils.html">engine.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="game.html">game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="game.player.html">game.player</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.html">structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.color.html">structs.color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.move.html">structs.move</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.pokedex.html">structs.pokedex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.stats.html">structs.stats</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">structs.type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.vector.html">structs.vector</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">engine</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">source</a> &raquo;</li>
+        
+          <li><a href="structs.html">structs</a> &raquo;</li>
+        
+      <li>structs.type</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/structs.type.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-structs.type">
+<span id="structs-type"></span><h1>structs.type<a class="headerlink" href="#module-structs.type" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="structs.type.Type">
+<em class="property">class </em><code class="sig-prename descclassname">structs.type.</code><code class="sig-name descname">Type</code><a class="headerlink" href="#structs.type.Type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="structs.type.Type.BUG">
+<code class="sig-name descname">BUG</code><em class="property"> = 11</em><a class="headerlink" href="#structs.type.Type.BUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.DARK">
+<code class="sig-name descname">DARK</code><em class="property"> = 15</em><a class="headerlink" href="#structs.type.Type.DARK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.DRAGON">
+<code class="sig-name descname">DRAGON</code><em class="property"> = 14</em><a class="headerlink" href="#structs.type.Type.DRAGON" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.ELECTRIC">
+<code class="sig-name descname">ELECTRIC</code><em class="property"> = 3</em><a class="headerlink" href="#structs.type.Type.ELECTRIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.FIGHTING">
+<code class="sig-name descname">FIGHTING</code><em class="property"> = 6</em><a class="headerlink" href="#structs.type.Type.FIGHTING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.FIRE">
+<code class="sig-name descname">FIRE</code><em class="property"> = 1</em><a class="headerlink" href="#structs.type.Type.FIRE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.FLYING">
+<code class="sig-name descname">FLYING</code><em class="property"> = 9</em><a class="headerlink" href="#structs.type.Type.FLYING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.GHOST">
+<code class="sig-name descname">GHOST</code><em class="property"> = 13</em><a class="headerlink" href="#structs.type.Type.GHOST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.GRASS">
+<code class="sig-name descname">GRASS</code><em class="property"> = 4</em><a class="headerlink" href="#structs.type.Type.GRASS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.GROUND">
+<code class="sig-name descname">GROUND</code><em class="property"> = 8</em><a class="headerlink" href="#structs.type.Type.GROUND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.ICE">
+<code class="sig-name descname">ICE</code><em class="property"> = 5</em><a class="headerlink" href="#structs.type.Type.ICE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.NORMAL">
+<code class="sig-name descname">NORMAL</code><em class="property"> = 0</em><a class="headerlink" href="#structs.type.Type.NORMAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.POISON">
+<code class="sig-name descname">POISON</code><em class="property"> = 7</em><a class="headerlink" href="#structs.type.Type.POISON" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.PSYCHIC">
+<code class="sig-name descname">PSYCHIC</code><em class="property"> = 10</em><a class="headerlink" href="#structs.type.Type.PSYCHIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.ROCK">
+<code class="sig-name descname">ROCK</code><em class="property"> = 12</em><a class="headerlink" href="#structs.type.Type.ROCK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.STEEL">
+<code class="sig-name descname">STEEL</code><em class="property"> = 16</em><a class="headerlink" href="#structs.type.Type.STEEL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="structs.type.Type.WATER">
+<code class="sig-name descname">WATER</code><em class="property"> = 2</em><a class="headerlink" href="#structs.type.Type.WATER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="structs.vector.html" class="btn btn-neutral float-right" title="structs.vector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="structs.stats.html" class="btn btn-neutral float-left" title="structs.stats" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, n/a
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

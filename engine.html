@@ -1,0 +1,279 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>engine &mdash; engine 2019 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="engine.game" href="engine.game.html" />
+    <link rel="prev" title="config" href="config.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> engine
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="config.html">config</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="engine.game.html">engine.game</a></li>
+<li class="toctree-l2"><a class="reference internal" href="engine.state.html">engine.state</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="engine.camera.html">engine.camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.game.html">engine.game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.graphics.html">engine.graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.input.html">engine.input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.html">engine.mixins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.nameable.html">engine.mixins.nameable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.renderable.html">engine.mixins.renderable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.scriptable.html">engine.mixins.scriptable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.html">engine.objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.base.html">engine.objects.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.component.html">engine.objects.component</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.entity.html">engine.objects.entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.scene.html">engine.scene</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.state.html">engine.state</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.utils.html">engine.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="game.html">game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="game.player.html">game.player</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.html">structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.color.html">structs.color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.move.html">structs.move</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.pokedex.html">structs.pokedex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.stats.html">structs.stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.type.html">structs.type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.vector.html">structs.vector</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">engine</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>engine</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/engine.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-engine">
+<span id="engine"></span><h1>engine<a class="headerlink" href="#module-engine" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="engine.collect_components">
+<code class="sig-prename descclassname">engine.</code><code class="sig-name descname">collect_components</code><span class="sig-paren">(</span><em class="sig-param">obj: Union[engine.objects.entity.Entity, engine.objects.component.Component], include_self: bool = True</em><span class="sig-paren">)</span> &#x2192; List[engine.objects.component.Component]<a class="headerlink" href="#engine.collect_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all components in an Entity or Component heirarchy as a flat list.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>obj (Union[Entity, Component]): The object to get components from</p>
+</dd>
+<dt>Returns:</dt><dd><p>List[Component]: a flat list of components</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="engine.create_component">
+<code class="sig-prename descclassname">engine.</code><code class="sig-name descname">create_component</code><span class="sig-paren">(</span><em class="sig-param">cmp_class: Type[T], pos: tuple, *args, name: str = None, parent: engine.objects.component.Component = None, scene: engine.scene.Scene = None, **kwargs</em><span class="sig-paren">)</span> &#x2192; T<a class="headerlink" href="#engine.create_component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a component from its class.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>cmp_class (Type[Component]): the class of the component
+pos (tuple, optional): the position to spawn the component</p>
+</dd>
+<dt>Returns:</dt><dd><p>Component: the component that was spawned</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="engine.create_entity">
+<code class="sig-prename descclassname">engine.</code><code class="sig-name descname">create_entity</code><span class="sig-paren">(</span><em class="sig-param">ent_class: Type[E], pos: tuple, *args, scene: engine.scene.Scene, name: str = None, **kwargs</em><span class="sig-paren">)</span> &#x2192; E<a class="headerlink" href="#engine.create_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an Entity from its class.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>ent_class (Type[Entity]): the class of the entity
+pos (tuple, optional): the world position of the entity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="engine.game.html">engine.game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.state.html">engine.state</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="engine.game.html" class="btn btn-neutral float-right" title="engine.game" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="config.html" class="btn btn-neutral float-left" title="config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, n/a
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>engine.scene &mdash; engine 2019 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="engine.utils" href="engine.utils.html" />
+    <link rel="prev" title="engine.objects.entity module" href="engine.objects.entity.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> engine
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="config.html">config module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.html">engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.camera.html">engine.camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.game.html">engine.game module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.graphics.html">engine.graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.input.html">engine.input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.html">engine.objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.base.html">engine.objects.base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.component.html">engine.objects.component module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.entity.html">engine.objects.entity module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">engine.scene</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.state.html">engine.state module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.utils.html">engine.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="game.html">game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="game.player.html">game.player module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.html">structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.color.html">structs.color module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.move.html">structs.move module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.pokedex.html">structs.pokedex module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.stats.html">structs.stats module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.type.html">structs.type module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.vector.html">structs.vector module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">engine</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>engine.scene</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/engine.scene.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-engine.scene">
+<span id="engine-scene"></span><h1>engine.scene<a class="headerlink" href="#module-engine.scene" title="Permalink to this headline">¶</a></h1>
+<p>Contains scene-related classes.</p>
+<dl class="class">
+<dt id="engine.scene.Scene">
+<em class="property">class </em><code class="sig-prename descclassname">engine.scene.</code><code class="sig-name descname">Scene</code><span class="sig-paren">(</span><em class="sig-param">game: Game</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.scene.Scene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a scene containing components.</p>
+<p>A Scene manages a list of components and is responsible for rendering them.
+Internally, this uses a Batch provided by Pyglet. This reduces the amount
+of draw calls for all components in this Scene to one.</p>
+<dl class="method">
+<dt id="engine.scene.Scene.component_count">
+<em class="property">property </em><code class="sig-name descname">component_count</code><a class="headerlink" href="#engine.scene.Scene.component_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the total amount of components being rendered.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.scene.Scene.destroy_component">
+<code class="sig-name descname">destroy_component</code><span class="sig-paren">(</span><em class="sig-param">components: Union[List[engine.objects.component.Component], engine.objects.component.Component]</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.scene.Scene.destroy_component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an entity and all its components from this Scene.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>components: a component or list of components</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.scene.Scene.destroy_entity">
+<code class="sig-name descname">destroy_entity</code><span class="sig-paren">(</span><em class="sig-param">entity: Entity</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.scene.Scene.destroy_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete an Entity from the Scene.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>entity (Entity): the entity to delete</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.scene.Scene.on_load">
+<code class="sig-name descname">on_load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.scene.Scene.on_load" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called when this scene is loaded.</p>
+<p>Overriding this method eliminates the need to override __init__().</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.scene.Scene.on_update">
+<code class="sig-name descname">on_update</code><span class="sig-paren">(</span><em class="sig-param">delta: float</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.scene.Scene.on_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called on every tick.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.scene.Scene.render">
+<code class="sig-name descname">render</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engine.scene.Scene.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render this scene.</p>
+<p>This method will call this scene’s batch draw, as well as
+every component’s on_render() methods.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>delta (float): the time (in seconds) that passed since</dt><dd><p>the last frame</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.scene.Scene.spawn_component">
+<code class="sig-name descname">spawn_component</code><span class="sig-paren">(</span><em class="sig-param">cmp_class: Type[T], pos: tuple, *args, name: Optional[str] = None, parent: Optional[engine.objects.component.Component] = None, **kwargs</em><span class="sig-paren">)</span> &#x2192; T<a class="headerlink" href="#engine.scene.Scene.spawn_component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spawn a component into this Scene.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>component: a component or list of components</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.scene.Scene.spawn_entity">
+<code class="sig-name descname">spawn_entity</code><span class="sig-paren">(</span><em class="sig-param">ent_class: Type[E], pos: tuple = (0, 0), *args, **kwargs</em><span class="sig-paren">)</span> &#x2192; E<a class="headerlink" href="#engine.scene.Scene.spawn_entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spawn an Entity into this Scene.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>ent_class (Type[Entity]): the class of the entity
+pos (tuple, optional): the world position of the entity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.scene.Scene.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">delta: float</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.scene.Scene.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update this scene.</p>
+<p>This method will call every component’s on_update() methods.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>delta (float): the time (in seconds) that passed since</dt><dd><p>the last tick</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="engine.scene.Scene.use_camera">
+<code class="sig-name descname">use_camera</code><span class="sig-paren">(</span><em class="sig-param">camera_class: Type[Camera], *args, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#engine.scene.Scene.use_camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a Camera that will be used to render this scene.
+All other arguments will be forwarded to the constructor of the
+Camera class provided.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>camera_class (Type[Camera]): the class of the camera</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="engine.utils.html" class="btn btn-neutral float-right" title="engine.utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="engine.objects.entity.html" class="btn btn-neutral float-left" title="engine.objects.entity module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, n/a
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

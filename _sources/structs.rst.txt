@@ -1,0 +1,19 @@
+structs
+=======
+
+.. automodule:: structs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   structs.color
+   structs.move
+   structs.pokedex
+   structs.stats
+   structs.type
+   structs.vector

@@ -1,0 +1,7 @@
+structs.color
+=============
+
+.. automodule:: structs.color
+   :members:
+   :undoc-members:
+   :show-inheritance:

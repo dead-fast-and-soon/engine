@@ -1,0 +1,16 @@
+engine.objects
+==============
+
+.. automodule:: engine.objects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   engine.objects.base
+   engine.objects.component
+   engine.objects.entity

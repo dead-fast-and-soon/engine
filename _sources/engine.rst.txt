@@ -1,0 +1,15 @@
+engine
+======
+
+.. automodule:: engine
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   engine.game
+   engine.state

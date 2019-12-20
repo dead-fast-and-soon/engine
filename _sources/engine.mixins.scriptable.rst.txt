@@ -1,0 +1,7 @@
+engine.mixins.scriptable
+========================
+
+.. automodule:: engine.mixins.scriptable
+   :members:
+   :undoc-members:
+   :show-inheritance:

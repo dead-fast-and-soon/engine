@@ -1,0 +1,7 @@
+engine.mixins.renderable
+========================
+
+.. automodule:: engine.mixins.renderable
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+engine.mixins.nameable
+======================
+
+.. automodule:: engine.mixins.nameable
+   :members:
+   :undoc-members:
+   :show-inheritance:

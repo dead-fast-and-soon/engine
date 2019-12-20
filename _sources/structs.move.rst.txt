@@ -1,0 +1,7 @@
+structs.move
+============
+
+.. automodule:: structs.move
+   :members:
+   :undoc-members:
+   :show-inheritance:

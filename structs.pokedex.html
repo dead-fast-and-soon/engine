@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>structs.pokedex &mdash; engine 2019 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="structs.stats" href="structs.stats.html" />
+    <link rel="prev" title="structs.move" href="structs.move.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> engine
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="config.html">config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.html">engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.camera.html">engine.camera</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.game.html">engine.game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.graphics.html">engine.graphics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.input.html">engine.input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.html">engine.mixins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.nameable.html">engine.mixins.nameable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.renderable.html">engine.mixins.renderable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.mixins.scriptable.html">engine.mixins.scriptable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.html">engine.objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.base.html">engine.objects.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.component.html">engine.objects.component</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.objects.entity.html">engine.objects.entity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.scene.html">engine.scene</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.state.html">engine.state</a></li>
+<li class="toctree-l1"><a class="reference internal" href="engine.utils.html">engine.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="game.html">game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="game.player.html">game.player</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.html">structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.color.html">structs.color</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.move.html">structs.move</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">structs.pokedex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.stats.html">structs.stats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.type.html">structs.type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structs.vector.html">structs.vector</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">engine</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">source</a> &raquo;</li>
+        
+          <li><a href="structs.html">structs</a> &raquo;</li>
+        
+      <li>structs.pokedex</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/structs.pokedex.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-structs.pokedex">
+<span id="structs-pokedex"></span><h1>structs.pokedex<a class="headerlink" href="#module-structs.pokedex" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="structs.pokedex.PokedexEntry">
+<em class="property">class </em><code class="sig-prename descclassname">structs.pokedex.</code><code class="sig-name descname">PokedexEntry</code><span class="sig-paren">(</span><em class="sig-param">id: int</em>, <em class="sig-param">name: str</em>, <em class="sig-param">type: list</em>, <em class="sig-param">height: float</em>, <em class="sig-param">weight: float</em>, <em class="sig-param">desc: str</em>, <em class="sig-param">base_stats: structs.stats.Statistics</em><span class="sig-paren">)</span><a class="headerlink" href="#structs.pokedex.PokedexEntry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A data representation of a Pokemon.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>id (int): The ID of the Pokemon.
+name (str): The name of the Pokemon.
+type (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>): The Pokemons’ type(s).
+height (float): The height of this Pokemon, in meters.
+weight (float): The weight of this Pokemon, in kilograms.
+desc (str): The Pokedex description of this Pokemon.
+base_stats (Stats): The base statistics of this Pokemon.</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="structs.pokedex.PokedexEntry.getATK">
+<code class="sig-name descname">getATK</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#structs.pokedex.PokedexEntry.getATK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="structs.pokedex.PokedexEntry.getDEF">
+<code class="sig-name descname">getDEF</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#structs.pokedex.PokedexEntry.getDEF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="structs.pokedex.PokedexEntry.getDescription">
+<code class="sig-name descname">getDescription</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#structs.pokedex.PokedexEntry.getDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describes all properties of this Pokemon.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structs.pokedex.PokedexEntry.getHP">
+<code class="sig-name descname">getHP</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#structs.pokedex.PokedexEntry.getHP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="structs.pokedex.PokedexEntry.getSATK">
+<code class="sig-name descname">getSATK</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#structs.pokedex.PokedexEntry.getSATK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="structs.pokedex.PokedexEntry.getSDEF">
+<code class="sig-name descname">getSDEF</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#structs.pokedex.PokedexEntry.getSDEF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="structs.pokedex.PokedexEntry.getSPD">
+<code class="sig-name descname">getSPD</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#structs.pokedex.PokedexEntry.getSPD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="structs.stats.html" class="btn btn-neutral float-right" title="structs.stats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="structs.move.html" class="btn btn-neutral float-left" title="structs.move" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, n/a
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+structs.stats
+=============
+
+.. automodule:: structs.stats
+   :members:
+   :undoc-members:
+   :show-inheritance:

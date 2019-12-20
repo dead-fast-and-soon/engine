@@ -1,0 +1,16 @@
+engine.mixins
+=============
+
+.. automodule:: engine.mixins
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   engine.mixins.nameable
+   engine.mixins.renderable
+   engine.mixins.scriptable

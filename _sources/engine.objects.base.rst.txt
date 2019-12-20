@@ -1,0 +1,7 @@
+engine.objects.base
+===================
+
+.. automodule:: engine.objects.base
+   :members:
+   :undoc-members:
+   :show-inheritance:

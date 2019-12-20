@@ -1,0 +1,7 @@
+game.player
+===========
+
+.. automodule:: game.player
+   :members:
+   :undoc-members:
+   :show-inheritance:

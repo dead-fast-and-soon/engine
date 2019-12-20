@@ -1,0 +1,7 @@
+structs.pokedex
+===============
+
+.. automodule:: structs.pokedex
+   :members:
+   :undoc-members:
+   :show-inheritance:

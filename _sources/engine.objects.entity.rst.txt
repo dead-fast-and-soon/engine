@@ -1,0 +1,7 @@
+engine.objects.entity
+=====================
+
+.. automodule:: engine.objects.entity
+   :members:
+   :undoc-members:
+   :show-inheritance:
