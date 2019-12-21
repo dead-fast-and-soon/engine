@@ -22,7 +22,7 @@ class GameObject():
             pos (tuple, optional): the initial world position of the object
         """
         super(GameObject, self).__init__(*args, **kwargs)
-        self._pos: Vector = Vector.createFrom(pos)
+        self._pos: Vector = Vector(pos)
 
     # -------------------------------------------------------------------------
     # Properties
