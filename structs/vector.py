@@ -2,6 +2,9 @@
 from __future__ import annotations
 from typing import Union, Optional, cast
 
+import math
+import engine.utils.math
+
 
 class Vector:
     """
@@ -50,6 +53,38 @@ class Vector:
         else:
             raise ValueError("unable to create Vector from value: "
                              + str(x_or_point_or_tuple))
+
+    @property
+    def is_zero(self) -> bool:
+        """
+        Return True if all components of this vector are 0.
+        """
+        return self.x is 0 and self.y is 0
+
+    def lerp(self, other: Vector, t: float) -> Vector:
+        """
+        Lerp between this vector and another vector.
+
+        Args:
+            other (Vector): the other vector
+            t (float): the time variable (between 0 and 1)
+
+        Returns:
+            Vector: the resultant vector
+        """
+        x = engine.utils.math.lerp(self.x, other.x, t)
+        y = engine.utils.math.lerp(self.y, other.y, t)
+        return Vector(x, y)
+
+    def ceil(self) -> Vector:
+        """
+        Perform ceil rounding on this vector's components and
+        return a new vector.
+
+        Returns:
+            Vector: the resultant vector
+        """
+        return Vector(math.ceil(self.x), math.ceil(self.y))
 
     def __eq__(self, other):
         if type(other) is Vector:
