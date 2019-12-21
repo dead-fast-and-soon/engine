@@ -1,12 +1,13 @@
 
 from __future__ import annotations
-
 import pyglet
-import typing as t
+
+from typing import TYPE_CHECKING, Optional
 
 from engine.objects.component import BatchComponent
+from structs.vector import Vector
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     from engine.asset.image import ImageAsset
 
 PygletSprite = pyglet.sprite.Sprite
@@ -36,7 +37,7 @@ class Sprite(BatchComponent):
             self.pyglet_sprite.scale = scale
 
         # offset of position due to inverse scaling
-        self._offset = (0, 0)
+        self._offset = Vector(0, 0)
 
         self.is_flipped_x = False
         self.is_flipped_y = False
@@ -58,22 +59,30 @@ class Sprite(BatchComponent):
     def height(self) -> int:
         return self.pyglet_sprite.height
 
-    def flip_x(self):
-        self.pyglet_sprite.scale_x *= -1
-        self.is_flipped_x = not self.is_flipped_x
-        self.on_position_change()
+    def flip_x(self, flipped: Optional[bool] = None):
 
-    def flip_y(self):
-        self.pyglet_sprite.scale_y *= -1
-        self.is_flipped_y = not self.is_flipped_y
-        self.on_position_change()
+        flipped = not self.is_flipped_x if flipped is None else flipped
+
+        if flipped is not self.is_flipped_x:
+            self.pyglet_sprite.scale_x *= -1
+            self.is_flipped_x = flipped
+            self.on_position_change()
+
+    def flip_y(self, flipped: Optional[bool] = None):
+
+        flipped = not self.is_flipped_y if flipped is None else flipped
+
+        if flipped is not self.is_flipped_y:
+            self.pyglet_sprite.scale_y *= -1
+            self.is_flipped_y = flipped
+            self.on_position_change()
 
     @property
-    def offset(self) -> list:
-        offset = list(self._offset[::])
-        if self.is_flipped_x: offset[0] *= -1
-        if self.is_flipped_y: offset[1] *= -1
-        return offset
+    def offset(self) -> Vector:
+        x, y = tuple(self._offset)
+        if self.is_flipped_x: x *= -1
+        if self.is_flipped_y: y *= -1
+        return Vector(x, y)
 
     @offset.setter
     def offset(self, offset: tuple):
@@ -90,9 +99,8 @@ class Sprite(BatchComponent):
 
     def on_position_change(self):
 
-        offset = self.offset
-        self.pyglet_sprite.x = self.position.x + offset[0]
-        self.pyglet_sprite.y = self.position.y + offset[1]
+        adj_pos = self.position + self.offset
+        self.pyglet_sprite.update(x=adj_pos.x, y=adj_pos.y)
         # self.pyglet_sprite.draw()
 
     def on_set_visible(self):
