@@ -1,58 +1,52 @@
 
 from __future__ import annotations
 from typing import Union, Optional, cast
+from dataclasses import dataclass
+from numbers import Number
 
 import math
 import engine.utils.math
 
 
+@dataclass(init=False, order=False, frozen=True)
 class Vector:
     """
     Represents a 2D point in space.
     """
+    x: Number
+    y: Number = 0
 
-    def __init__(self, x_or_point_or_tuple: Union[Vector, float, tuple],
-                 y: Optional[float] = None):
-        """Create a 2D point.
+    def __init__(self, x: Union[Vector, Number, tuple], y: Number = 0):
+        """
+        Create a 2D vector.
 
         Args:
-            x_or_point_or_tuple (Union[Vector, float, tuple]):
-                the x component or the Vector to clone or a tuple
-                containing two floats
-            y (Optional[float], optional):
-                the y component
+            x (Union[Vector, Number, tuple]):
+            y (Number, optional): the y component. Defaults to 0.
         """
-        if (
-            type(x_or_point_or_tuple) is float
-            or type(x_or_point_or_tuple) is int
-        ):
-            x: float = cast(float, x_or_point_or_tuple)
-            if y is None:
-                raise ValueError("must provide y component if first "
-                                 + "argument is a number")
-            self.x = x
-            self.y = y
+        if isinstance(x, Number) and isinstance(y, Number):
 
-        elif type(x_or_point_or_tuple) is tuple:
-            pos: tuple = cast(tuple, x_or_point_or_tuple)
-            if len(pos) != 2:
-                raise ValueError("tuple must contain exactly two numbers")
-            if (
-                not isinstance(pos[0], (int, float))
-                or not isinstance(pos[1], (int, float))
-            ):
-                raise ValueError("values in tuple are not numbers")
-            self.x = pos[0]
-            self.y = pos[1]
+            super().__setattr__('x', x)
+            super().__setattr__('y', y)
 
-        elif type(x_or_point_or_tuple) is Vector:  # copy constructor
-            other: Vector = cast(Vector, x_or_point_or_tuple)
-            self.x = other.x
-            self.y = other.y
+        elif isinstance(x, tuple):
+
+            vec_x, vec_y = x
+            assert isinstance(vec_x, Number) and isinstance(vec_y, Number), (
+                'values in tuple are not numbers')
+
+            super().__setattr__('x', vec_x)
+            super().__setattr__('y', vec_y)
+
+        elif isinstance(x, Vector):
+
+            super().__setattr__('x', x.x)
+            super().__setattr__('y', x.y)
 
         else:
-            raise ValueError("unable to create Vector from value: "
-                             + str(x_or_point_or_tuple))
+
+            raise ValueError('unable to construct point from value: {}'
+                             .format(x))
 
     @property
     def is_zero(self) -> bool:
@@ -85,14 +79,6 @@ class Vector:
             Vector: the resultant vector
         """
         return Vector(math.ceil(self.x), math.ceil(self.y))
-
-    def __eq__(self, other):
-        if type(other) is Vector:
-            return self.x == other.x and self.y == other.y
-        if type(other) is tuple:
-            return self.x == other[0] and self.y == other[1]
-        else:
-            return self is other
 
     def __iadd__(self, other):
         """ += operator """
@@ -141,17 +127,11 @@ class Vector:
         yield self.x
         yield self.y
 
-    @staticmethod
-    def createFrom(val) -> 'Vector':
+    def __repr__(self):
         """
-        Attempts to construct a point from an arbitrary value.
+        Represent this vector as a string.
         """
-        if type(val) is tuple:
-            return Vector(val[0], val[1])
-        elif type(val) is Vector:
-            return val
-        else:
-            raise ValueError(f'unable to construct point from value: { val }')
+        return '(X={},Y={})'.format(self.x, self.y)
 
 
 class Transform(Vector):
