@@ -5,7 +5,7 @@ import typing
 import time
 
 from engine.objects.entity import Entity
-from engine.input import Input
+from engine.input import InputHandler
 from engine.state import GameState
 from engine.scene import Scene
 from engine.camera import Camera, PixelCamera, ScreenPixelCamera
@@ -109,19 +109,20 @@ class Game:
                 closed = True
                 window.close()
 
-            self.input[symbol] = True
+            self.input.set_key(symbol, True)
 
-            for scene in self.scenes:
-                for entity in scene.entities:
-                    entity.on_key_press(symbol, modifiers)
+            [entity.on_key_press(symbol, modifiers)
+             for entity in scene.entities
+             for scene in self.scenes]
 
         @window.event
         def on_key_release(symbol, modifiers):
-            self.input[symbol] = False
 
-            for scene in self.scenes:
-                for entity in scene.entities:
-                    entity.on_key_release(symbol, modifiers)
+            self.input.set_key(symbol, False)
+
+            [entity.on_key_release(symbol, modifiers)
+             for entity in scene.entities
+             for scene in self.scenes]
 
         last_time = time.perf_counter()
         # accum_time = 0
