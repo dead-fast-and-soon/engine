@@ -14,7 +14,7 @@ class ImageAsset():
         Loads an image asset.
 
         Args:
-            path (str): the path to the image
+            path_or_image (str): the path to the image
         """
         if type(path_or_image) is str:
             self.pyglet_image = pyglet.image.load(path_or_image)

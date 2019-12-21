@@ -120,13 +120,23 @@ class Box2D(Shape2D):
     """
     A 2D box.
     """
-    def on_spawn(self, size: tuple, color: tuple, **kwargs):
+    def on_spawn(self, size: tuple, color: tuple = (255, 255, 255),
+                 is_filled: bool = True):
+        """
+        Create a 2D box.
+
+        Args:
+            size (tuple): the width and height of the box (in pixels)
+            color (tuple): the color of the box [defaults to (255, 255, 255)]
+            is_filled (bool): if true, fill the box, otherwise draw an
+                              outline
+        """
         width, height = size
         points = [
             (0, 0), (0, height),
             (width, height), (width, 0)
         ]
-        super().on_spawn(color=color, points=points, **kwargs)
+        super().on_spawn(color=color, points=points, is_filled=is_filled)
 
 
 class Circle2D(Shape2D):
