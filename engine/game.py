@@ -30,7 +30,7 @@ class Game:
         self.height: float = height
 
         # the keyboard input object
-        self.input: Input = Input()
+        self.input: InputHandler = InputHandler()
 
         self.hud_scene: Scene = self.create_scene()
         self.hud_scene.use_camera(ScreenPixelCamera)
