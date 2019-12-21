@@ -60,3 +60,13 @@ class Entity(ScriptableObject, Nameable):
     def on_key_release(self, symbol, modifier):
         """Called every time a key was released."""
         pass
+
+    def console_set(self, line_number: int, message: str):
+        """
+        Shortcut method to `self.scene.game.console.line()`.
+
+        Args:
+            line_number: the line number to set
+            message: the message to set that line to.
+        """
+        self.scene.game.console.line(line_number, message)
