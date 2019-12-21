@@ -111,8 +111,8 @@ class Game:
 
             self.input.set_key(symbol, True)
 
-            [entity.on_key_press(symbol, modifiers)
-             for entity in scene.entities
+            [[entity.on_key_press(symbol, modifiers)
+              for entity in scene.entities]
              for scene in self.scenes]
 
         @window.event
@@ -120,8 +120,8 @@ class Game:
 
             self.input.set_key(symbol, False)
 
-            [entity.on_key_release(symbol, modifiers)
-             for entity in scene.entities
+            [[entity.on_key_release(symbol, modifiers)
+              for entity in scene.entities]
              for scene in self.scenes]
 
         last_time = time.perf_counter()
