@@ -36,7 +36,8 @@ class Game:
         self.hud_scene.use_camera(ScreenPixelCamera)
         self.hud_scene.spawn_component(FpsDisplay, (0, 0))
 
-        self.console: Console = self.hud_scene.spawn_component(Console, (0, 0))
+        self.console: Console = self.hud_scene.spawn_component(Console,
+                                                               (0, 20))
 
         # the time elapsed since the last frame
         self.last_delta: float = 0
