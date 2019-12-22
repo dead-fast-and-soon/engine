@@ -10,8 +10,6 @@ from structs.vector import Vector
 if TYPE_CHECKING:
     from engine.asset.image import ImageAsset
 
-PygletSprite = pyglet.sprite.Sprite
-
 
 class Sprite(BatchComponent):
 
@@ -24,14 +22,14 @@ class Sprite(BatchComponent):
             batch ([type], optional): the pyglet batch to render this sprite.
                                       Defaults to None.
         """
-        self._image = image
 
-        self.pyglet_sprite = PygletSprite(
-            img=self._image.pyglet_image,
-            x=self.position.x, y=self.position.y,
-            batch=self.scene.batch.pyglet_batch,
-            group=self.scene.batch.groups[layer]
-        )
+        group = self.scene.batch.groups[layer]
+        batch = self.scene.batch.pyglet_batch
+
+        self._image = image.pyglet_image
+        self._sprite = pyglet.sprite.Sprite(img=self._image,
+                                            batch=batch,
+                                            group=group)
 
         if scale != 1:
             self.pyglet_sprite.scale = scale
@@ -42,6 +40,11 @@ class Sprite(BatchComponent):
         self.is_flipped_x = False
         self.is_flipped_y = False
 
+        # texture coordinates
+        self._s, self._t = (0, 1), (0, 1)
+
+        self.update_position()
+
     @property
     def image(self) -> ImageAsset:
         return self._image
@@ -49,22 +52,40 @@ class Sprite(BatchComponent):
     @image.setter
     def image(self, image: ImageAsset):
         self._image = image
-        self.pyglet_sprite.image = image.pyglet_image
+        self._sprite.image = image.pyglet_image
+        self.update_tex_coords()
 
     @property
     def width(self) -> int:
-        return self.pyglet_sprite.width
+        return self._sprite.width
 
     @property
     def height(self) -> int:
-        return self.pyglet_sprite.height
+        return self._height
+
+    def set_tex_coords(self, s: tuple, t: tuple):
+        assert isinstance(s, tuple) and isinstance(t, tuple)
+        self._s = s
+        self._t = t
+        self.update_tex_coords()
+
+    def update_tex_coords(self):
+
+        s, t = self._s, self._t
+
+        self._sprite._vertex_list.tex_coords = [
+            s[0], t[0], 0,
+            s[1], t[0], 0,
+            s[1], t[1], 0,
+            s[0], t[1], 0,
+        ]
 
     def flip_x(self, flipped: Optional[bool] = None):
 
         flipped = not self.is_flipped_x if flipped is None else flipped
 
         if flipped is not self.is_flipped_x:
-            self.pyglet_sprite.scale_x *= -1
+            self._sprite.scale_x *= -1
             self.is_flipped_x = flipped
             self.on_position_change()
 
@@ -73,9 +94,14 @@ class Sprite(BatchComponent):
         flipped = not self.is_flipped_y if flipped is None else flipped
 
         if flipped is not self.is_flipped_y:
-            self.pyglet_sprite.scale_y *= -1
+            self._sprite.scale_y *= -1
             self.is_flipped_y = flipped
-            self.on_position_change()
+            self.update_position()
+
+    def update_position(self):
+
+        adj_pos = self.position + self.offset
+        self._sprite.update(x=adj_pos.x, y=adj_pos.y)
 
     @property
     def offset(self) -> Vector:
@@ -87,26 +113,42 @@ class Sprite(BatchComponent):
     @offset.setter
     def offset(self, offset: tuple):
         self._offset = offset
-        self.on_position_change()
+        self.update_position()
 
     def set_scale(self, n: float):
         """
         Sets the scale of the sprite.
-
-            :param float n: The scale factor
         """
-        self.pyglet_sprite.scale = n
+        self._sprite.scale_x = n
+        self._sprite.scale_y = n
+        self.update_position()
+
+    def set_scale_x(self, n: float):
+        """
+        Sets the scale of the sprite.
+        """
+        self._sprite.scale_x = n
+        self.update_position()
+
+    def set_scale_y(self, n: float):
+        """
+        Sets the scale of the sprite.
+        """
+        self._sprite.scale_y = n
+        self.update_position()
 
     def on_position_change(self):
 
-        adj_pos = self.position + self.offset
-        self.pyglet_sprite.update(x=adj_pos.x, y=adj_pos.y)
-        # self.pyglet_sprite.draw()
+        self.update_position()
 
     def on_set_visible(self):
 
-        self.pyglet_sprite.visible = True
+        self._sprite.visible = True
 
     def on_set_hidden(self):
 
-        self.pyglet_sprite.visible = False
+        self._sprite.visible = False
+
+    def on_destroy(self):
+
+        self._sprite.delete()
