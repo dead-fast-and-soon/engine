@@ -3,70 +3,48 @@ from engine.camera import ScreenPixelCamera
 from engine.objects.entity import Entity
 from game.components.panel import Panel
 from game.components.elements import Element, MoveElement
+from game.entities.menu import Menu
 import pyglet.window.key as key
 
 
-class Menu(Entity):
+class StartMenu(Menu):
     def on_spawn(self):
-        self.create_component(Panel, (80, 0), 9, 17, True)
-        self.create_component(Panel, (0, 0), 10, 5, False)
-        self.create_component(Element, (96, 120), 'POK^DEX')
-        self.create_component(Element, (96, 104), 'POK^MON')
-        self.create_component(Element, (96, 88), 'PACK')
-        self.create_component(Element, (96, 72), r'#%GEAR')
-        self.create_component(Element, (96, 56), 'SILVER')
-        self.create_component(Element, (96, 40), 'SAVE')
-        self.create_component(Element, (96, 24), 'OPTION')
-        self.create_component(Element, (96, 8), 'EXIT')
-        self.move_element: MoveElement = self.create_component(
-            MoveElement, (88, 104), '>', -8, 136, 0, 0, 16, 0, 128
+        super().on_spawn(
+            labels_pos = (96, 8),
+            arrow_pos = (88, 8),
+            options_pos = (0, 8),
+            label_line_height = 8,
+            options_line_height = 0,
+            options_label_line_height = 8,
+            labels = [
+                'POK^DEX',
+                'POK^MON',
+                'PACK',
+                '#%GEAR',
+                'SILVER',
+                'SAVE',
+                'OPTION',
+                'EXIT'
+            ],
+            options_list = [
+                ['Pok^mon \ndatabase'],
+                ['Party #% \nstatus'],
+                ['Contains \nitems'],
+                ['Trainer\'s \nkey device'],
+                ['Your own \nstatus'],
+                ['Save your \nprogress'],
+                ['Change \nsettings'],
+                ['Exit this \nmenu']
+            ],
+            options_only_show_selected = True,
+            panels = [
+                    (80, 0, 9, 17, True),
+                    (0, 0, 10, 5, False)
+            ]
         )
 
-    def on_key_press(self, symbol, modifier):
-        if symbol == key.UP:
-            self.move_element.move_up()
-        if symbol == key.DOWN:
-            self.move_element.move_down()
-        if symbol == key.RIGHT:
-            self.move_element.move_right()
-        if symbol == key.LEFT:
-            self.move_element.move_left()
-        if symbol == key.ENTER:
-            self.move_element.on_key_press()
-
-    def on_key_release(self, symbol, modifier):
-        pass
-
-    def on_update(self, delta: float):
-        # Pack description
-        if self.move_element.position == (88, 88):
-            self.create_component(Element, (0, 24), 'Contains\n items', 8)
-
-        # PokeGEAR description
-        if self.move_element.position == (88, 72):
-            self.create_component(Element, (0, 24), 'Trainer\'s')
-            self.create_component(Element, (0, 8), 'key device')
-
-        # Trainer name description
-        if self.move_element.position == (88, 56):
-            self.create_component(Element, (0, 24), 'Your own')
-            self.create_component(Element, (0, 8), 'status')
-
-        # Save description
-        if self.move_element.position == (88, 40):
-            self.create_component(Element, (0, 24), 'Save your')
-            self.create_component(Element, (0, 8), 'progress')
-
-        # Options description
-        if self.move_element.position == (88, 24):
-            self.create_component(Element, (0, 24), 'Change')
-            self.create_component(Element, (0, 8), 'settings')
-
-        # Exit description
-        if self.move_element.position == (88, 8):
-            self.create_component(Element, (0, 24), 'Close this')
-            self.create_component(Element, (0, 8), 'menu')
-
+    def on_option_enter(self, option_idx, label_idx):
+        print('selected option {} ({})'.format(option_idx, label_idx))
 
 if __name__ == '__main__':
     # create window
@@ -79,5 +57,5 @@ if __name__ == '__main__':
 
     # use a zoomed in camera
     scene.use_camera(ScreenPixelCamera, zoom=4)
-    scene.spawn_entity(Menu)
+    scene.spawn_entity(StartMenu)
     game.start()
