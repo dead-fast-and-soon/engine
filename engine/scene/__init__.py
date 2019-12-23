@@ -108,29 +108,33 @@ class Scene:
         Args:
             component: a component or list of components
         """
-        component = engine.create_component(cmp_class, pos, *args, name=name,
-                                            parent=parent, scene=self,
-                                            **kwargs)
+        if issubclass(cmp_class, BatchComponent):
+            kwargs['scene'] = self
+
+        component = engine.create_component(cmp_class, pos, name=name,
+                                            parent=parent,
+                                            *args, **kwargs)
         self._register_components(engine.collect_components(component))
 
         return component
 
-    def destroy_component(self, components: Union[List[Component], Component]):
+    def destroy_component(self, component):
         """
         Remove an entity and all its components from this Scene.
 
         Args:
             components: a component or list of components
         """
-        if isinstance(components, Component): components = [components]
+        children = engine.collect_components(component, False)
+        all_components = children + [component]
 
-        for component in components:
-            print('destroying entity {} ({} components)'
-                  .format(type(component).__name__, len(component.children)))
-            component.on_destroy()
+        for comp in set(all_components):
+            try:
+                comp.on_destroy()
+            except AssertionError as e:
+                print('failed to destroy: {}'.format(e))
 
-            for child in component.children:
-                self.destroy_component(child)
+        self._unregister_components(all_components)
 
     def spawn_entity(self, ent_class: Type[engine.E], pos: tuple = (0, 0),
                      *args, **kwargs) -> engine.E:
@@ -206,10 +210,7 @@ class Scene:
     @property
     def component_count(self) -> int:
         """Return the total amount of components being rendered."""
-        num = 0
-        for component in self.components:
-            num += len(component.children)
-        return num + len(self.components)
+        return len(self.components)
 
     # --------------------------------------------------------------------------
     #  Event Methods
