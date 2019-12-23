@@ -122,6 +122,15 @@ class Vector:
 
         return Vector(self.x * other, self.y * other)
 
+    def __floordiv__(self, other):
+        """
+        // operator
+        """
+        assert isinstance(other, (int, float)), ('unable to multiply value'
+                                                 'by {}'.format(other))
+
+        return Vector(self.x // other, self.y // other)
+
     def __iter__(self):
         """Convert this Vector into an Iterable."""
         yield self.x
