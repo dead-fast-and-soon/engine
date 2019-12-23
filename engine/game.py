@@ -5,7 +5,7 @@ import typing
 import time
 
 from engine.objects.entity import Entity
-from engine.input import Input
+from engine.input import InputHandler
 from engine.state import GameState
 from engine.scene import Scene
 from engine.camera import Camera, PixelCamera, ScreenPixelCamera
@@ -30,13 +30,14 @@ class Game:
         self.height: float = height
 
         # the keyboard input object
-        self.input: Input = Input()
+        self.input: InputHandler = InputHandler()
 
         self.hud_scene: Scene = self.create_scene()
         self.hud_scene.use_camera(ScreenPixelCamera)
         self.hud_scene.spawn_component(FpsDisplay, (0, 0))
 
-        self.console: Console = self.hud_scene.spawn_component(Console, (0, 0))
+        self.console: Console = self.hud_scene.spawn_component(Console,
+                                                               (0, 20))
 
         # the time elapsed since the last frame
         self.last_delta: float = 0
@@ -88,6 +89,8 @@ class Game:
     def start(self):
         """Open the main window and start the main game loop."""
 
+        pyglet.image.Texture.default_min_filter = pyglet.gl.GL_NEAREST
+        pyglet.image.Texture.default_mag_filter = pyglet.gl.GL_NEAREST
         print('starting game...')
 
         for scene in self.scenes:
@@ -108,19 +111,20 @@ class Game:
                 closed = True
                 window.close()
 
-            self.input[symbol] = True
+            self.input.set_key(symbol, True)
 
-            for scene in self.scenes:
-                for entity in scene.entities:
-                    entity.on_key_press(symbol, modifiers)
+            [[entity.on_key_press(symbol, modifiers)
+              for entity in scene.entities]
+             for scene in self.scenes]
 
         @window.event
         def on_key_release(symbol, modifiers):
-            self.input[symbol] = False
 
-            for scene in self.scenes:
-                for entity in scene.entities:
-                    entity.on_key_release(symbol, modifiers)
+            self.input.set_key(symbol, False)
+
+            [[entity.on_key_release(symbol, modifiers)
+              for entity in scene.entities]
+             for scene in self.scenes]
 
         last_time = time.perf_counter()
         # accum_time = 0

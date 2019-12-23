@@ -1,18 +1,21 @@
 
 from __future__ import annotations
 
-import pyglet
 import typing
 
 
-class Input:
-    """A wrapper for the KeyStateHandler class provided by Pyglet."""
+class InputHandler:
 
     def __init__(self):
-        self.keys: typing.Dict = {}
+        """
+        Create an input handler.
+        """
+        self._keys = [False for i in range(65520)]
 
-    def __getitem__(self, key):
-        return self.keys.get(key, False)
+    def __getitem__(self, key: int):
 
-    def __setitem__(self, key, value):
-        self.keys[key] = value
+        return self._keys[key]
+
+    def set_key(self, key: int, state: bool):
+
+        self._keys[key] = state

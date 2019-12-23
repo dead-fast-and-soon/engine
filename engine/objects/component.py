@@ -242,5 +242,12 @@ class BatchComponent(GameComponent, BatchRenderable):
     def create_component(self, cmp_class: Type[engine.T], pos: tuple, *args,
                          name: str = None,
                          **kwargs) -> engine.T:
-        return engine.create_component(cmp_class, pos, *args, name=name,
+        comp = engine.create_component(cmp_class, pos, *args, name=name,
                                        parent=self, scene=self.scene, **kwargs)
+        self.scene._register_components([comp])
+        return comp
+
+    def destroy_component(self, component) -> engine.T:
+        self.scene.destroy_component(component)
+        if component in self.children:
+            self.children.remove(component)

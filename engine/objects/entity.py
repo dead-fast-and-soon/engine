@@ -37,9 +37,11 @@ class Entity(ScriptableObject, Nameable):
     def create_component(self, cmp_class: Type[engine.T],
                          pos: tuple = (0, 0), *args, **kwargs) -> engine.T:
         kwargs['scene'] = self.scene  # manually add scene
-        return engine.create_component(cmp_class, pos,
+        comp = engine.create_component(cmp_class, pos,
                                        parent=self.root_component,
                                        *args, **kwargs)
+        self.scene._register_components([comp])
+        return comp
 
     # --------------------------------------------------------------------------
     # Events (to be overridden by subclasses)
@@ -60,3 +62,13 @@ class Entity(ScriptableObject, Nameable):
     def on_key_release(self, symbol, modifier):
         """Called every time a key was released."""
         pass
+
+    def console_set(self, line_number: int, message: str):
+        """
+        Shortcut method to `self.scene.game.console.line()`.
+
+        Args:
+            line_number: the line number to set
+            message: the message to set that line to.
+        """
+        self.scene.game.console.line(line_number, message)
