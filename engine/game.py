@@ -89,6 +89,8 @@ class Game:
     def start(self):
         """Open the main window and start the main game loop."""
 
+        pyglet.image.Texture.default_min_filter = pyglet.gl.GL_NEAREST
+        pyglet.image.Texture.default_mag_filter = pyglet.gl.GL_NEAREST
         print('starting game...')
 
         for scene in self.scenes:
