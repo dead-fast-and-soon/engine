@@ -46,14 +46,18 @@ def create_component(cmp_class: Type[T], pos: tuple, *args,
         raise ValueError(f'the class { cmp_class.__name__ } is '
                          'not allowed to override the __init__ method.')
 
-    if scene is None and issubclass(cmp_class, BatchComponent):
-        # try to find a scene
-        if isinstance(parent, BatchComponent):
-            scene = parent.scene
-        assert scene is not None, ('must have "scene" parameter to '
-                                   'create a {}'.format(cmp_class.__name__))
+    comp_args = dict(pos=pos, name=name, parent=parent)
 
-    component: T = cmp_class(pos=pos, name=name, parent=parent, scene=scene)
+    if issubclass(cmp_class, BatchComponent):
+        if scene is None:
+            # try to find a scene
+            if isinstance(parent, BatchComponent):
+                scene = parent.scene
+            assert scene is not None, ('must have "scene" parameter to create'
+                                       ' a {}'.format(cmp_class.__name__))
+        comp_args['scene'] = scene
+
+    component: T = cmp_class(**comp_args)
     component.on_spawn(*args, **kwargs)
 
     if parent is not None:
