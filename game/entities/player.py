@@ -27,37 +27,37 @@ class Player(Entity):
         # TODO: move these animations to their own file
 
         self.ANI_DOWN = [
-            (self.frames[0], 0.125, False, False, Vector(-8, -8)),
-            (self.frames[3], 0.125, False, False, Vector(-8, -8)),
-            (self.frames[0], 0.125, True, False, Vector(-8, -8)),
-            (self.frames[3], 0.125, True, False, Vector(-8, -8))
+            (self.frames[0], 0.25, False, False, Vector(-8, -8)),
+            (self.frames[3], 0.25, False, False, Vector(-8, -8)),
+            (self.frames[0], 0.25, True, False, Vector(-8, -8)),
+            (self.frames[3], 0.25, True, False, Vector(-8, -8))
         ]
 
         self.ANI_UP = [
-            (self.frames[1], 0.125, False, False, Vector(-8, -8)),
-            (self.frames[4], 0.125, False, False, Vector(-8, -8)),
-            (self.frames[1], 0.125, True, False, Vector(-8, -8)),
-            (self.frames[4], 0.125, True, False, Vector(-8, -8))
+            (self.frames[1], 0.25, False, False, Vector(-8, -8)),
+            (self.frames[4], 0.25, False, False, Vector(-8, -8)),
+            (self.frames[1], 0.25, True, False, Vector(-8, -8)),
+            (self.frames[4], 0.25, True, False, Vector(-8, -8))
         ]
 
         self.ANI_LEFT = [
-            (self.frames[2], 0.125, False, False, Vector(-8, -8)),
-            (self.frames[5], 0.125, False, False, Vector(-8, -8))
+            (self.frames[2], 0.25, False, False, Vector(-8, -8)),
+            (self.frames[5], 0.25, False, False, Vector(-8, -8))
         ]
 
         self.ANI_RIGHT = [
-            (self.frames[2], 0.125, True, False, Vector(-8, -8)),
-            (self.frames[5], 0.125, True, False, Vector(-8, -8))
+            (self.frames[2], 0.25, True, False, Vector(-8, -8)),
+            (self.frames[5], 0.25, True, False, Vector(-8, -8))
         ]
 
         self.sprite: AnimatedSprite = self.create_component(
-            AnimatedSprite, (0, 0),
-            frames=self.ANI_DOWN
+            AnimatedSprite, (-8, 8),
+            frames=self.ANI_DOWN, layer=9
         )
 
         self.keys = self.scene.game.input
 
-        self.last_pos: Vector = self.position
+        self.start_pos: Vector = self.position
         self.grid_pos: Vector = Vector(0, 0)
         self.grid_size = 16
 
@@ -80,7 +80,8 @@ class Player(Entity):
             if not axis.is_zero:
 
                 self.grid_pos += axis
-                self.last_pos = self.position
+                self.start_pos = self.position
+                self.end_pos = (self.grid_pos * self.grid_size)
                 self.move_fd.start()
 
                 # switch to appropriate animation
@@ -107,7 +108,6 @@ class Player(Entity):
         if self.move_state is 0:
 
             perc = self.move_fd.section_progress(0)
-            self.position = self.last_pos.lerp(self.grid_pos * self.grid_size,
-                                               perc)
+            self.position = self.start_pos.lerp(self.end_pos, perc)
 
         self.move_state = self.move_fd.current_state
