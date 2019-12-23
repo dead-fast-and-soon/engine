@@ -14,7 +14,8 @@ if TYPE_CHECKING:
 
 class Sprite(BatchComponent):
 
-    def on_spawn(self, image: ImageAsset, scale: float = 1, layer: int = 0):
+    def on_spawn(self, image: ImageAsset, scale: float = 1, layer: int = 0,
+                 color: tuple = (255, 255, 255)):
         """
         A sprite object. These are loaded from an image.
 
@@ -32,6 +33,7 @@ class Sprite(BatchComponent):
         self._sprite = pyglet.sprite.Sprite(img=self._image,
                                             batch=batch,
                                             group=group)
+        self.color = color
 
         if scale != 1:
             self.pyglet_sprite.scale = scale
@@ -66,6 +68,14 @@ class Sprite(BatchComponent):
     @property
     def height(self) -> int:
         return self._sprite.height
+
+    @property
+    def color(self) -> tuple:
+        return self._sprite.color
+
+    @color.setter
+    def color(self, color: tuple):
+        self._sprite.color = color
 
     def toggle_wireframe(self):
         if self._wireframe is None:
