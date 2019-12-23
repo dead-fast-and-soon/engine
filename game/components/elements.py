@@ -4,32 +4,28 @@ from engine.components.sprite import SpriteText
 from engine.camera import ScreenPixelCamera
 from game.components.panel import Panel
 from engine.objects.component import BatchComponent
+from structs.vector import Vector
 import pyglet.window.key as key
-import sys
 
 # load assets
 tileset = TilesetAsset('assets/font.png', tile_width=8, tile_height=8)
 
 
 class Element(BatchComponent):
-    def on_spawn(self, text: str, line_height: int):
+    def on_spawn(self, text: str, line_height: int = 0):
         self.x = self.position.x
         self.y = self.position.y
         self.text = text
-        self.component = self.create_component(SpriteText,
-                                               (self.x, self.y),
-                                               tileset,
-                                               self.text,
-                                               line_height=line_height,
-                                               layer=2)
+        self.component = self.create_component(
+            SpriteText, (self.x, self.y), tileset, self.text, 
+            line_height=line_height, layer=2
+        )
 
 
 class MoveElement(BatchComponent):
     def on_spawn(self, text: str, lower_bound, upper_bound, left_bound,
                  right_bound, move_pixal_vertical, move_pixal_horizontal,
                  wrap_around):
-        self.x = self.position.x
-        self.y = self.position.y
         self.text = text
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
@@ -38,43 +34,43 @@ class MoveElement(BatchComponent):
         self.move_pixal_vertical = move_pixal_vertical
         self.move_pixal_horizontal = move_pixal_horizontal
         self.wrap_around = wrap_around
+        self.grid_position = Vector(0, 0)
+        self.grid_offset = self.position
         self.component = self.create_component(
-            SpriteText, (self.x, self.y), tileset, self.text, layer=2
+            SpriteText, self.position, tileset, self.text, layer=3
         )
 
     def move_up(self):
-        if self.position.y < self.upper_bound:
-            self.position += (0, self.move_pixal_vertical)
+        if self.grid_position.y < self.upper_bound:
+            self.grid_position += (0, 1)
 
-        if self.position.y == self.upper_bound:
-            self.position -= (0, self.wrap_around)
+        if self.grid_position.y == self.upper_bound:
+            self.grid_position = Vector(0, self.lower_bound)
 
     def move_down(self):
-        if self.position.y > self.lower_bound:
-            self.position -= (0, self.move_pixal_vertical)
+        if self.grid_position.y > self.lower_bound:
+            self.grid_position -= (0, 1)
 
-        if self.position.y == self.lower_bound:
-            self.position += (0, self.wrap_around)
+        elif self.grid_position.y == self.lower_bound:
+            self.grid_position = Vector(0, self.upper_bound - 1)
 
     def move_right(self):
-        if self.position.x < self.right_bound:
-            self.position += (self.move_pixal_horizontal, 0)
+        if self.grid_position.x < self.right_bound:
+            self.grid_position += (1, 0)
 
     def move_left(self):
-        if self.position.x > self.left_bound:
-            self.position -= (self.move_pixal_horizontal, 0)
+        if self.grid_position.x > self.left_bound:
+            self.grid_position -= (1, 0)
 
     def on_key_press(self):
-        if self.position.y == self.lower_bound + 16:
+        if self.grid_position.y == self.lower_bound + 16:
             pass
 
-        # Silly Menu stuff
-        '''
-        if symbol == key.RIGHT:
-            self.position += (4, 0)
-        if symbol == key.LEFT:
-            self.position -= (4, 0)
-        '''
+    def on_update(self, delta):
+        self.position = self.grid_offset + (
+            self.grid_position.x * self.move_pixal_horizontal,
+            self.grid_position.y * self.move_pixal_vertical
+        )
 
 
 # start game
