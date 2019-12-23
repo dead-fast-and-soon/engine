@@ -16,7 +16,8 @@ class Shape2D(BatchComponent):
     A geometric shape that is created using points.
     """
     def on_spawn(self, points: List[tuple], color: tuple = (255, 255, 255),
-                 is_filled: bool = True, is_looped: bool = True):
+                 is_filled: bool = True, is_looped: bool = True,
+                 layer: int = 0):
         """
         Create a primitive shape.
 
@@ -39,7 +40,7 @@ class Shape2D(BatchComponent):
         elif len(points) == 3:
             mode = pyglet.gl.GL_TRIANGLES
         elif len(points) == 4:
-            mode = pyglet.gl.GL_QUADS
+            mode = pyglet.gl.GL_TRIANGLES
             # mode = pyglet.gl.GL_TRIANGLE_FAN  # maybe more effecient?
         else:
             mode = pyglet.gl.GL_POLYGON
@@ -48,10 +49,19 @@ class Shape2D(BatchComponent):
         self.points = points
         self.num_points = len(points)
 
+        group = self.scene.batch.pyglet_groups[layer]
         batch = self.scene.batch.pyglet_batch
-        self.vertex_list = batch.add(
-            self.num_points, mode, None, 'v2f', 'c3B'
-        )
+
+        if self.num_points is 4:  # use indexed list
+            self.vertex_list = batch.add_indexed(
+                self.num_points, mode, pyglet.graphics.Group(group),
+                [0, 1, 2, 0, 2, 3], 'v2f', 'c3B'
+            )
+
+        else:
+            self.vertex_list = batch.add(
+                self.num_points, mode, group, 'v2f', 'c3B'
+            )
 
         self.color = color
         self.update_points()
@@ -121,7 +131,7 @@ class Box2D(Shape2D):
     A 2D box.
     """
     def on_spawn(self, size: tuple, color: tuple = (255, 255, 255),
-                 is_filled: bool = True):
+                 is_filled: bool = True, layer: int = 0):
         """
         Create a 2D box.
 
@@ -131,12 +141,30 @@ class Box2D(Shape2D):
             is_filled (bool): if true, fill the box, otherwise draw an
                               outline
         """
-        width, height = size
-        points = [
+        self._size = size
+        points = self._get_points()
+        super().on_spawn(color=color, points=points, is_filled=is_filled,
+                         layer=layer)
+
+    @property
+    def size(self):
+
+        return self._size
+
+    @size.setter
+    def size(self, size: tuple):
+
+        self._size = size
+        self.points = self._get_points()
+        self.update_points()
+
+    def _get_points(self):
+
+        width, height = self.size
+        return [
             (0, 0), (0, height),
             (width, height), (width, 0)
         ]
-        super().on_spawn(color=color, points=points, is_filled=is_filled)
 
 
 class Circle2D(Shape2D):
