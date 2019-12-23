@@ -4,6 +4,7 @@ import pyglet
 
 from typing import TYPE_CHECKING, Optional
 
+from engine.components.shapes import Box2D
 from engine.objects.component import BatchComponent
 from structs.vector import Vector
 
@@ -23,6 +24,7 @@ class Sprite(BatchComponent):
                                       Defaults to None.
         """
 
+        self._layer = layer
         group = self.scene.batch.groups[layer]
         batch = self.scene.batch.pyglet_batch
 
@@ -43,6 +45,8 @@ class Sprite(BatchComponent):
         # texture coordinates
         self._s, self._t = (0, 1), (0, 1)
 
+        self._wireframe = None
+
         self.update_position()
 
     @property
@@ -61,7 +65,19 @@ class Sprite(BatchComponent):
 
     @property
     def height(self) -> int:
-        return self._height
+        return self._sprite.height
+
+    def toggle_wireframe(self):
+        if self._wireframe is None:
+            self._wireframe = self.create_component(Box2D, self.position,
+                                                    (self.width, self.height),
+                                                    is_filled=False,
+                                                    layer=self._layer)
+            self.is_visible = False
+        else:
+            self.destroy_component(self._wireframe)
+            self._wireframe = None
+            self.is_visible = True
 
     def set_tex_coords(self, s: tuple, t: tuple):
         assert isinstance(s, tuple) and isinstance(t, tuple)
@@ -70,9 +86,7 @@ class Sprite(BatchComponent):
         self.update_tex_coords()
 
     def update_tex_coords(self):
-
         s, t = self._s, self._t
-
         self._sprite._vertex_list.tex_coords = [
             s[0], t[0], 0,
             s[1], t[0], 0,
@@ -81,7 +95,6 @@ class Sprite(BatchComponent):
         ]
 
     def flip_x(self, flipped: Optional[bool] = None):
-
         flipped = not self.is_flipped_x if flipped is None else flipped
 
         if flipped is not self.is_flipped_x:
@@ -90,7 +103,6 @@ class Sprite(BatchComponent):
             self.on_position_change()
 
     def flip_y(self, flipped: Optional[bool] = None):
-
         flipped = not self.is_flipped_y if flipped is None else flipped
 
         if flipped is not self.is_flipped_y:
@@ -99,7 +111,6 @@ class Sprite(BatchComponent):
             self.update_position()
 
     def update_position(self):
-
         adj_pos = self.position + self.offset
         self._sprite.update(x=adj_pos.x, y=adj_pos.y)
 
@@ -138,17 +149,13 @@ class Sprite(BatchComponent):
         self.update_position()
 
     def on_position_change(self):
-
         self.update_position()
 
     def on_set_visible(self):
-
         self._sprite.visible = True
 
     def on_set_hidden(self):
-
         self._sprite.visible = False
 
     def on_destroy(self):
-
         self._sprite.delete()
