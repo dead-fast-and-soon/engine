@@ -33,7 +33,8 @@ class AnimationFrame:
 
 class AnimatedSprite(BatchComponent):
 
-    def on_spawn(self, frames: List[AnimationFrame]):
+    def on_spawn(self, frames: List[AnimationFrame], layer: int = 0,
+                 color: tuple = (255, 255, 255)):
         """
         An animated sprite.
 
@@ -48,7 +49,9 @@ class AnimatedSprite(BatchComponent):
 
         # configure Sprite to display first frame
         self.sprite = self.create_component(Sprite, self.position,
-                                            self.frames[0].image)
+                                            self.frames[0].image,
+                                            layer=layer,
+                                            color=color)
         # timer to time each frame
         self._timer = 0
         self.is_playing = True
