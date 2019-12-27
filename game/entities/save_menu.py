@@ -10,24 +10,29 @@ import pyglet.window.key as key
 class SaveMenu(Menu):
     def on_spawn(self):
         super().on_spawn(
-            labels_pos = (40, 120),
-            arrow_pos = (8, 56),
-            labels = [
-                'PLAYER SILVER',
-                'BADGES'
-                'TIME'
-                '0',
-                '0:08',
-                'YES',
-                'NO'
+            arrow_layer=3,
+            arrows=[
+                (1, 9), (1, 7)
             ],
-            panels = [
+            labels=[
+                ((5, 15), 'PLAYER SILVER', 1),
+                ((5, 13), 'BADGES', 1),
+                ((5, 9), 'TIME', 1),
+                ((18, 13), '0', 1),
+                ((15, 9), '0:08', 1),
+
+                ((2, 9), 'YES', 3),
+                ((2, 7), 'NO', 3),
+
+                ((1, 1), 'Would you like to\nsave the game?', 1, 8)
+            ],
+            panels=[
                 # Text Panel
-                (0, 0, 19, 5, True),
+                ((0, 0), (20, 6), 0),
                 # Yes / No Panel
-                (0, 48, 5, 5, True),
+                ((0, 6), (6, 5), 2),
                 # Player info Panel
-                (32, 64, 15, 9, True)
+                ((4, 8), (16, 10), 0)
             ]
         )
 
