@@ -13,7 +13,9 @@ class Panel(BatchComponent):
                  layer: int = 0):
         self.frame_width = frame_width
         self.frame_height = frame_height
-        self.frame = TilesetAsset('assets/frame1.png', tile_width=8, tile_height=8)
+        self.frame = TilesetAsset(
+            'assets/frame1.png', tile_width=8, tile_height=8
+        )
         self.borders = borders
         TILE_SIZE = 8
 
@@ -61,35 +63,6 @@ class Panel(BatchComponent):
                     if tile:
                         self.create_component(Sprite, adj_pos,
                                               tile, layer=layer)
-
-            # # Bottom Left
-            # self.create_component(Sprite, (x, y), TILE_BL, layer=1)
-
-            # # Top Right
-            # self.create_component(
-            #     Sprite, (x + width * TILE_SIZE, y + height * TILE_SIZE), TILE_TR,
-            #     layer=1
-            # )
-            # # Bottom Right
-            # self.create_component(
-            #     Sprite, (x + width * TILE_SIZE, y), TILE_BR, layer=1
-            # )
-
-            # # draw horizontal outlines
-            # for idx in range(self.frame_width):
-            #     self.create_component(Sprite, (idx * TILE_SIZE + x + TILE_SIZE,
-            #                                 height * TILE_SIZE + y), TILE_H)
-
-            #     self.create_component(Sprite, (idx * TILE_SIZE + x + TILE_SIZE,
-            #                                 0 + y), TILE_H)
-
-            # # draw vertical outlines
-            # for idx in range(self.frame_height):
-            #     self.create_component(Sprite, (x, idx * TILE_SIZE
-            #                                 + y + TILE_SIZE), TILE_V)
-
-            #     self.create_component(Sprite, (x + width * TILE_SIZE,
-            #                                 idx * TILE_SIZE + y), TILE_V)
 
         # draw inner fill
         if borders:
