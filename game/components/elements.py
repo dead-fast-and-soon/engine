@@ -12,14 +12,27 @@ tileset = TilesetAsset('assets/font.png', tile_width=8, tile_height=8)
 
 
 class Element(BatchComponent):
-    def on_spawn(self, text: str, line_height: int = 0):
+    def on_spawn(self, text: str, line_height: int = 0, layer: int = 0):
         self.x = self.position.x
         self.y = self.position.y
-        self.text = text
         self.component = self.create_component(
-            SpriteText, (self.x, self.y), tileset, self.text, 
-            line_height=line_height, layer=2
+            SpriteText, (self.x, self.y), tileset, text,
+            line_height=line_height, layer=layer
         )
+
+    @property
+    def text(self):
+        return self.component.text
+
+    @text.setter
+    def text(self, text: str):
+        self.component.text = text
+
+    def on_set_hidden(self):
+        pass
+
+    def on_set_visible(self):
+        pass
 
 
 class MoveElement(BatchComponent):
