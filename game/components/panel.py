@@ -61,8 +61,9 @@ class Panel(BatchComponent):
                         tile = None
 
                     if tile:
-                        self.create_component(Sprite, adj_pos,
-                                              tile, layer=layer)
+                        self.create_component(
+                            Sprite, adj_pos, tile, layer=layer
+                        )
 
         # draw inner fill
         if borders:
@@ -77,6 +78,7 @@ class Panel(BatchComponent):
                 (width * TILE_SIZE, height * TILE_SIZE),
                 (255, 255, 255), layer=layer
             )
+
 
 # start game
 if __name__ == '__main__':
