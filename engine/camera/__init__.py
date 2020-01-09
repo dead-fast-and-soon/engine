@@ -3,8 +3,9 @@ from __future__ import annotations
 
 import config
 import typing
+import glm
 from abc import ABC, abstractmethod
-from pyglet import gl
+from engine.utils.gl import *
 
 from structs.vector import Vector, Transform
 
@@ -79,15 +80,21 @@ class PixelCamera(Camera):
         )
 
         # precalculate ranges
-        self.ranges = x_range + y_range + (0.0, 1.0)  # z-range
+        self.ranges = x_range + y_range + (-1, 1) # z-range
 
     def arm(self):
         r = self.ranges
 
         if self.ranges is not None:
-            gl.glMatrixMode(gl.GL_PROJECTION)
-            gl.glLoadIdentity()
-            gl.glOrtho(r[0], r[1], r[2], r[3], r[4], r[5])
+
+            proj = glm.ortho(*r)
+            view = glm.mat4(1.0)
+            buffer = GLUniformBuffer(1)
+
+            with buffer:
+                # overwrite first and second parts of buffer
+                buffer.sub_data(0,                    proj)
+                buffer.sub_data(glm.sizeof(glm.mat4), view)
 
 
 class ScreenPixelCamera(PixelCamera):
