@@ -1,2 +1,2 @@
-pyglet==1.4.8
-gitpython==3.0.5
+git+https://github.com/pyglet/pyglet.git@2bfd7ee#egg=pyglet
+pyglm==1.1.5
