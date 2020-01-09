@@ -1,6 +1,4 @@
-
 import pyglet
-import pyglet.window.key as key
 import typing
 import time
 
@@ -11,6 +9,33 @@ from engine.scene import Scene
 from engine.camera import Camera, PixelCamera, ScreenPixelCamera
 from engine.components.debug import FpsDisplay
 from engine.components.console import Console
+from engine.graphics import BatchRenderer
+from engine.utils.gl import *
+
+
+class _FrameTimer:
+    def __init__(self):
+
+        # initial time
+        self._ti = time.perf_counter()
+
+        # final time
+        self._tf = self._ti
+
+        # delta time
+        self._delta = self._tf - self._ti
+
+    def tick(self):
+
+        self._tf = time.perf_counter()
+
+        self._delta = self._tf - self._ti
+
+        self._ti = self._tf
+
+    @property
+    def delta(self):
+        return self._delta
 
 
 class Game:
@@ -32,15 +57,16 @@ class Game:
         # the keyboard input object
         self.input: InputHandler = InputHandler()
 
-        self.hud_scene: Scene = self.create_scene()
-        self.hud_scene.use_camera(ScreenPixelCamera)
-        self.hud_scene.spawn_component(FpsDisplay, (0, 0))
-
-        self.console: Console = self.hud_scene.spawn_component(Console,
-                                                               (0, 20))
-
         # the time elapsed since the last frame
         self.last_delta: float = 0
+
+        self.window = pyglet.window.Window(width=width,
+                                           height=height,
+                                           vsync=False)
+
+        self._closed = False
+
+        self._on_update = lambda x: None
 
     def log(self, message):
         """
@@ -48,7 +74,9 @@ class Game:
         """
         self.console.log(message)
 
-    def load_scene(self, scene_class: typing.Type[Scene]) -> Scene:
+    def create_scene(self,
+                   scene_class: typing.Type[Scene] = None,
+                   name: str = None) -> Scene:
         """[summary]
 
         Args:
@@ -58,15 +86,12 @@ class Game:
             Scene: the scene that was loaded
 
         """
-        scene = scene_class(self)
+        scene_class = scene_class or Scene
+        scene = scene_class(self, name)
         scene.use_camera(PixelCamera)
         scene.on_load()
         self.scenes.insert(0, scene)
         return scene
-
-    def create_scene(self) -> Scene:
-        """Create and return an empty Scene."""
-        return self.load_scene(Scene)
 
     def render_all_scenes(self):
         """Render all scenes.
@@ -91,83 +116,81 @@ class Game:
 
         pyglet.image.Texture.default_min_filter = pyglet.gl.GL_NEAREST
         pyglet.image.Texture.default_mag_filter = pyglet.gl.GL_NEAREST
+
         print('starting game...')
 
-        for scene in self.scenes:
-            print(' > rendering scene ({} components)'
-                  .format(len(scene.components)))
-        window = pyglet.window.Window(width=self.width, height=self.height,
-                                      vsync=False)
+        # manually bind WindowBlock buffer to 0
+        GLUniformBuffer(1).set_binding_point(0)
 
-        # schedule updateScenes() at fixed rate
-        # pyglet.clock.schedule_interval(self.update_all_scenes, SPT)
+        # add fps and console objects
+        hud_scene: Scene = self.create_scene(name='HUD')
+        hud_scene.use_camera(ScreenPixelCamera, zoom=1)
+        self.fps_disp = hud_scene.spawn_component(FpsDisplay, (0, 0))
+        self.console: Console = hud_scene.spawn_component(Console, (0, 20))
 
-        closed = False
-
-        @window.event
+        @self.window.event
         def on_key_press(symbol, modifiers):
-            nonlocal closed
-            if symbol is key.ESCAPE:
-                closed = True
-                window.close()
+
+            if symbol is pyglet.window.key.ESCAPE:
+                self._closed = True
+                self.window.close()
 
             self.input.set_key(symbol, True)
 
-            [[entity.on_key_press(symbol, modifiers)
-              for entity in scene.entities]
-             for scene in self.scenes]
+            [[
+                entity.on_key_press(symbol, modifiers)
+                for entity in scene.entities
+            ] for scene in self.scenes]
 
-        @window.event
+        @self.window.event
         def on_key_release(symbol, modifiers):
 
             self.input.set_key(symbol, False)
 
-            [[entity.on_key_release(symbol, modifiers)
-              for entity in scene.entities]
-             for scene in self.scenes]
+            [[
+                entity.on_key_release(symbol, modifiers)
+                for entity in scene.entities
+            ] for scene in self.scenes]
 
-        last_time = time.perf_counter()
-        # accum_time = 0
+        print('rendering %d scenes:' % len(self.scenes))
+        for scene in self.scenes:
+            print(' - "{}" ({} components)'.format(scene.name,
+                                                   len(scene.components)))
 
-        # ----------------------------------------------------------------------
-        #  Game Loop
-        # ----------------------------------------------------------------------
+        timer = _FrameTimer()
 
-        while not closed:
+        # from game.graphics.shaders import program
 
+        # class Group(pyglet.graphics.Group):
+        #     def set_state(self):
+        #         super().set_state()
+        #         self.program['projection'] = pyglet.matrix.create_orthogonal(0, 100, 0, 100, 0, 1)
+
+        # batch = pyglet.graphics.Batch()
+        # group = Group(program)
+        # batch.add_indexed(4, pyglet.gl.GL_TRIANGLES, group, [0, 1, 2, 0, 2, 3],
+        #         ("vertices2f", (0, 0, 0, 600, 100, 600, 100, 0)),
+        #         ("colors3f", (1.0, 1.0, 1.0) * 4))
+
+        while not self._closed:
+
+            timer.tick()
+
+            # fire any pyglet events
             pyglet.clock.tick()
+            self.window.switch_to()
+            self.window.dispatch_events()
 
-            end_time = time.perf_counter()
-            delta = end_time - last_time
-            last_time = end_time
+            self.window.clear()
 
-            # clear buffer
-            # ------------
-
-            window.switch_to()
-            window.dispatch_events()
-            window.clear()
-
-            # update logic
-            # ------------
-
-            self.update_all_scenes(delta)
-
-            # accum_time += delta
-
-            # # if accumulative dt goes above SPT, run a tick and decrement
-            # # while accum_time >= SPT:
-            # #     self.updateScenes(SPT)
-            # #     accum_time -= SPT
-            # if accum_time >= SPT:
-            #     self.updateScenes(SPT)
-            #     accum_time = 0
-
-            # rendering
-            # ---------
-
-            self.last_delta = delta
+            # update and render scenes
+            self.update_all_scenes(timer.delta)
             self.render_all_scenes()
+            self._on_update(timer.delta)
+            # batch.draw()
 
-            if not closed:
-                window.flip()
+            self.window.flip()
+
+    def event_listener(self, fn):
+        self._on_update = fn
+        return fn
