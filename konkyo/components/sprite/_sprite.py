@@ -109,7 +109,7 @@ class Sprite(BatchComponent):
 
     def update_tex_coords(self):
         s, t = self._s, self._t
-        self._sprite._vertex_list.tex_coords = [
+        self._sprite._vertex_list.tex_coords[:] = [
             s[0], t[0], 0,
             s[1], t[0], 0,
             s[1], t[1], 0,
