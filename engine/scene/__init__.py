@@ -10,6 +10,7 @@ import engine.utils
 from engine.camera import PixelCamera
 from engine.graphics import BatchRenderer
 from structs.vector import Vector
+from engine.mixins.nameable import Nameable
 from engine.mixins.renderable import Renderable
 from engine.mixins.scriptable import Scriptable
 from engine.objects.component import (Component, BatchComponent,
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
     from engine.objects.entity import Entity
 
 
-class Scene:
+class Scene(Nameable):
     """
     Represents a scene containing components.
 
@@ -30,15 +31,17 @@ class Scene:
     of draw calls for all components in this Scene to one.
     """
 
-    def __init__(self, game: Game):
+    def __init__(self, game: Game, name: str = None):
         """Construct a scene.
 
         A scene consists of a list of components.
         """
+        super().__init__(name=name)
+
         self.game: Game = game
 
         # the batch to use to minimize draw calls
-        self.batch: BatchRenderer = BatchRenderer(10)  # 10 layers
+        self.batch: BatchRenderer = BatchRenderer(self, 10)  # 10 layers
 
         # the camera to use to render this scene
         self.camera: Camera = PixelCamera(self)
