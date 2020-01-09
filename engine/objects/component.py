@@ -186,6 +186,9 @@ class GameComponent(Component):
             else:
                 self.on_set_hidden()
 
+            for child in self.children:
+                child.is_visible = visible
+
     def on_set_visible(self):
         """
         Called when this component has become visible.
