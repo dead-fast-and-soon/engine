@@ -1,13 +1,10 @@
 
 from __future__ import annotations
 
-import config
 import typing
-import glm
-from abc import ABC, abstractmethod
 from engine.utils.gl import *
 
-from structs.vector import Vector, Transform
+from engine.structs.vector import Vector, Transform
 
 if typing.TYPE_CHECKING:
     from engine.game import Game
