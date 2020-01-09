@@ -1,5 +1,5 @@
 
-from structs.vector import Vector
+from konkyo.structs.vector import Vector
 
 vec = Vector(0, 0)
 
