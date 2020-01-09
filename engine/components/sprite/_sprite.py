@@ -6,10 +6,20 @@ from typing import TYPE_CHECKING, Optional
 
 from engine.components.shapes import Box2D
 from engine.objects.component import BatchComponent
-from structs.vector import Vector
+from engine.structs.vector import Vector
 
 if TYPE_CHECKING:
     from engine.asset.image import ImageAsset
+
+
+class _SpriteGroup(pyglet.sprite.SpriteGroup):
+    def __init__(self, image: ImageAsset):
+        super().__init__(image.pyglet_image.get_texture(),
+                         pyglet.gl.GL_SRC_ALPHA,
+                         pyglet.gl.GL_ONE_MINUS_SRC_ALPHA)
+
+    def set_state(self):
+        super().set_state()
 
 
 class Sprite(BatchComponent):
@@ -25,18 +35,20 @@ class Sprite(BatchComponent):
                                       Defaults to None.
         """
 
+        self._image = image.pyglet_image
         self._layer = layer
-        group = self.scene.batch.groups[layer]
         batch = self.scene.batch.pyglet_batch
 
-        self._image = image.pyglet_image
-        self._sprite = pyglet.sprite.Sprite(img=self._image,
-                                            batch=batch,
-                                            group=group)
+        self._sprite = pyglet.sprite.Sprite(
+            img=self._image,
+            batch=batch,
+            group=None
+        )
+
         self.color = color
 
         if scale != 1:
-            self.pyglet_sprite.scale = scale
+            self._sprite.scale = scale
 
         # offset of position due to inverse scaling
         self._offset = Vector(0, 0)
