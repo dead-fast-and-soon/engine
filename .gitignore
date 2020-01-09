@@ -9,3 +9,4 @@ tags
 *.lprof
 *.prof
 .pytest_cache
+konkyo.egg-info/
