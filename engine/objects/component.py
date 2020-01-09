@@ -10,7 +10,7 @@ from typing import (List, Optional, Union,
 from engine.objects.base import GameObject, ScriptableObject
 from engine.mixins.nameable import Nameable
 from engine.mixins.renderable import Renderable, BatchRenderable
-from structs.vector import Vector
+from engine.structs.vector import Vector
 import engine
 
 if TYPE_CHECKING:

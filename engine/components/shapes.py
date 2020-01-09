@@ -4,8 +4,8 @@ import pyglet
 from typing import TYPE_CHECKING, List
 
 from engine.objects.component import Component, BatchComponent
-from structs.color import Color, WHITE
-from structs.vector import Transform
+from engine.structs.color import Color, WHITE
+from engine.structs.vector import Transform
 
 if TYPE_CHECKING:
     from engine.scene import Scene
@@ -49,18 +49,18 @@ class Shape2D(BatchComponent):
         self.points = points
         self.num_points = len(points)
 
-        group = self.scene.batch.pyglet_groups[layer]
+        group = self.scene.batch.group(layer)
         batch = self.scene.batch.pyglet_batch
 
         if self.num_points is 4:  # use indexed list
-            self.vertex_list = batch.add_indexed(
-                self.num_points, mode, pyglet.graphics.Group(group),
-                [0, 1, 2, 0, 2, 3], 'v2f', 'c3B'
+            self.vertex_list = self.scene.batch.add_indexed(
+                self.num_points, mode,
+                [0, 1, 2, 0, 2, 3], 'vertices2f', 'colors3B'
             )
 
         else:
-            self.vertex_list = batch.add(
-                self.num_points, mode, group, 'v2f', 'c3B'
+            self.vertex_list = self.scene.batch.add(
+                self.num_points, mode, 'vertices2f', 'colors3B'
             )
 
         self.color = color
@@ -73,7 +73,7 @@ class Shape2D(BatchComponent):
     @color.setter
     def color(self, color: tuple):
         self._color = tuple(color)
-        self.vertex_list.colors = tuple(color) * self.num_points
+        self.vertex_list.colors[:] = tuple(color) * self.num_points
 
     @property
     def translated_points(self) -> list:
@@ -117,7 +117,10 @@ class Shape2D(BatchComponent):
         """
         Update the points of this shape.
         """
-        self.vertex_list.vertices = self.translated_flat_points
+        # points = self.translated_flat_points
+        # print(points)
+        # self.vertex_list.set_attribute_data(0, points)
+        self.vertex_list.vertices[:] = self.translated_flat_points
 
     def on_position_change(self):
         self.update_points()

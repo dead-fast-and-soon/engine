@@ -9,7 +9,7 @@ import engine
 import engine.utils
 from engine.camera import PixelCamera
 from engine.graphics import BatchRenderer
-from structs.vector import Vector
+from engine.structs.vector import Vector
 from engine.mixins.nameable import Nameable
 from engine.mixins.renderable import Renderable
 from engine.mixins.scriptable import Scriptable

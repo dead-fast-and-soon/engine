@@ -6,7 +6,7 @@ A GameObject can contain one or more Components.
 
 from typing import Optional, List, Union
 from engine.mixins.scriptable import Scriptable
-from structs.vector import Vector
+from engine.structs.vector import Vector
 import engine.utils
 
 

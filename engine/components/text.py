@@ -8,6 +8,7 @@ class Text(BatchComponent):
 
     def on_spawn(self, text: str = ''):
 
+        # FIXME: text spawning at z = -1?
         self.pyglet_text = pyglet.text.Label(
             text,
             font_name='Consolas',

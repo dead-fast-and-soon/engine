@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 
-from structs.vector import Vector
+from engine.structs.vector import Vector
 from engine.objects.base import ScriptableObject
 from engine.mixins.nameable import Nameable
 from engine.objects.component import Component

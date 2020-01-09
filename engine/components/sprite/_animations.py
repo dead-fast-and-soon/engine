@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, List
 
 from engine.objects.component import BatchComponent
 from engine.components.sprite import Sprite
-from structs.vector import Vector
+from engine.structs.vector import Vector
 
 if TYPE_CHECKING:
     from engine.asset.image import ImageAsset

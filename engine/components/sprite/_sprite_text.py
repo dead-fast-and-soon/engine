@@ -5,7 +5,7 @@ import typing as t
 
 from engine.objects.component import BatchComponent
 from engine.components.sprite import Sprite
-from structs.vector import Vector
+from engine.structs.vector import Vector
 
 if t.TYPE_CHECKING:
     from engine.asset.image import ImageAsset
@@ -66,10 +66,26 @@ class SpriteText(BatchComponent):
 
         self.sprites: t.List[Sprite] = []
 
-        if text != '':
-            self.loadText(text)
+        self._text = text
+        if self._text != '':
+            self.load_text(self._text)
 
-    def loadText(self, text: str):
+    @property
+    def text(self) -> str:
+        return self._text
+
+    @text.setter
+    def text(self, text: str):
+        for sprite in self.sprites:
+            self.destroy_component(sprite)
+        self.sprites = []
+
+        if text != '':
+            self.load_text(text)
+
+        self._text = text
+
+    def load_text(self, text: str):
         """
         Reads text then loads and positions the respective sprite
         for each character.
