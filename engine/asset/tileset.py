@@ -49,6 +49,13 @@ class TilesetAsset(ImageAsset):
                 self.tiles.append(ImageAsset(tile))
 
     @property
+    def length(self):
+        """
+        Return the amount of tiles in this tileset.
+        """
+        return len(self.tiles)
+
+    @property
     def height(self):
         """ The height of the sprites in this sprite sheet. """
         return self._height
