@@ -5,7 +5,7 @@ from konkyo.structs.vector import Vector
 from konkyo.objects.base import ScriptableObject
 from konkyo.mixins.nameable import Nameable
 from konkyo.objects.component import Component
-import engine
+import konkyo
 import konkyo.utils
 
 from typing import TYPE_CHECKING, Type, List, Callable

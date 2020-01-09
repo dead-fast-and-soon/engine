@@ -11,7 +11,7 @@ from konkyo.objects.base import GameObject, ScriptableObject
 from konkyo.mixins.nameable import Nameable
 from konkyo.mixins.renderable import Renderable, BatchRenderable
 from konkyo.structs.vector import Vector
-import engine
+import konkyo
 
 if TYPE_CHECKING:
     from konkyo.scene import Scene

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Type, TypeVar, Union
 import pyglet
 
-import engine
+import konkyo
 import konkyo.utils
 from konkyo.camera import PixelCamera
 from konkyo.graphics import BatchRenderer
