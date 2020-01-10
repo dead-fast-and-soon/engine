@@ -18,6 +18,7 @@ class PokedexEntry:
         desc (str): The Pokedex description of this Pokemon.
         base_stats (Stats): The base statistics of this Pokemon.
     """
+
     def __init__(self, id: int, name: str, type: list, height: float,
                  weight: float, desc: str, base_stats: Statistics):
         self.id = id

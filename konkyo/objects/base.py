@@ -14,6 +14,7 @@ class GameObject():
     """
     GameObject is the base class for an object with an in-game position.
     """
+
     def __init__(self, *args, pos: tuple, **kwargs):
         """
         Initializes a Component.
@@ -54,5 +55,6 @@ class ScriptableObject(GameObject, Scriptable):
     """
     A game object that can recieve updates every tick.
     """
+
     def __init__(self, *args, pos: tuple, **kwargs):
         super().__init__(*args, **kwargs, pos=pos)

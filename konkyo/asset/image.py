@@ -9,6 +9,7 @@ class ImageAsset():
     """
     A wrapper class for images loaded using Pyglet.
     """
+
     def __init__(self, path_or_image):
         """
         Loads an image asset.
@@ -29,6 +30,7 @@ class TileableImageAsset():
     """
     A wrapper class for images loaded using Pyglet.
     """
+
     def __init__(self, image_asset: ImageAsset):
         """
         Loads an image asset.

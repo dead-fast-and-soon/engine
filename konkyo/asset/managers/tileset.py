@@ -7,6 +7,7 @@ class TilesetManager:
     Stores multiple tilesets for easy access and to minimize
     loading the same tileset multiple times.
     """
+
     def __init__(self):
         self._tilesets = dict()
 
