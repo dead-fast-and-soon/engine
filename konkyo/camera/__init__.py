@@ -67,7 +67,7 @@ class Camera:
         self._scene = scene
 
 
-class PixelCamera(Camera):
+class OrthoCamera(Camera):
     """
     An orthographic camera using pixels as units.
 
@@ -125,7 +125,7 @@ class PixelCamera(Camera):
         self.update_projection()
 
 
-class ScreenPixelCamera(Camera):
+class HUDCamera(Camera):
     """
     An orthographic camera using pixels as units.
 

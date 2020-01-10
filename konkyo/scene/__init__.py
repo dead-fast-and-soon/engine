@@ -7,7 +7,7 @@ import pyglet
 
 import konkyo
 import konkyo.utils
-from konkyo.camera import PixelCamera
+from konkyo.camera import OrthoCamera
 from konkyo.graphics import BatchRenderer
 from konkyo.structs.vector import Vector
 from konkyo.mixins.nameable import Nameable
@@ -44,7 +44,7 @@ class Scene(Nameable):
         self.batch: BatchRenderer = BatchRenderer(self, 10)  # 10 layers
 
         # the camera to use to render this scene
-        self.camera: Camera = PixelCamera()
+        self.camera: Camera = None
 
         # a list of entities
         self.entities: List[Entity] = []
