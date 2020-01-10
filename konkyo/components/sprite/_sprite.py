@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Optional
 from konkyo.components.shapes import Box2D
 from konkyo.objects.component import BatchComponent
 from konkyo.structs.vector import Vector
+from konkyo.utils.gl import *
 
 if TYPE_CHECKING:
     from konkyo.asset.image import ImageAsset
@@ -44,6 +45,11 @@ class Sprite(BatchComponent):
             batch=batch,
             group=None
         )
+
+        # force nearest filter
+        glBindTexture(GL_TEXTURE_2D, self._image.get_texture().id)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
 
         self.color = color
 
