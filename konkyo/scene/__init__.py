@@ -44,7 +44,7 @@ class Scene(Nameable):
         self.batch: BatchRenderer = BatchRenderer(self, 10)  # 10 layers
 
         # the camera to use to render this scene
-        self.camera: Camera = PixelCamera(self)
+        self.camera: Camera = PixelCamera()
 
         # a list of entities
         self.entities: List[Entity] = []
@@ -58,7 +58,7 @@ class Scene(Nameable):
         # a list of objects that need update calls
         self._updatable_objects: List[Scriptable] = []
 
-    def use_camera(self, camera_class: Type[Camera], *args, **kwargs):
+    def use_camera(self, camera: Camera):
         """
         Creates a Camera that will be used to render this scene.
         All other arguments will be forwarded to the constructor of the
@@ -67,7 +67,8 @@ class Scene(Nameable):
         Args:
             camera_class (Type[Camera]): the class of the camera
         """
-        self.camera = camera_class(self, *args, **kwargs)  # type: ignore
+        self.camera = camera
+        self.camera.bind_scene(self)
 
     def render(self):
         """Render this scene.

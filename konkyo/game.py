@@ -88,7 +88,6 @@ class Game:
         """
         scene_class = scene_class or Scene
         scene = scene_class(self, name)
-        scene.use_camera(PixelCamera)
         scene.on_load()
         self.scenes.insert(0, scene)
         return scene
@@ -124,7 +123,7 @@ class Game:
 
         # add fps and console objects
         hud_scene: Scene = self.create_scene(name='HUD')
-        hud_scene.use_camera(ScreenPixelCamera, zoom=1)
+        hud_scene.use_camera(ScreenPixelCamera(zoom=1.0))
         self.fps_disp = hud_scene.spawn_component(FpsDisplay, (0, 0))
         self.console: Console = hud_scene.spawn_component(Console, (0, 20))
 
