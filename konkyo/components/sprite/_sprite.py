@@ -7,57 +7,97 @@ from typing import TYPE_CHECKING, Optional
 from konkyo.components.shapes import Box2D
 from konkyo.objects.component import BatchComponent
 from konkyo.structs.vector import Vector
-from konkyo.utils.gl import *
+import konkyo.utils.gl as gl
+from konkyo.graphics.palette import ColorPalette
+from konkyo.components.sprite._shaders import make_program
 
 if TYPE_CHECKING:
     from konkyo.asset.image import ImageAsset
+    from pyglet.graphics.shader import ShaderProgram
 
 
 class _SpriteGroup(pyglet.sprite.SpriteGroup):
-    def __init__(self, image: ImageAsset):
+    def __init__(self, image: ImageAsset, palette):
         super().__init__(image.pyglet_image.get_texture(),
                          pyglet.gl.GL_SRC_ALPHA,
-                         pyglet.gl.GL_ONE_MINUS_SRC_ALPHA)
+                         pyglet.gl.GL_ONE_MINUS_SRC_ALPHA,
+                         make_program())
+        self.palette = palette
+        self.set_image(image)
+
+    def set_image(self, image: ImageAsset):
+        self.img_texture = image.pyglet_image.get_texture()
+
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self.img_texture.id)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D,
+                           gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D,
+                           gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
 
     def set_state(self):
-        super().set_state()
+        self.program.use_program()
+
+        gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self.img_texture.id)
+
+        gl.glActiveTexture(gl.GL_TEXTURE1)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self.palette.id)
+
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
+
+    def unset_state(self):
+        gl.glDisable(gl.GL_BLEND)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, 0)
+
+        self.program.stop_program()
 
 
 class Sprite(BatchComponent):
 
     def on_spawn(self, image: ImageAsset, scale: float = 1, layer: int = 0,
-                 color: tuple = (255, 255, 255)):
+                 color: tuple = (255, 255, 255), palette: ColorPalette = None,
+                 anchor: tuple = None):
         """
         A sprite object. These are loaded from an image.
 
         Args:
-            img ([type]): the image to use
-            batch ([type], optional): the pyglet batch to render this sprite.
-                                      Defaults to None.
+            image (ImageAsset): the image to use
+            palette_colors (tuple): a tuple of colors (in RGBA float) to use
+                as a color table for this sprite
         """
 
         self._image = image.pyglet_image
+
+        anchor = anchor or (0, 0)
+
+        self._anchor_x = int(self._image.width * anchor[0])
+        self._anchor_y = int(self._image.height * anchor[1])
+        # self._image.anchor_x = self._anchor_x
+        # self._image.anchor_y = self._anchor_y
+        print('using anchor {}, {}'.format(self._anchor_x, self._anchor_y))
+
         self._layer = layer
         batch = self.scene.batch.pyglet_batch
+
+        self.palette = palette
+        if self.palette:
+            self._group = _SpriteGroup(image, self.palette)
+        else:
+            self._group = None
 
         self._sprite = pyglet.sprite.Sprite(
             img=self._image,
             batch=batch,
-            group=None
+            group=self._group
         )
 
         # force nearest filter
-        glBindTexture(GL_TEXTURE_2D, self._image.get_texture().id)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self._image.get_texture().id)
         self.color = color
 
         if scale != 1:
             self._sprite.scale = scale
-
-        # offset of position due to inverse scaling
-        self._offset = Vector(0, 0)
 
         self.is_flipped_x = False
         self.is_flipped_y = False
@@ -70,13 +110,25 @@ class Sprite(BatchComponent):
         self.update_position()
 
     @property
+    def shaders(self) -> ShaderProgram:
+        """
+        Get the shader program used by this sprite.
+        """
+        return self._sprite._group.program
+
+    @property
     def image(self) -> ImageAsset:
         return self._image
 
     @image.setter
     def image(self, image: ImageAsset):
         self._image = image
-        self._sprite.image = image.pyglet_image
+        # self._image.pyglet_image.anchor_x = self._anchor_x
+        # self._image.pyglet_image.anchor_y = self._anchor_y
+        if self._group:
+            self._group.set_image(image)
+        else:
+            self._sprite.image = image.pyglet_image
         self.update_tex_coords()
 
     @property
@@ -139,20 +191,9 @@ class Sprite(BatchComponent):
             self.update_position()
 
     def update_position(self):
-        adj_pos = self.position + self.offset
+        adj_pos = self.position - (self._anchor_x * self._sprite.scale_x,
+                                   self._anchor_y * self._sprite.scale_y)
         self._sprite.update(x=adj_pos.x, y=adj_pos.y)
-
-    @property
-    def offset(self) -> Vector:
-        x, y = tuple(self._offset)
-        if self.is_flipped_x: x *= -1
-        if self.is_flipped_y: y *= -1
-        return Vector(x, y)
-
-    @offset.setter
-    def offset(self, offset: tuple):
-        self._offset = offset
-        self.update_position()
 
     def set_scale(self, n: float):
         """
@@ -187,3 +228,4 @@ class Sprite(BatchComponent):
 
     def on_destroy(self):
         self._sprite.delete()
+

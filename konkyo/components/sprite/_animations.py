@@ -34,7 +34,8 @@ class AnimationFrame:
 class AnimatedSprite(BatchComponent):
 
     def on_spawn(self, frames: List[AnimationFrame], layer: int = 0,
-                 color: tuple = (255, 255, 255)):
+                 color: tuple = (255, 255, 255), palette=None,
+                 anchor: tuple = None):
         """
         An animated sprite.
 
@@ -51,7 +52,9 @@ class AnimatedSprite(BatchComponent):
         self.sprite = self.create_component(Sprite, self.position,
                                             self.frames[0].image,
                                             layer=layer,
-                                            color=color)
+                                            color=color,
+                                            palette=palette,
+                                            anchor=anchor)
         # timer to time each frame
         self._timer = 0
         self.is_playing = True
@@ -103,8 +106,8 @@ class AnimatedSprite(BatchComponent):
 
         self.sprite.image = self.current_frame.image
         self.sprite.flip_x(self.current_frame.flip_x)
-        self.sprite.flip_y(self.current_frame.flip_y)
-        self.sprite.offset = self.current_frame.offset
+        # self.sprite.flip_y(self.current_frame.flip_y)
+        self.sprite.position = self.position + self.current_frame.offset
 
     def get_next_frame_idx(self) -> ImageAsset:
         """
