@@ -175,24 +175,38 @@ class Sprite(BatchComponent):
         ]
 
     def flip_x(self, flipped: Optional[bool] = None):
-        flipped = not self.is_flipped_x if flipped is None else flipped
+        if flipped is None:
+            flipped = not self.is_flipped_x
 
-        if flipped is not self.is_flipped_x:
-            self._sprite.scale_x *= -1
-            self.is_flipped_x = flipped
-            self.on_position_change()
+        if flipped:
+            self._s = (1, 0)
+        else:
+            self._s = (0, 1)
+
+        self.is_flipped_x = flipped
+        self.update_tex_coords()
 
     def flip_y(self, flipped: Optional[bool] = None):
-        flipped = not self.is_flipped_y if flipped is None else flipped
+        if flipped is None:
+            flipped = not self.is_flipped_y
 
-        if flipped is not self.is_flipped_y:
-            self._sprite.scale_y *= -1
-            self.is_flipped_y = flipped
-            self.update_position()
+        if flipped:
+            self._t = (1, 0)
+        else:
+            self._t = (0, 1)
+
+        self.is_flipped_y = flipped
+        self.update_tex_coords()
+
+    @property
+    def _adjusted_position(self):
+        # FIXME: position acting strangely with negative scales
+        return self.position - (self._anchor_x * self._sprite.scale_x,
+                                self._anchor_y * self._sprite.scale_y)
 
     def update_position(self):
-        adj_pos = self.position - (self._anchor_x * self._sprite.scale_x,
-                                   self._anchor_y * self._sprite.scale_y)
+        adj_pos = self._adjusted_position
+        # adj_pos = self.position
         self._sprite.update(x=adj_pos.x, y=adj_pos.y)
 
     def set_scale(self, n: float):

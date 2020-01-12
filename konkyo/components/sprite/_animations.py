@@ -106,7 +106,7 @@ class AnimatedSprite(BatchComponent):
 
         self.sprite.image = self.current_frame.image
         self.sprite.flip_x(self.current_frame.flip_x)
-        # self.sprite.flip_y(self.current_frame.flip_y)
+        self.sprite.flip_y(self.current_frame.flip_y)
         self.sprite.position = self.position + self.current_frame.offset
 
     def get_next_frame_idx(self) -> ImageAsset:
