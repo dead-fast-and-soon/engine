@@ -2,6 +2,7 @@ __pycache__/
 testing_tools/
 .mypy_cache
 .vscode/settings.json
+.vscode/.ropeproject/
 **/__pycache__/
 *.pyc
 *.sh
